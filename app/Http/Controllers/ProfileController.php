@@ -89,7 +89,9 @@ class ProfileController extends Controller
             }
 
             $employee->fill($validated)->save();
-            return back()->with('success', 'Profile updated successfully.');
+            return redirect()
+                ->route('profile.edit')
+                ->with('success', 'Profile updated successfully.');
         }
 
         // ✅ Employee requests approval
@@ -110,7 +112,9 @@ class ProfileController extends Controller
         }
 
         if (empty($changes)) {
-            return back()->with('warning', 'No changes detected.');
+            return redirect()
+                ->route('profile.edit')
+                ->with('warning', 'No changes detected.');
         }
 
         Approval::create([
