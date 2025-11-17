@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('payrolls', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('employee_id'); // ✅ Use unsignedBigInteger()
+            $table->unsignedBigInteger('employee_id');
             $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade');
             $table->decimal('basic_salary', 10, 2);
             $table->decimal('deductions', 10, 2);
