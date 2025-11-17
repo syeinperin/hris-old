@@ -81,7 +81,6 @@ class ProfileController extends Controller
             $validated['profile_picture'] = $request->file('profile_picture')->store('profiles', 'public');
         }
 
-        // ✅ HR updates directly
         if ($isHr) {
             $user->update(['email' => $validated['email']]);
             if (!empty($validated['password'])) {
@@ -94,7 +93,6 @@ class ProfileController extends Controller
                 ->with('success', 'Profile updated successfully.');
         }
 
-        // ✅ Employee requests approval
         $changes = [];
         foreach ($validated as $key => $value) {
             if ($key === 'password') continue;
@@ -138,6 +136,8 @@ class ProfileController extends Controller
             )
         );
 
-        return back()->with('success', 'Profile update submitted for HR approval.');
+        return redirect()
+                ->route('profile.edit')
+                ->with('success', 'Profile update submitted for HR approval.');
     }
 }
