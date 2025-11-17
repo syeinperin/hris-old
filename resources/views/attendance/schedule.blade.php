@@ -143,6 +143,95 @@
       {{ $schedules->links() }}
     </div>
   </div>
+
+  {{-- ── NEW: Assign Shifts to Employees (bulk) ─────────────────── --}}
+  <div class="card shadow-sm">
+    <div class="card-header bg-white d-flex flex-wrap align-items-center justify-content-between gap-2">
+      <div class="d-flex align-items-center gap-2">
+        <h4 class="mb-0"><i class="bi bi-people-fill me-2"></i> Assign Shifts to Employees</h4>
+      </div>
+
+      {{-- Filters --}}
+      <form method="GET" action="{{ route('schedule.index') }}" class="d-flex align-items-center gap-2">
+        <select name="dept_id" class="form-select form-select-sm" style="min-width:220px">
+          <option value="">All Departments</option>
+          @foreach($departments as $d)
+            <option value="{{ $d->id }}" {{ (string)$d->id === (string)$deptId ? 'selected' : '' }}>
+              {{ $d->name }}
+            </option>
+          @endforeach
+        </select>
+        <input type="text" name="q" value="{{ $q }}" class="form-control form-control-sm" placeholder="Search name or code">
+        <button class="btn btn-sm btn-outline-secondary">Filter</button>
+      </form>
+    </div>
+
+    <form action="{{ route('schedule.assign') }}" method="POST">
+      @csrf
+      <div class="card-body">
+        <div class="row g-3 mb-3">
+          <div class="col-md-4">
+            <label class="form-label">Shift to Assign</label>
+            <select name="schedule_id" class="form-select" required>
+              <option value="" disabled selected>— select shift —</option>
+              @foreach(\App\Models\Schedule::orderBy('time_in')->get() as $s)
+                <option value="{{ $s->id }}">
+                  {{ $s->name }} ({{ \Carbon\Carbon::parse($s->time_in)->format('H:i') }}–{{ \Carbon\Carbon::parse($s->time_out)->format('H:i') }})
+                </option>
+              @endforeach
+            </select>
+          </div>
+          <div class="col-md-8 d-flex align-items-end justify-content-end">
+            <div class="d-flex align-items-center gap-3">
+              <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="checkAll">
+                <label class="form-check-label" for="checkAll">Select all on this page</label>
+              </div>
+              <button class="btn btn-primary">
+                Assign to Selected
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <div class="table-responsive">
+          <table class="table table-hover align-middle">
+            <thead class="table-light">
+              <tr>
+                <th style="width:1%"></th>
+                <th style="width:12%">Code</th>
+                <th>Name</th>
+                <th>Department</th>
+                <th>Current Shift</th>
+              </tr>
+            </thead>
+            <tbody>
+              @forelse($employees as $emp)
+                <tr>
+                  <td>
+                    <input type="checkbox" class="row-check" name="employee_ids[]" value="{{ $emp->id }}">
+                  </td>
+                  <td class="text-muted">{{ $emp->employee_code }}</td>
+                  <td>{{ $emp->name }}</td>
+                  <td>{{ $emp->department?->name ?? '—' }}</td>
+                  <td>{{ $emp->schedule?->name ?? '—' }}</td>
+                </tr>
+              @empty
+                <tr>
+                  <td colspan="5" class="text-center text-muted py-4">No employees match the filter.</td>
+                </tr>
+              @endforelse
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card-footer d-flex justify-content-between align-items-center">
+        <small class="text-muted">Showing {{ $employees->firstItem() }}–{{ $employees->lastItem() }} of {{ $employees->total() }}</small>
+        {{ $employees->links() }}
+      </div>
+    </form>
+  </div>
 </div>
 
 {{-- EDIT MODAL --}}

@@ -182,6 +182,7 @@ class SidebarSeeder extends Seeder
 
         Sidebar::create([
             'title'     => 'My Loans',
+            // ✅ correct route name for employee loans
             'route'     => 'employee.loans.index',
             'icon'      => 'piggy-bank',
             'parent_id' => null,

@@ -158,17 +158,14 @@ public function scheduleForDate($date)
     {
         return $this->storageUrl($this->resume_file);
     }
-
     public function getMdrPhilhealthUrlAttribute(): ?string
     {
         return $this->storageUrl($this->mdr_philhealth_file);
     }
-
     public function getMdrSssUrlAttribute(): ?string
     {
         return $this->storageUrl($this->mdr_sss_file);
     }
-
     public function getMdrPagibigUrlAttribute(): ?string
     {
         return $this->storageUrl($this->mdr_pagibig_file);

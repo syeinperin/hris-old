@@ -29,7 +29,6 @@
   .table-timecard th {
     vertical-align: middle;
   }
-
   @media (max-width: 768px) {
     .timecard-actions {
       gap: .5rem;

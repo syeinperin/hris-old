@@ -11,7 +11,7 @@ use Illuminate\Support\Facades\Hash;
 
 class LoginController extends Controller
 {
-    /** 
+    /**
      * Show the login form.
      */
     public function showLoginForm()
@@ -25,25 +25,25 @@ class LoginController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-'login' => [
-    'required',
-    'string',
-    'max:50',
-    function ($attribute, $value, $fail) {
-        $isEmail = filter_var($value, FILTER_VALIDATE_EMAIL);
-        $isPhone = preg_match('/^(09\d{9}|9\d{9}|639\d{9}|\+639\d{9})$/', $value);
+            'login' => [
+                'required',
+                'string',
+                'max:50',
+                function ($attribute, $value, $fail) {
+                    $isEmail = filter_var($value, FILTER_VALIDATE_EMAIL);
+                    $isPhone = preg_match('/^(09\d{9}|9\d{9}|639\d{9}|\+639\d{9})$/', $value);
 
-        if (!$isEmail && !$isPhone) {
-            $fail("Enter a valid email or Philippine mobile number.");
-        }
-    }
-],
+                    if (! $isEmail && ! $isPhone) {
+                        $fail('Enter a valid email or Philippine mobile number.');
+                    }
+                },
+            ],
             'password' => ['required', 'string'],
         ]);
 
         $identifier = trim($request->input('login'));
-        $password   = $request->input('password');
-        $isEmail    = filter_var($identifier, FILTER_VALIDATE_EMAIL);
+        $password = $request->input('password');
+        $isEmail = filter_var($identifier, FILTER_VALIDATE_EMAIL);
 
         $user = null;
 
@@ -62,7 +62,7 @@ class LoginController extends Controller
         }
 
         // Validation: invalid user or wrong password
-        if (!$user || !Hash::check($password, $user->password)) {
+        if (! $user || ! Hash::check($password, $user->password)) {
             return back()
                 ->withInput($request->only('login'))
                 ->withErrors(['login' => 'These credentials do not match our records.']);
@@ -94,6 +94,7 @@ class LoginController extends Controller
         Auth::logout();
         $request->session()->invalidate();
         $request->session()->regenerateToken();
+
         return redirect()->route('login');
     }
 
@@ -111,10 +112,10 @@ class LoginController extends Controller
 
         // Convert +63 or 63 to 0
         if (str_starts_with($digits, '63')) {
-            $digits = '0' . substr($digits, 2);
+            $digits = '0'.substr($digits, 2);
         } elseif (str_starts_with($digits, '9') && strlen($digits) === 10) {
             // 9171234567 -> 09171234567
-            $digits = '0' . $digits;
+            $digits = '0'.$digits;
         }
 
         // Ensure 11 digits max

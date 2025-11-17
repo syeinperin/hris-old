@@ -2,6 +2,7 @@
 
 @section('page_title', 'Attendance List')
 
+<<<<<<< HEAD
 
 @php
   use Carbon\Carbon;
@@ -69,6 +70,15 @@
   }
 
 
+=======
+@push('styles')
+<style>
+  .table-sticky thead th {
+    position: sticky; top: 0; z-index: 2;
+  }
+  .table-scroll { max-height: 65vh; overflow: auto; }
+  .status-badge { font-weight: 600; }
+>>>>>>> 3c9cdd43629a382660afb438d823e144bd39036a
 </style>
 @endpush
 
@@ -81,7 +91,11 @@
         <i class="bi bi-clock-history me-2"></i> Attendance Records
       </h4>
       <div class="d-flex align-items-center gap-2">
+<<<<<<< HEAD
         <a href="{{ route('payroll.calendar') }}" class="btn btn-outline-secondary btn-sm">
+=======
+        <a href="{{ route('payroll.calendar.index') }}" class="btn btn-outline-secondary btn-sm">
+>>>>>>> 3c9cdd43629a382660afb438d823e144bd39036a
           <i class="bi bi-calendar-event me-1"></i> Calendar
         </a>
         <a href="{{ route('holidays.index') }}" class="btn btn-outline-secondary btn-sm">
@@ -92,7 +106,11 @@
 
     <div class="card-body">
 
+<<<<<<< HEAD
       {{-- Filters --}}
+=======
+      {{-- Filters (keyword + start/end + status) --}}
+>>>>>>> 3c9cdd43629a382660afb438d823e144bd39036a
       <x-search-bar
         :action="route('attendance.index')"
         placeholder="Search code or name…"
@@ -115,6 +133,7 @@
         <table class="table table-hover align-middle table-sticky mb-0">
           <thead class="table-light">
             <tr>
+<<<<<<< HEAD
               <th><input type="checkbox" id="selectAll"></th>
               <th>Employee Code</th>
               <th>Employee Name</th>
@@ -124,12 +143,26 @@
               <th>Status</th>
               <th>Late (hr)</th>
               <th>Action</th>
+=======
+              <th style="width:40px;">
+                <input type="checkbox" id="selectAll">
+              </th>
+              <th style="min-width:120px;">Employee Code</th>
+              <th style="min-width:220px;">Employee Name</th>
+              <th style="min-width:120px;">Time In</th>
+              <th style="min-width:120px;">Time Out</th>
+              <th style="min-width:160px;">Date</th>
+              <th style="min-width:140px;">Status</th>
+              <th style="min-width:110px;">Late (hr)</th>
+              <th style="min-width:90px;">Action</th>
+>>>>>>> 3c9cdd43629a382660afb438d823e144bd39036a
             </tr>
           </thead>
           <tbody>
             @forelse($attendances as $row)
               @php
                 $status = (string) ($row['status'] ?? '');
+<<<<<<< HEAD
                 $badge = match(true) {
                   str_starts_with($status, 'On Time') => 'success',
                   str_starts_with($status, 'Late') => 'warning',
@@ -139,6 +172,15 @@
                   str_starts_with($status, 'Undertime') => 'danger',
                   default => 'secondary',
                 };
+=======
+                // Pick a bootstrap badge color based on status keywords
+                $badge = 'secondary';
+                if (str_starts_with($status, 'On Time'))     $badge = 'success';
+                elseif (str_starts_with($status, 'Late'))     $badge = 'warning';
+                elseif (str_starts_with($status, 'Absent'))   $badge = 'secondary';
+                elseif (str_starts_with($status, 'Suspended'))$badge = 'dark';
+                elseif (str_starts_with($status, 'On Leave')) $badge = 'info';
+>>>>>>> 3c9cdd43629a382660afb438d823e144bd39036a
               @endphp
               <tr>
                 <td>
@@ -148,6 +190,7 @@
                 </td>
                 <td class="fw-semibold">{{ $row['employee_code'] }}</td>
                 <td>{{ $row['employee_name'] }}</td>
+<<<<<<< HEAD
                 <td>{{ $row['time_in'] ?? '—' }}</td>
                 <td>{{ $row['time_out'] ?? '—' }}</td>
                 <td>{{ \Carbon\Carbon::parse($row['date'])->format('D, M d, Y') }}</td>
@@ -169,6 +212,28 @@
                       ]) }}"
                      class="btn btn-sm btn-primary"
                      title="View month">
+=======
+                <td>{{ $row['time_in'] }}</td>
+                <td>{{ $row['time_out'] }}</td>
+                <td>
+                  {{ \Carbon\Carbon::parse($row['date'])->format('D, M d, Y') }}
+                </td>
+                <td>
+                  <span class="badge status-badge bg-{{ $badge }}">{{ $status }}</span>
+                </td>
+                <td>
+                  {{ $row['late_hours'] !== '' ? number_format((float)$row['late_hours'], 2) : '—' }}
+                </td>
+                <td>
+                  {{-- Show per-employee month view. We pass "attendance" param (route-model name) as employee_id. --}}
+                  <a
+                    href="{{ route('attendance.show', [
+                      'attendance' => $row['employee_id'],
+                      'month'      => \Illuminate\Support\Str::substr($startDate, 0, 7)
+                    ]) }}"
+                    class="btn btn-sm btn-primary"
+                    title="View month">
+>>>>>>> 3c9cdd43629a382660afb438d823e144bd39036a
                     <i class="bi bi-eye"></i>
                   </a>
                 </td>

@@ -277,6 +277,49 @@
     </form>
   </div>
 </div>
+
+{{-- Extend Probation Modal --}}
+<div class="modal fade" id="extendModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog">
+    <form id="extendForm" method="POST">
+      @csrf @method('PATCH')
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Extend Probation</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+        </div>
+        <div class="modal-body">
+          <div class="mb-3">
+            <label class="form-label">Current End Date</label>
+            <input type="text" id="extendCurrentEnd" class="form-control" readonly>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Months to Extend</label>
+            <select name="months" class="form-select" required>
+              @for($m=1;$m<=6;$m++)
+                <option value="{{ $m }}">{{ $m }} {{ \Illuminate\Support\Str::plural('month',$m) }}</option>
+              @endfor
+            </select>
+            <div class="form-text">Allowed: 1 to 6 months.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Effective On (optional)</label>
+            <input type="date" name="effective_on" class="form-control">
+            <div class="form-text">Defaults to the later of today or the current end date.</div>
+          </div>
+          <div class="mb-3">
+            <label class="form-label">Reason (optional)</label>
+            <textarea name="reason" class="form-control" rows="2" placeholder="e.g., more time to evaluate attendance and quality"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+          <button type="submit" class="btn btn-primary">Extend</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
 @endsection
 
 @push('scripts')
@@ -356,6 +399,18 @@ document.addEventListener('DOMContentLoaded', () => {
       } else alert('Failed: ' + (data.message || 'Unknown error'));
     })
     .catch(() => alert('Error updating employment dates.'));
+  });
+
+  // Extend Probation modal hook
+  const extendModal  = document.getElementById('extendModal');
+  const extendForm   = document.getElementById('extendForm');
+  const extendEnd    = document.getElementById('extendCurrentEnd');
+
+  extendModal?.addEventListener('show.bs.modal', (ev)=>{
+    const a = ev.relatedTarget;
+    if (!a) return;
+    extendForm.action = a.getAttribute('data-route');
+    extendEnd.value   = a.getAttribute('data-current-end') || '';
   });
 });
 </script>

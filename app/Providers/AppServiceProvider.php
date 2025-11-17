@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\View;
 use Illuminate\Pagination\Paginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\URL;
 use App\Models\Sidebar;
 
 class AppServiceProvider extends ServiceProvider
@@ -17,6 +18,11 @@ class AppServiceProvider extends ServiceProvider
 
     public function boot()
     {
+        // 🔒 Force HTTPS in production (important for Render)
+        if (config('app.env') === 'production') {
+            URL::forceScheme('https');
+        }
+
         // 1) Use Bootstrap 5 styling for paginators
         Paginator::useBootstrap();
 

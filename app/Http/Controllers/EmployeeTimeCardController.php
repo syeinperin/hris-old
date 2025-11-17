@@ -85,43 +85,5 @@ class EmployeeTimeCardController extends Controller
         ]);
     }
 
-    public function exportCsv(Request $request): StreamedResponse
-{
-    $employee = auth()->user()->employee;
-    abort_unless($employee, 403);
-
-    $start = Carbon::parse($request->query('start', now()->startOfWeek()));
-    $end   = Carbon::parse($request->query('end', now()->endOfWeek()));
-
-    $attendances = Attendance::where('employee_id', $employee->id)
-        ->whereBetween('time_in', [$start, $end])
-        ->orderBy('time_in', 'asc')
-        ->get();
-
-    $filename = 'timecard_' . $employee->employee_code . '_' . now()->format('Ymd_His') . '.csv';
-
-    $headers = [
-        'Content-Type' => 'text/csv',
-        'Content-Disposition' => "attachment; filename={$filename}",
-    ];
-
-    $columns = ['Date', 'Time In', 'Time Out', 'Total Hours', 'Status'];
-
-    return response()->stream(function () use ($attendances, $columns) {
-        $file = fopen('php://output', 'w');
-        fputcsv($file, $columns);
-
-        foreach ($attendances as $a) {
-            fputcsv($file, [
-                optional($a->time_in)->format('Y-m-d'),
-                optional($a->time_in)->format('H:i:s'),
-                optional($a->time_out)->format('H:i:s'),
-                $a->worked_hours ?? 0,
-                ucfirst($a->status ?? 'present'),
-            ]);
-        }
-
-        fclose($file);
-    }, 200, $headers);
-}
+    
 }

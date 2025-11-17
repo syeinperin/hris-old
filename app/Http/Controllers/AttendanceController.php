@@ -169,32 +169,177 @@ $employees = Employee::where('status', 'active')
     ->orderBy('name')
     ->get();
 
+            foreach ($employees as $emp) {
+                // Leave overrides
+                if (!empty($leaveIndex[$emp->id][$date])) {
+                    $lv = $leaveIndex[$emp->id][$date];
+                    $rows[] = [
+                        'id'            => null,
+                        'employee_id'   => $emp->id,
+                        'employee_code' => $emp->employee_code,
+                        'employee_name' => $emp->name,
+                        'time_in'       => '—',
+                        'time_out'      => '—',
+                        'date'          => $date,
+                        'ot_hours'      => '',
+                        'status'        => 'On Leave ('.ucwords(str_replace('_', ' ', $lv->leave_type)).')',
+                        'late_hours'    => '',
+                    ];
+                    continue;
+                }
 
-    $rows = [];
-    $period = CarbonPeriod::create($startDate, $endDate);
+                // Suspension overrides
+                if (!empty($discipline['suspensions'][$emp->id][$date])) {
+                    $rows[] = [
+                        'id'            => null,
+                        'employee_id'   => $emp->id,
+                        'employee_code' => $emp->employee_code,
+                        'employee_name' => $emp->name,
+                        'time_in'       => '—',
+                        'time_out'      => '—',
+                        'date'          => $date,
+                        'ot_hours'      => '',
+                        'status'        => 'Suspended',
+                        'late_hours'    => '',
+                    ];
+                    continue;
+                }
 
-    foreach ($period as $day) {
-        $dateStr = $day->toDateString();
+                $att = Attendance::where('employee_id', $emp->id)
+                    ->whereDate('time_in', $date)
+                    ->first();
 
-        foreach ($employees as $emp) {
-            if (!empty($leaveIndex[$emp->id][$dateStr])) {
-                $lv = $leaveIndex[$emp->id][$dateStr];
+                $sched = $emp->schedule;
+
+                if ($att) {
+                    $in  = Carbon::parse($att->time_in);
+                    $out = $att->time_out ? Carbon::parse($att->time_out) : null;
+
+                    $workSec = 0;
+                    if ($out) {
+                        if ($out->lt($in)) { $out->addDay(); }
+                        $workSec = $in->diffInSeconds($out);
+                    }
+
+                    $schedSec = 0;
+                    if ($sched && $sched->time_in) {
+                        $sIn  = Carbon::parse($sched->time_in)->setDate($day->year, $day->month, $day->day);
+                        $sOut = Carbon::parse($sched->time_out)->setDate($day->year, $day->month, $day->day);
+                        if ($sOut->lt($sIn)) { $sOut->addDay(); }
+                        $schedSec = $sIn->diffInSeconds($sOut);
+                    }
+
+                    $otHours = ($schedSec > 0 && $workSec > $schedSec)
+                        ? round(($workSec - $schedSec) / 3600, 2)
+                        : 0;
+
+                    $status    = 'On Time';
+                    $lateHours = '';
+                    if ($sched && $sched->time_in) {
+                        $sIn = Carbon::parse($sched->time_in)->setDate($day->year, $day->month, $day->day);
+                        if ($in->gt($sIn)) {
+                            $status    = 'Late';
+                            $minsLate  = $sIn->diffInMinutes($in);
+                            $lateHours = $this->lateHoursFromMinutes($minsLate);
+                        }
+                    }
+
+                    if (!empty($discipline['violations'][$emp->id][$date])) {
+                        $status .= ' (Violation)';
+                    }
+
+                    $rows[] = [
+                        'id'            => $att->id,
+                        'employee_id'   => $emp->id,
+                        'employee_code' => $emp->employee_code,
+                        'employee_name' => $emp->name,
+                        'time_in'       => $in->format('h:i:s A'),
+                        'time_out'      => $out?->format('h:i:s A') ?? 'Still in',
+                        'date'          => $date,
+                        'ot_hours'      => $otHours,
+                        'status'        => $status,
+                        'late_hours'    => $lateHours,
+                    ];
+                } else {
+                    $status = 'Absent';
+                    if (!empty($discipline['violations'][$emp->id][$date])) {
+                        $status .= ' (Violation)';
+                    }
+
+                    $rows[] = [
+                        'id'            => null,
+                        'employee_id'   => $emp->id,
+                        'employee_code' => $emp->employee_code,
+                        'employee_name' => $emp->name,
+                        'time_in'       => 'N/A',
+                        'time_out'      => 'N/A',
+                        'date'          => $date,
+                        'ot_hours'      => '',
+                        'status'        => $status,
+                        'late_hours'    => '',
+                    ];
+                }
+            }
+        
+
+        // Simple filters
+        if ($search !== '') {
+            $rows = array_filter($rows, fn($r) =>
+                str_contains(strtolower($r['employee_code']), strtolower($search)) ||
+                str_contains(strtolower($r['employee_name']), strtolower($search))
+            );
+        }
+        if ($statusF !== '') {
+            $rows = array_filter($rows, fn($r) => $r['status'] === $statusF);
+        }
+
+        // sort & paginate
+        usort($rows, fn($a, $b) =>
+            [$a['date'], $a['employee_code']] <=> [$b['date'], $b['employee_code']]
+        );
+        $page    = LengthAwarePaginator::resolveCurrentPage();
+        $perPage = 10;
+        $slice   = array_slice($rows, ($page - 1) * $perPage, $perPage, true);
+        $attendances = new LengthAwarePaginator(
+            $slice,
+            count($rows),
+            $perPage,
+            $page,
+            ['path' => route('attendance.index'), 'query' => $request->query()]
+        );
+
+        return view('attendance.index', compact('attendances', 'search', 'startDate', 'endDate'));
+    }
+
+    /** HR/Admin: single employee month view */
+    public function show(Request $request, $id)
+    {
+        $employee     = Employee::with('schedule')->findOrFail($id);
+        $month        = $request->input('month', Carbon::now()->format('Y-m'));
+        $startOfMonth = Carbon::parse("$month-01")->startOfMonth();
+        $endOfMonth   = (clone $startOfMonth)->endOfMonth();
+
+        $leaveIndex = $this->buildLeaveIndex($startOfMonth->toDateString(), $endOfMonth->toDateString());
+        $discipline = $this->buildDisciplineIndex($startOfMonth->toDateString(), $endOfMonth->toDateString());
+
+        $rows = [];
+        foreach (CarbonPeriod::create($startOfMonth, $endOfMonth) as $day) {
+            $dateStr = $day->toDateString();
+
+            if (!empty($leaveIndex[$employee->id][$dateStr])) {
+                $lv = $leaveIndex[$employee->id][$dateStr];
                 $rows[] = [
-                    'id'            => null,
-                    'employee_id'   => $emp->id,
-                    'employee_code' => $emp->employee_code,
-                    'employee_name' => $emp->name,
-                    'time_in'       => '—',
-                    'time_out'      => '—',
-                    'date'          => $dateStr,
-                    'ot_hours'      => '',
-                    'status'        => 'On Leave ('.ucwords(str_replace('_', ' ', $lv->leave_type)).')',
-                    'late_hours'    => '',
+                    'date'       => $dateStr,
+                    'time_in'    => '—',
+                    'time_out'   => '—',
+                    'ot_hours'   => '',
+                    'status'     => 'On Leave ('.ucwords(str_replace('_', ' ', $lv->leave_type)).')',
+                    'late_hours' => '',
                 ];
                 continue;
             }
 
-            if (!empty($discipline['suspensions'][$emp->id][$dateStr])) {
+            if (!empty($discipline['suspensions'][$employee->id][$dateStr])) {
                 $rows[] = [
                     'id'            => null,
                     'employee_id'   => $emp->id,
@@ -210,7 +355,7 @@ $employees = Employee::where('status', 'active')
                 continue;
             }
 
-            $att = Attendance::where('employee_id', $emp->id)
+            $att = Attendance::where('employee_id', $id)
                 ->whereDate('time_in', $dateStr)
                 ->first();
 
