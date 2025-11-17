@@ -378,236 +378,238 @@ class AttendanceController extends Controller
 
 
     /** HR/Admin: single employee month view */
-    public function show(Request $request, $id)
-    {
-        $employee = Employee::with('schedule')->findOrFail($id);
+    // public function show(Request $request, $id)
+    // {
+    //     $employee = Employee::with('schedule')->findOrFail($id);
 
-        // Filters
-        $search = $request->input('search', '');
-        $statusF = $request->input('status', '');
+    //     // Filters
+    //     $search = $request->input('search', '');
+    //     $statusF = $request->input('status', '');
 
-        // Month selection
-        $month = $request->input('month', Carbon::now()->format('Y-m'));
+    //     // Month selection
+    //     $month = $request->input('month', Carbon::now()->format('Y-m'));
 
-        $startOfMonth = Carbon::parse("$month-01")->startOfMonth();
-        $endOfMonth = (clone $startOfMonth)->endOfMonth();
+    //     $startOfMonth = Carbon::parse("$month-01")->startOfMonth();
+    //     $endOfMonth = (clone $startOfMonth)->endOfMonth();
 
-        // Date range strings
-        $startDateStr = $startOfMonth->toDateString();
-        $endDateStr = $endOfMonth->toDateString();
+    //     // Date range strings
+    //     $startDateStr = $startOfMonth->toDateString();
+    //     $endDateStr = $endOfMonth->toDateString();
 
-        $leaveIndex = $this->buildLeaveIndex($startDateStr, $endDateStr);
-        $discipline = $this->buildDisciplineIndex($startDateStr, $endDateStr);
+    //     $leaveIndex = $this->buildLeaveIndex($startDateStr, $endDateStr);
+    //     $discipline = $this->buildDisciplineIndex($startDateStr, $endDateStr);
 
-        $rows = [];
+    //     $rows = [];
 
-        foreach (CarbonPeriod::create($startOfMonth, $endOfMonth) as $day) {
+    //     foreach (CarbonPeriod::create($startOfMonth, $endOfMonth) as $day) {
 
-            $dateStr = $day->toDateString();
+    //         $dateStr = $day->toDateString();
 
-            /** ─────────────────────────
-             *  LEAVE
-             * ───────────────────────── */
-            if (!empty($leaveIndex[$employee->id][$dateStr])) {
+    //         /** ─────────────────────────
+    //          *  LEAVE
+    //          * ───────────────────────── */
+    //         if (!empty($leaveIndex[$employee->id][$dateStr])) {
 
-                $lv = $leaveIndex[$employee->id][$dateStr];
+    //             $lv = $leaveIndex[$employee->id][$dateStr];
 
-                $rows[] = [
-                    'id' => null,
-                    'employee_id' => $employee->id,
-                    'employee_code' => $employee->employee_code,
-                    'employee_name' => $employee->name,
-                    'date' => $dateStr,
-                    'time_in' => '—',
-                    'time_out' => '—',
-                    'ot_hours' => '',
-                    'status' => 'On Leave (' . ucwords(str_replace('_', ' ', $lv->leave_type)) . ')',
-                    'late_hours' => '',
-                ];
+    //             $rows[] = [
+    //                 'id' => null,
+    //                 'employee_id' => $employee->id,
+    //                 'employee_code' => $employee->employee_code,
+    //                 'employee_name' => $employee->name,
+    //                 'date' => $dateStr,
+    //                 'time_in' => '—',
+    //                 'time_out' => '—',
+    //                 'ot_hours' => '',
+    //                 'status' => 'On Leave (' . ucwords(str_replace('_', ' ', $lv->leave_type)) . ')',
+    //                 'late_hours' => '',
+    //             ];
 
-                continue;
-            }
+    //             continue;
+    //         }
 
-            /** ─────────────────────────
-             *  SUSPENSION
-             * ───────────────────────── */
-            if (!empty($discipline['suspensions'][$employee->id][$dateStr])) {
+    //         /** ─────────────────────────
+    //          *  SUSPENSION
+    //          * ───────────────────────── */
+    //         if (!empty($discipline['suspensions'][$employee->id][$dateStr])) {
 
-                $rows[] = [
-                    'id' => null,
-                    'employee_id' => $employee->id,
-                    'employee_code' => $employee->employee_code,
-                    'employee_name' => $employee->name,
-                    'date' => $dateStr,
-                    'time_in' => '—',
-                    'time_out' => '—',
-                    'ot_hours' => '',
-                    'status' => 'Suspended',
-                    'late_hours' => '',
-                ];
+    //             $rows[] = [
+    //                 'id' => null,
+    //                 'employee_id' => $employee->id,
+    //                 'employee_code' => $employee->employee_code,
+    //                 'employee_name' => $employee->name,
+    //                 'date' => $dateStr,
+    //                 'time_in' => '—',
+    //                 'time_out' => '—',
+    //                 'ot_hours' => '',
+    //                 'status' => 'Suspended',
+    //                 'late_hours' => '',
+    //             ];
 
-                continue;
-            }
+    //             continue;
+    //         }
 
-            /** ─────────────────────────
-             *  ATTENDANCE
-             * ───────────────────────── */
-            $att = Attendance::where('employee_id', $employee->id)
-                ->whereDate('time_in', $dateStr)
-                ->first();
+    //         /** ─────────────────────────
+    //          *  ATTENDANCE
+    //          * ───────────────────────── */
+    //         $att = Attendance::where('employee_id', $employee->id)
+    //             ->whereDate('time_in', $dateStr)
+    //             ->first();
 
-            $sched = $employee->schedule;
+    //         $sched = $employee->schedule;
 
-            if ($att) {
+    //         if ($att) {
 
-                $in = Carbon::parse($att->time_in);
-                $out = $att->time_out ? Carbon::parse($att->time_out) : null;
+    //             $in = Carbon::parse($att->time_in);
+    //             $out = $att->time_out ? Carbon::parse($att->time_out) : null;
 
-                // Fix out < in
-                if ($out && $out->lt($in)) {
-                    $out->addDay();
-                }
+    //             // Fix out < in
+    //             if ($out && $out->lt($in)) {
+    //                 $out->addDay();
+    //             }
 
-                // Work seconds
-                $workSec = $out ? $in->diffInSeconds($out) : 0;
+    //             // Work seconds
+    //             $workSec = $out ? $in->diffInSeconds($out) : 0;
 
-                /** SCHEDULE */
-                $schedSec = 0;
-                $sIn = $sOut = null;
+    //             /** SCHEDULE */
+    //             $schedSec = 0;
+    //             $sIn = $sOut = null;
 
-                if ($sched && $sched->time_in) {
-                    $sIn = Carbon::parse($sched->time_in)->setDate($day->year, $day->month, $day->day);
-                    $sOut = Carbon::parse($sched->time_out)->setDate($day->year, $day->month, $day->day);
+    //             if ($sched && $sched->time_in) {
+    //                 $sIn = Carbon::parse($sched->time_in)->setDate($day->year, $day->month, $day->day);
+    //                 $sOut = Carbon::parse($sched->time_out)->setDate($day->year, $day->month, $day->day);
 
-                    if ($sOut->lt($sIn)) {
-                        $sOut->addDay();
-                    }
+    //                 if ($sOut->lt($sIn)) {
+    //                     $sOut->addDay();
+    //                 }
 
-                    $schedSec = $sIn->diffInSeconds($sOut);
-                }
+    //                 $schedSec = $sIn->diffInSeconds($sOut);
+    //             }
 
-                /** OT */
-                $otHours = ($schedSec > 0 && $workSec > $schedSec)
-                    ? round(($workSec - $schedSec) / 3600, 2)
-                    : 0;
+    //             /** OT */
+    //             $otHours = ($schedSec > 0 && $workSec > $schedSec)
+    //                 ? round(($workSec - $schedSec) / 3600, 2)
+    //                 : 0;
 
-                /** STATUS */
-                $status = 'On Time';
-                $lateHours = '';
+    //             /** STATUS */
+    //             $status = 'On Time';
+    //             $lateHours = '';
 
-                if ($sched && $sched->time_in) {
-                    if ($in->gt($sIn)) {
-                        $status = 'Late';
-                        $minsLate = $sIn->diffInMinutes($in);
-                        $lateHours = $this->lateHoursFromMinutes($minsLate);
-                    }
-                }
+    //             if ($sched && $sched->time_in) {
+    //                 if ($in->gt($sIn)) {
+    //                     $status = 'Late';
+    //                     $minsLate = $sIn->diffInMinutes($in);
+    //                     $lateHours = $this->lateHoursFromMinutes($minsLate);
+    //                 }
+    //             }
 
-                // Undertime (left early)
-                if ($out && $sOut && $out->lt($sOut)) {
-                    $status = 'Undertime';
-                }
+    //             // Undertime (left early)
+    //             if ($out && $sOut && $out->lt($sOut)) {
+    //                 $status = 'Undertime';
+    //             }
 
-                // Truly absent if came after schedule end
-                if ($sOut && $in->gt($sOut)) {
-                    $status = 'Absent';
-                    $lateHours = '';
-                }
+    //             // Truly absent if came after schedule end
+    //             if ($sOut && $in->gt($sOut)) {
+    //                 $status = 'Absent';
+    //                 $lateHours = '';
+    //             }
 
-                // Violation
-                if (!empty($discipline['violations'][$employee->id][$dateStr])) {
-                    $status .= ' (Violation)';
-                }
+    //             // Violation
+    //             if (!empty($discipline['violations'][$employee->id][$dateStr])) {
+    //                 $status .= ' (Violation)';
+    //             }
 
-                $rows[] = [
-                    'id' => $att->id,
-                    'employee_id' => $employee->id,
-                    'employee_code' => $employee->employee_code,
-                    'employee_name' => $employee->name,
-                    'date' => $dateStr,
-                    'time_in' => $in->format('h:i:s A'),
-                    'time_out' => $out?->format('h:i:s A') ?? 'Still in',
-                    'ot_hours' => $otHours,
-                    'status' => $status,
-                    'late_hours' => $lateHours,
-                ];
+    //             $rows[] = [
+    //                 'id' => $att->id,
+    //                 'employee_id' => $employee->id,
+    //                 'employee_code' => $employee->employee_code,
+    //                 'employee_name' => $employee->name,
+    //                 'date' => $dateStr,
+    //                 'time_in' => $in->format('h:i:s A'),
+    //                 'time_out' => $out?->format('h:i:s A') ?? 'Still in',
+    //                 'ot_hours' => $otHours,
+    //                 'status' => $status,
+    //                 'late_hours' => $lateHours,
+    //             ];
 
-            } else {
+    //         } else {
 
-                /** ABSENT */
-                $status = 'Absent';
+    //             /** ABSENT */
+    //             $status = 'Absent';
 
-                if (!empty($discipline['violations'][$employee->id][$dateStr])) {
-                    $status .= ' (Violation)';
-                }
+    //             if (!empty($discipline['violations'][$employee->id][$dateStr])) {
+    //                 $status .= ' (Violation)';
+    //             }
 
-                $rows[] = [
-                    'id' => null,
-                    'employee_id' => $employee->id,
-                    'employee_code' => $employee->employee_code,
-                    'employee_name' => $employee->name,
-                    'date' => $dateStr,
-                    'time_in' => 'N/A',
-                    'time_out' => 'N/A',
-                    'ot_hours' => '',
-                    'status' => $status,
-                    'late_hours' => '',
-                ];
-            }
-        }
+    //             $rows[] = [
+    //                 'id' => null,
+    //                 'employee_id' => $employee->id,
+    //                 'employee_code' => $employee->employee_code,
+    //                 'employee_name' => $employee->name,
+    //                 'date' => $dateStr,
+    //                 'time_in' => 'N/A',
+    //                 'time_out' => 'N/A',
+    //                 'ot_hours' => '',
+    //                 'status' => $status,
+    //                 'late_hours' => '',
+    //             ];
+    //         }
+    //     }
 
-        /** ─────────────────────────
-         *  FILTERS
-         * ───────────────────────── */
-        if ($search !== '') {
-            $rows = array_filter(
-                $rows,
-                fn($r) =>
-                str_contains(strtolower($r['employee_code']), strtolower($search)) ||
-                str_contains(strtolower($r['employee_name']), strtolower($search))
-            );
-        }
+    //     /** ─────────────────────────
+    //      *  FILTERS
+    //      * ───────────────────────── */
+    //     if ($search !== '') {
+    //         $rows = array_filter(
+    //             $rows,
+    //             fn($r) =>
+    //             str_contains(strtolower($r['employee_code']), strtolower($search)) ||
+    //             str_contains(strtolower($r['employee_name']), strtolower($search))
+    //         );
+    //     }
 
-        if ($statusF !== '') {
-            $rows = array_filter(
-                $rows,
-                fn($r) =>
-                str_starts_with(strtolower($r['status']), strtolower($statusF))
-            );
-        }
+    //     if ($statusF !== '') {
+    //         $rows = array_filter(
+    //             $rows,
+    //             fn($r) =>
+    //             str_starts_with(strtolower($r['status']), strtolower($statusF))
+    //         );
+    //     }
 
-        /** ─────────────────────────
-         *  SORT (by date ascending)
-         * ───────────────────────── */
-        usort(
-            $rows,
-            fn($a, $b) =>
-            [$a['date'], $a['employee_code']] <=> [$b['date'], $b['employee_code']]
-        );
+    //     /** ─────────────────────────
+    //      *  SORT (by date ascending)
+    //      * ───────────────────────── */
+    //     usort(
+    //         $rows,
+    //         fn($a, $b) =>
+    //         [$a['date'], $a['employee_code']] <=> [$b['date'], $b['employee_code']]
+    //     );
 
-        /** ─────────────────────────
-         *  PAGINATION
-         * ───────────────────────── */
-        $page = LengthAwarePaginator::resolveCurrentPage();
-        $perPage = 10;
-        $slice = array_slice($rows, ($page - 1) * $perPage, $perPage);
+    //     /** ─────────────────────────
+    //      *  PAGINATION
+    //      * ───────────────────────── */
+    //     $page = LengthAwarePaginator::resolveCurrentPage();
+    //     $perPage = 10;
+    //     $slice = array_slice($rows, ($page - 1) * $perPage, $perPage);
 
-        $attendances = new LengthAwarePaginator(
-            $slice,
-            count($rows),
-            $perPage,
-            $page,
-            ['path' => route('attendance.show', $id), 'query' => $request->query()]
-        );
+    //     $attendances = new LengthAwarePaginator(
+    //         $slice,
+    //         count($rows),
+    //         $perPage,
+    //         $page,
+    //         ['path' => route('attendance.show', $id), 'query' => $request->query()]
+    //     );
 
-        return view('attendance.show', compact(
-            'attendances',
-            'employee',
-            'month',
-            'search',
-            'statusF'
-        ));
-    }
+    //     return view('attendance.show', compact(
+    //         'attendances',
+    //         'employee',
+    //         'month',
+    //         'search',
+    //         'statusF',
+    //         'startOfMonth',
+    //         'endOfMonth',
+    //     ));
+    // }
 
     public function edit($id)
     {
@@ -639,124 +641,124 @@ class AttendanceController extends Controller
     }
 
 
-    // public function show(Request $request, $id)
-    // {
-    //     $employee = Employee::with('schedule')->findOrFail($id);
-    //     $month = $request->input('month', Carbon::now()->format('Y-m'));
-    //     $startOfMonth = Carbon::parse("$month-01")->startOfMonth();
-    //     $endOfMonth = (clone $startOfMonth)->endOfMonth();
+    public function show(Request $request, $id)
+    {
+        $employee = Employee::with('schedule')->findOrFail($id);
+        $month = $request->input('month', Carbon::now()->format('Y-m'));
+        $startOfMonth = Carbon::parse("$month-01")->startOfMonth();
+        $endOfMonth = (clone $startOfMonth)->endOfMonth();
 
-    //     $leaveIndex = $this->buildLeaveIndex($startOfMonth->toDateString(), $endOfMonth->toDateString());
-    //     $discipline = $this->buildDisciplineIndex($startOfMonth->toDateString(), $endOfMonth->toDateString());
+        $leaveIndex = $this->buildLeaveIndex($startOfMonth->toDateString(), $endOfMonth->toDateString());
+        $discipline = $this->buildDisciplineIndex($startOfMonth->toDateString(), $endOfMonth->toDateString());
 
-    //     $rows = [];
-    //     foreach (CarbonPeriod::create($startOfMonth, $endOfMonth) as $day) {
-    //         $dateStr = $day->toDateString();
+        $rows = [];
+        foreach (CarbonPeriod::create($startOfMonth, $endOfMonth) as $day) {
+            $dateStr = $day->toDateString();
 
-    //         // On Leave
-    //         if (!empty($leaveIndex[$employee->id][$dateStr])) {
-    //             $lv = $leaveIndex[$employee->id][$dateStr];
-    //             $rows[] = [
-    //                 'date' => $dateStr,
-    //                 'time_in' => '—',
-    //                 'time_out' => '—',
-    //                 'ot_hours' => '',
-    //                 'status' => 'On Leave (' . ucwords(str_replace('_', ' ', $lv->leave_type)) . ')',
-    //                 'late_hours' => '',
-    //             ];
-    //             continue;
-    //         }
+            // On Leave
+            if (!empty($leaveIndex[$employee->id][$dateStr])) {
+                $lv = $leaveIndex[$employee->id][$dateStr];
+                $rows[] = [
+                    'date' => $dateStr,
+                    'time_in' => '—',
+                    'time_out' => '—',
+                    'ot_hours' => '',
+                    'status' => 'On Leave (' . ucwords(str_replace('_', ' ', $lv->leave_type)) . ')',
+                    'late_hours' => '',
+                ];
+                continue;
+            }
 
-    //         // Suspended
-    //         if (!empty($discipline['suspensions'][$employee->id][$dateStr])) {
-    //             $rows[] = [
-    //                 'date' => $dateStr,
-    //                 'time_in' => '—',
-    //                 'time_out' => '—',
-    //                 'ot_hours' => '',
-    //                 'status' => 'Suspended',
-    //                 'late_hours' => '',
-    //             ];
-    //             continue;
-    //         }
+            // Suspended
+            if (!empty($discipline['suspensions'][$employee->id][$dateStr])) {
+                $rows[] = [
+                    'date' => $dateStr,
+                    'time_in' => '—',
+                    'time_out' => '—',
+                    'ot_hours' => '',
+                    'status' => 'Suspended',
+                    'late_hours' => '',
+                ];
+                continue;
+            }
 
-    //         $att = Attendance::where('employee_id', $id)
-    //             ->whereDate('time_in', $dateStr)
-    //             ->first();
+            $att = Attendance::where('employee_id', $id)
+                ->whereDate('time_in', $dateStr)
+                ->first();
 
-    //         $sched = $employee->schedule;
+            $sched = $employee->schedule;
 
-    //         if ($att) {
-    //             $in = Carbon::parse($att->time_in);
-    //             $out = $att->time_out ? Carbon::parse($att->time_out) : null;
-    //             if ($out && $out->lt($in))
-    //                 $out->addDay();
+            if ($att) {
+                $in = Carbon::parse($att->time_in);
+                $out = $att->time_out ? Carbon::parse($att->time_out) : null;
+                if ($out && $out->lt($in))
+                    $out->addDay();
 
-    //             $workSec = $out ? $in->diffInSeconds($out) : 0;
-    //             $schedSec = 0;
+                $workSec = $out ? $in->diffInSeconds($out) : 0;
+                $schedSec = 0;
 
-    //             if ($sched && $sched->time_in) {
-    //                 $sIn = Carbon::parse($sched->time_in)->setDate($day->year, $day->month, $day->day);
-    //                 $sOut = Carbon::parse($sched->time_out)->setDate($day->year, $day->month, $day->day);
-    //                 if ($sOut->lt($sIn))
-    //                     $sOut->addDay();
-    //                 $schedSec = $sIn->diffInSeconds($sOut);
-    //             }
+                if ($sched && $sched->time_in) {
+                    $sIn = Carbon::parse($sched->time_in)->setDate($day->year, $day->month, $day->day);
+                    $sOut = Carbon::parse($sched->time_out)->setDate($day->year, $day->month, $day->day);
+                    if ($sOut->lt($sIn))
+                        $sOut->addDay();
+                    $schedSec = $sIn->diffInSeconds($sOut);
+                }
 
-    //             $otHours = ($schedSec > 0 && $workSec > $schedSec)
-    //                 ? round(($workSec - $schedSec) / 3600, 2)
-    //                 : 0;
+                $otHours = ($schedSec > 0 && $workSec > $schedSec)
+                    ? round(($workSec - $schedSec) / 3600, 2)
+                    : 0;
 
-    //             $status = 'On Time';
-    //             $lateHours = '';
+                $status = 'On Time';
+                $lateHours = '';
 
-    //             // Late detection
-    //             if ($sched && $sched->time_in && $in->gt($sIn)) {
-    //                 $status = 'Late';
-    //                 $minsLate = $sIn->diffInMinutes($in);
-    //                 $lateHours = $this->lateHoursFromMinutes($minsLate);
-    //             }
+                // Late detection
+                if ($sched && $sched->time_in && $in->gt($sIn)) {
+                    $status = 'Late';
+                    $minsLate = $sIn->diffInMinutes($in);
+                    $lateHours = $this->lateHoursFromMinutes($minsLate);
+                }
 
-    //             // ✅ Add undertime detection (missing in your original show)
-    //             if ($sched && $sched->time_out && $out) {
-    //                 $diffMinutes = $sOut->diffInMinutes($out, false);
-    //                 if ($diffMinutes < -10) { // undertime threshold
-    //                     $status = 'Undertime';
-    //                 }
-    //             }
+                // ✅ Add undertime detection (missing in your original show)
+                if ($sched && $sched->time_out && $out) {
+                    $diffMinutes = $sOut->diffInMinutes($out, false);
+                    if ($diffMinutes < -10) { // undertime threshold
+                        $status = 'Undertime';
+                    }
+                }
 
-    //             // Violations
-    //             if (!empty($discipline['violations'][$employee->id][$dateStr])) {
-    //                 $status .= ' (Violation)';
-    //             }
+                // Violations
+                if (!empty($discipline['violations'][$employee->id][$dateStr])) {
+                    $status .= ' (Violation)';
+                }
 
-    //             $rows[] = [
-    //                 'date' => $dateStr,
-    //                 'time_in' => $in->format('Y-m-d H:i'),
-    //                 'time_out' => $out ? $out->format('Y-m-d H:i') : '—',
-    //                 'ot_hours' => $otHours ?: '0.00',
-    //                 'status' => $status,
-    //                 'late_hours' => $lateHours,
-    //             ];
-    //         } else {
-    //             $status = 'Absent';
-    //             if (!empty($discipline['violations'][$employee->id][$dateStr])) {
-    //                 $status .= ' (Violation)';
-    //             }
+                $rows[] = [
+                    'date' => $dateStr,
+                    'time_in' => $in->format('Y-m-d H:i'),
+                    'time_out' => $out ? $out->format('Y-m-d H:i') : '—',
+                    'ot_hours' => $otHours ?: '0.00',
+                    'status' => $status,
+                    'late_hours' => $lateHours,
+                ];
+            } else {
+                $status = 'Absent';
+                if (!empty($discipline['violations'][$employee->id][$dateStr])) {
+                    $status .= ' (Violation)';
+                }
 
-    //             $rows[] = [
-    //                 'date' => $dateStr,
-    //                 'time_in' => '—',
-    //                 'time_out' => '—',
-    //                 'ot_hours' => '',
-    //                 'status' => $status,
-    //                 'late_hours' => '',
-    //             ];
-    //         }
-    //     }
+                $rows[] = [
+                    'date' => $dateStr,
+                    'time_in' => '—',
+                    'time_out' => '—',
+                    'ot_hours' => '',
+                    'status' => $status,
+                    'late_hours' => '',
+                ];
+            }
+        }
 
-    //     return view('attendance.show', compact('employee', 'month', 'startOfMonth', 'endOfMonth', 'rows'));
-    // }
+        return view('attendance.show', compact('employee', 'month', 'startOfMonth', 'endOfMonth', 'rows'));
+    }
 
     private function evaluateLateness(Employee $employee, Carbon $timeIn): array
     {

@@ -15,15 +15,15 @@ class UserFactory extends Factory
     {
         // ensure at least one role exists
         $role = Role::inRandomOrder()->first()
-              ?? Role::create(['name'=>'admin']);
+            ?? Role::create(['name' => 'admin']);
 
         return [
-            'name'           => $this->faker->name(),
-            'email'          => $this->faker->unique()->safeEmail(),
-            'password'       => bcrypt('password'),
-            'role_id'        => $role->id,
-            'status'         => 'active',
-            'last_login'     => null,
+            'name' => $this->faker->name(),
+            'email' => $this->faker->unique()->safeEmail(),
+            'password' => bcrypt('password'),
+            'role_id' => $role->id,
+            'status' => 'active',
+            'last_login' => null,
             'remember_token' => Str::random(10),
         ];
     }
