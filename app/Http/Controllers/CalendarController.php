@@ -81,7 +81,6 @@ class CalendarController extends Controller
                     $r->time_in->toDateString() => $r
                 ])
             );
-            dd($attendance);
         $leaveIndex = LeaveRequest::whereIn('employee_id',$employees->pluck('id'))
             ->where(function($q) use($start,$end){
                 $q->whereBetween('start_date',[$start->toDateString(),$end->toDateString()])

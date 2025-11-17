@@ -317,12 +317,13 @@ Route::prefix('schedule')->group(function () {
 
 
     // ───────── Leaves & Deductions ─────────
+    Route::get('/leaves/check-balance/{typeId}', [LeaveController::class, 'checkBalance'])
+        ->name('leaves.check-balance');
     Route::resource('leaves', LeaveController::class);
     Route::resource('leave-types', LeaveTypeController::class);
     Route::resource('leave-allocations', LeaveAllocationController::class);
     Route::resource('late-deductions', LateDeductionController::class);
-    Route::get('/leaves/check-balance', [LeaveController::class, 'checkBalance'])
-        ->name('leaves.check-balance');
+
 
 
     // ───────── Audit Logs ─────────

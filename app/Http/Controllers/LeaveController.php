@@ -133,7 +133,7 @@ public function store(Request $request)
     }
 }
 
-    public function checkBalance($typeId)
+    public function checkBalance(int $typeId)
     {
         try {
             $user = Auth::user();
@@ -203,7 +203,7 @@ public function store(Request $request)
 
         return back()->with('success', 'Leave approved successfully.');
     }
-    
+
     public function reject($id, Request $request)
 {
     $user = Auth::user();

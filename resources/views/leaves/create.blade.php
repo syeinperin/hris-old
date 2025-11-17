@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         if (!typeId) return;
 
-        fetch(`/leaves/check-balance/${typeId}`)
+        fetch(`/schedule/leaves/check-balance/${typeId}`)
             .then(res => res.json())
             .then(data => {
                 if (data.error) {

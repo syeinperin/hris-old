@@ -21,7 +21,7 @@
  {{-- PROFILE PICTURE --}}
 <div class="mb-4 text-center">
   <img
-    src="{{ $employee->profile_picture_url }}"
+    src="{{ $employee->profile_picture_url ?? "" }}"
     class="rounded-circle mb-2 border"
     width="130" height="130"
     style="object-fit:cover; background:#f8f9fa;"
