@@ -311,7 +311,7 @@
                                                 </li>
 
                                                 {{-- Edit allowed for HR and Supervisor --}}
-                                                @role(['hr'])
+                                                {{-- @role(['hr'])
                                                     <li>
                                                         <button class="dropdown-item" data-bs-toggle="modal"
                                                             data-bs-target="#editEmployeeModal" data-id="{{ $e->id }}"
@@ -320,7 +320,7 @@
                                                             <i class="bi bi-pencil me-2"></i> Edit
                                                         </button>
                                                     </li>
-                                                @endrole
+                                                @endrole --}}
 
                                                 {{-- Start Offboarding: HR only --}}
                                                 @role(['hr', 'supervisor'])
