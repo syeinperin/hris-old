@@ -415,9 +415,10 @@ class EmployeeController extends Controller
             ->with('philippineProvinces', $this->philippineProvinces);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request, Employee $employee)
     {
-        $employee = Employee::with('user')->findOrFail($id);
+        // $employee = Employee::with('user')->findOrFail($id);
+        $employee->load('user');
 
         try {
             // 🔹 Validate input
