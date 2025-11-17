@@ -16,25 +16,11 @@ class DesignationsTableSeeder extends Seeder
          */
         $designations = [
             // 🔹 Office-related
-            ['name' => 'Human Resources',           'rate_per_hour' => 120.00],
-            ['name' => 'Accounting',                'rate_per_hour' => 115.00],
-            ['name' => 'Administrative Assistant',  'rate_per_hour' => 85.00],
+            ['name' => 'Accounting',                'rate_per_hour' => 85.00],
 
             // 🔹 Production area
-            ['name' => 'Production',                'rate_per_hour' => 75.00],
-            ['name' => 'Operator',                  'rate_per_hour' => 70.00],
-            ['name' => 'Supervisor',                'rate_per_hour' => 130.00],
-
-            // 🔹 Leadership & management
-            ['name' => 'Department Head',           'rate_per_hour' => 150.00],
-            ['name' => 'Plant Manager',             'rate_per_hour' => 200.00],
-
-            // 🔹 Additional general roles
-            ['name' => 'Clerk',                     'rate_per_hour' => 65.00],
-            ['name' => 'Technician',                'rate_per_hour' => 90.00],
-            ['name' => 'Engineer',                  'rate_per_hour' => 140.00],
-            ['name' => 'Quality Control Inspector', 'rate_per_hour' => 80.00],
-            ['name' => 'Maintenance Staff',         'rate_per_hour' => 78.00],
+            ['name' => 'Production Operator',       'rate_per_hour' => 75.00],
+            ['name' => 'Supervisor',                'rate_per_hour' => 85.00],
         ];
 
         foreach ($designations as $item) {
