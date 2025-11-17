@@ -11,34 +11,26 @@ class UsersTableSeeder extends Seeder
 {
     public function run(): void
     {
-        // ─────────────────────────────────────────────
-        // RESET USERS TABLE (optional if EmployeeSeeder does it)
-        // ─────────────────────────────────────────────
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        DB::table('users')->truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        if (DB::getDriverName() === 'mysql') {
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            DB::table('users')->truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        } else {
+            DB::table('users')->delete();
+        }
 
-        // ─────────────────────────────────────────────
-        // ENSURE SYSTEM ROLES EXIST
-        // ─────────────────────────────────────────────
         $roles = ['hr', 'supervisor', 'employee'];
-        foreach ($roles as $name) {
-            // a) Your domain roles table
-            Role::firstOrCreate(['name' => $name]);
 
-            // b) Spatie roles table
+        foreach ($roles as $name) {
+            Role::firstOrCreate(attributes: ['name' => $name]);
+
             SpatieRole::firstOrCreate([
-                'name'       => $name,
+                'name' => $name,
                 'guard_name' => config('auth.defaults.guard'),
             ]);
         }
 
-        // ─────────────────────────────────────────────
-        // NOTE:
-        // No users created here anymore.
-        // EmployeeSeeder now handles real HR + Supervisor creation.
-        // ─────────────────────────────────────────────
-
         $this->command->info('✅ Roles seeded successfully. Users handled by EmployeeSeeder.');
     }
+
 }

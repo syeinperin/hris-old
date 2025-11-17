@@ -1,4 +1,3 @@
-{{-- File: resources/views/auth/login.blade.php --}}
 @extends('layouts.auth')
 
 @section('title','Log In – ASIATEX HRTrack')
@@ -6,7 +5,6 @@
 @section('content')
 <div class="login-wrapper">
   <div class="login-panel">
-    {{-- LEFT: Branding --}}
     <div class="login-left">
       <img src="{{ asset('images/logo.png') }}" alt="ASIATEX Logo">
       <h1>HRTrack</h1>
@@ -16,7 +14,6 @@
       </p>
     </div>
 
-    {{-- RIGHT: Login Form --}}
     <div class="login-right">
       <h2>Log In</h2>
       <p class="text-muted mb-4">Enter your credentials</p>
@@ -31,7 +28,7 @@
         </div>
       @endif
 
-      <form method="POST" action="{{ route('login') }}" novalidate>
+      <form method="POST" action="{{ route('login') }}">
         @csrf
 
         {{-- Email OR Contact Number --}}

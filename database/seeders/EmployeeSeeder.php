@@ -6,7 +6,12 @@ use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use App\Models\{
-    Employee, User, Department, Designation, Schedule, Role
+    Employee,
+    User,
+    Department,
+    Designation,
+    Schedule,
+    Role
 };
 use Spatie\Permission\Models\Role as SpatieRole;
 
@@ -15,24 +20,30 @@ class EmployeeSeeder extends Seeder
     public function run(): void
     {
         // ─────────────────────────────────────────────
-        // SAFELY CLEAR EMPLOYEES TABLE
+        // HANDLE FOREIGN KEYS / TRUNCATE SAFELY
         // ─────────────────────────────────────────────
-        DB::statement('SET FOREIGN_KEY_CHECKS=0;');
-        Employee::truncate();
-        DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        if (DB::getDriverName() === 'mysql') {
+            // MySQL truncation
+            DB::statement('SET FOREIGN_KEY_CHECKS=0;');
+            Employee::truncate();
+            DB::statement('SET FOREIGN_KEY_CHECKS=1;');
+        } else {
+            // SQLite fallback
+            DB::table('employees')->delete();
+        }
 
         // ─────────────────────────────────────────────
-        // CREATE BASE DEPARTMENTS & DESIGNATIONS
+        // SEED DEPARTMENTS & DESIGNATIONS
         // ─────────────────────────────────────────────
-        $officeDept     = Department::firstOrCreate(['name' => 'Office']);
+        $officeDept = Department::firstOrCreate(['name' => 'Office']);
         $productionDept = Department::firstOrCreate(['name' => 'Production']);
 
-        $hrDesig        = Designation::firstOrCreate(['name' => 'Human Resources']);
-        $supervisorDes  = Designation::firstOrCreate(['name' => 'Supervisor']);
-        $operatorDes    = Designation::firstOrCreate(['name' => 'Operator']);
+        $hrDesig = Designation::firstOrCreate(['name' => 'Human Resources']);
+        $supervisorDes = Designation::firstOrCreate(['name' => 'Supervisor']);
+        $operatorDes = Designation::firstOrCreate(['name' => 'Operator']);
 
         // ─────────────────────────────────────────────
-        // CREATE SCHEDULES
+        // SCHEDULES
         // ─────────────────────────────────────────────
         $scheduleOffice = Schedule::firstOrCreate(
             ['name' => '8:00–17:00'],
@@ -57,10 +68,9 @@ class EmployeeSeeder extends Seeder
         }
 
         // ─────────────────────────────────────────────
-        // DEFINE EMPLOYEES (REAL DATA)
+        // EMPLOYEE SEED DATA
         // ─────────────────────────────────────────────
         $employees = [
-            // ✅ HR Employee: Edna Roxas
             [
                 'employee_code' => 'EMP0052',
                 'first_name' => 'Edna',
@@ -80,10 +90,8 @@ class EmployeeSeeder extends Seeder
                 'schedule_id' => $scheduleOffice->id,
                 'contact_number' => '09171234567',
                 'profile_picture' => 'uploads/profile_picture/edna_roxas.jpg',
-                'role_name' => 'hr', // ✅ define intended role here
+                'role_name' => 'hr',
             ],
-
-            // ✅ Supervisor: Moises Galicha
             [
                 'employee_code' => 'EMP0001',
                 'first_name' => 'Moises',
@@ -101,34 +109,30 @@ class EmployeeSeeder extends Seeder
                 'designation_id' => $supervisorDes->id,
                 'schedule_id' => $scheduleMorning->id,
                 'contact_number' => '09181234567',
-                'role_name' => 'supervisor', // ✅ define intended role here
+                'role_name' => 'supervisor',
             ],
         ];
 
         // ─────────────────────────────────────────────
-        // CREATE USER + EMPLOYEE LINKED RECORDS
+        // CREATE USERS + EMPLOYEES
         // ─────────────────────────────────────────────
         foreach ($employees as $emp) {
-            // Create corresponding user with proper role
             $user = User::create([
                 'name' => $emp['name'],
                 'email' => $emp['email'],
                 'password' => Hash::make('password'),
                 'status' => 'active',
-                'role_id' => Role::where('name', $emp['role_name'])->first()->id ?? null,
+                'role_id' => Role::where('name', $emp['role_name'])->value('id'),
             ]);
 
             $user->assignRole($emp['role_name']);
 
-            // Attach user to employee
-            unset($emp['role_name']); // ✅ remove this key so no "unknown column" error
             $emp['user_id'] = $user->id;
-            $emp['created_at'] = now();
-            $emp['updated_at'] = now();
+            unset($emp['role_name']);
 
             Employee::create($emp);
         }
 
-        $this->command->info('✅ Employees seeded successfully: Edna (HR) and Moises (Supervisor).');
+        $this->command->info('✅ Employees seeded successfully.');
     }
 }
