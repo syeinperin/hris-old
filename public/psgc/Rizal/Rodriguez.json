@@ -1,0 +1,18 @@
+{
+  "province": "Rizal",
+  "city": "Rodriguez (Montalban)",
+  "zip": "1860",
+  "barangays": [
+    { "name": "Balite (Pob.)", "zip": "1860" },
+    { "name": "Burgos", "zip": "1860" },
+    { "name": "Geronimo", "zip": "1860" },
+    { "name": "Macabud", "zip": "1860" },
+    { "name": "Manggahan", "zip": "1860" },
+    { "name": "Mascap", "zip": "1860" },
+    { "name": "Puray", "zip": "1860" },
+    { "name": "Rosario", "zip": "1860" },
+    { "name": "San Isidro", "zip": "1860" },
+    { "name": "San Jose", "zip": "1860" },
+    { "name": "San Rafael", "zip": "1860" }
+  ]
+}

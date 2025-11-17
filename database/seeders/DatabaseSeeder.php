@@ -1,5 +1,4 @@
 <?php
-// database/seeders/DatabaseSeeder.php
 
 namespace Database\Seeders;
 
@@ -9,7 +8,7 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1) Core lookup data
+        // 1️⃣ Core lookup data (no Faker)
         $this->call([
             RolesTableSeeder::class,
             DepartmentsTableSeeder::class,
@@ -21,21 +20,15 @@ class DatabaseSeeder extends Seeder
             PagibigContributionSeeder::class,
             PhilhealthContributionSeeder::class,
             LeaveTypeSeeder::class,
-            HolidaySeeder::class,         
+            HolidaySeeder::class,
             LoanTypeSeeder::class,
             LoanPlanSeeder::class,
             LateDeductionSeeder::class,
             PerformanceItemsSeeder::class,
-        ]);
-
-        // 2) Bulk create employees
-        \App\Models\Employee::factory()
-            ->count(50)
-            ->create();
-
-        // 3) Now seed each employee’s allocations for the current year
-        $this->call([
+            EmployeeSeeder::class, // ✅ your real data
             LeaveAllocationSeeder::class,
+            ConcernCategorySeeder::class,
+
         ]);
     }
 }

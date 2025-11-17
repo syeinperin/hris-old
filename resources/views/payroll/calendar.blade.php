@@ -9,7 +9,7 @@
     <h3 class="mb-0">
       Payroll Calendar » {{ \Carbon\Carbon::parse("$month-01")->format('F Y') }}
     </h3>
-    <form method="GET" action="{{ route('payroll.calendar.index') }}" class="d-flex">
+    <form method="GET" action="{{ route('payroll.calendar') }}" class="d-flex">
       <input
         type="text"
         name="search"
@@ -51,7 +51,8 @@
                 $dow         = $d->format('l');
                 $sched       = $emp->schedule;
                 $isRest      = $sched && $sched->rest_day === $dow;
-                $att         = $attendance->get($emp->id, collect())->get($day);
+$empAttendance = $attendance->get($emp->id);
+$att = $empAttendance ? $empAttendance->get($day) : null;
                 $leaveOnDay  = $leaveIndex->get($emp->id, collect())->get($day, collect());
                 $isHoliday   = array_key_exists($day, $holidays);
 
@@ -99,34 +100,37 @@ Reason: {{ $suspOnDay->reason ?? '—' }}">
                   <div class="w-100 h-100 {{ $cls }}"></div>
                 </td>
 
-              @else
-                {{-- Attendance toggle / empty --}}
-                @php
-                  if($att) {
-                    $cls   = $att->is_manual
-                              ? 'bg-primary'
-                              : 'bg-danger text-white';
-                    $title = $att->is_manual
-                              ? 'Manual attendance'
-                              : 'Biometric attendance';
-                  } else {
-                    $cls   = 'bg-subtle border border-info';
-                    $title = 'No attendance record';
-                  }
-                @endphp
-                <td class="p-0 position-relative cell"
-                    data-emp="{{ $emp->id }}"
-                    data-day="{{ $day }}"
-                    style="cursor:pointer;width:32px;height:32px"
-                    title="{{ $title }}">
-                  <div class="w-100 h-100 {{ $cls }}"></div>
+       @else
+  {{-- Attendance toggle / empty --}}
+  @php
+      // $att is a Collection of attendance records for the day
+      $firstAtt = $att?->first(); // safely get the first record if any
 
-                  {{-- NEW: violation dot overlay --}}
-                  @if($violCount > 0)
-                    <span class="violation-dot" title="{{ $violCount }} violation(s) on this day"></span>
-                  @endif
-                </td>
-              @endif
+      if ($firstAtt) {
+          $cls   = $firstAtt->is_manual
+                    ? 'bg-primary'
+                    : 'bg-danger text-white';
+          $title = $firstAtt->is_manual
+                    ? 'Manual attendance'
+                    : 'Biometric attendance';
+      } else {
+          $cls   = 'bg-subtle border border-info';
+          $title = 'No attendance record';
+      }
+  @endphp
+  <td class="p-0 position-relative cell"
+      data-emp="{{ $emp->id }}"
+      data-day="{{ $day }}"
+      style="cursor:pointer;width:32px;height:32px"
+      title="{{ $title }}">
+    <div class="w-100 h-100 {{ $cls }}"></div>
+
+    {{-- NEW: violation dot overlay --}}
+    @if($violCount > 0)
+      <span class="violation-dot" title="{{ $violCount }} violation(s) on this day"></span>
+    @endif
+  </td>
+@endif
 
             @endfor
 

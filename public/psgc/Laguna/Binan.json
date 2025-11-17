@@ -1,0 +1,31 @@
+{
+  "province": "Laguna",
+  "city": "Biñan City",
+  "zip": "4024",
+  "barangays": [
+    { "name": "Biñan (Poblacion)", "zip": "4024" },
+    { "name": "Bungahan", "zip": "4024" },
+    { "name": "Santo Tomas (Calabuso)", "zip": "4024" },
+    { "name": "Canlalay", "zip": "4024" },
+    { "name": "Casile", "zip": "4024" },
+    { "name": "De La Paz", "zip": "4024" },
+    { "name": "Ganado", "zip": "4024" },
+    { "name": "San Francisco (Halang)", "zip": "4024" },
+    { "name": "Langkiwa", "zip": "4024" },
+    { "name": "Loma", "zip": "4024" },
+    { "name": "Malaban", "zip": "4024" },
+    { "name": "Malamig", "zip": "4024" },
+    { "name": "Mampalasan", "zip": "4024" },
+    { "name": "Platero", "zip": "4024" },
+    { "name": "Poblacion", "zip": "4024" },
+    { "name": "Santo Niño", "zip": "4024" },
+    { "name": "San Antonio", "zip": "4024" },
+    { "name": "San Jose", "zip": "4024" },
+    { "name": "San Vicente", "zip": "4024" },
+    { "name": "Soro-soro", "zip": "4024" },
+    { "name": "Santo Domingo", "zip": "4024" },
+    { "name": "Timbao", "zip": "4024" },
+    { "name": "Tubigan", "zip": "4024" },
+    { "name": "Zapote", "zip": "4024" }
+  ]
+}

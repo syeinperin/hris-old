@@ -1,0 +1,13 @@
+{
+  "province": "Quezon",
+  "city": "Patnanungan",
+  "zip": "4338",
+  "barangays": [
+    { "name": "Amaga", "zip": "4338" },
+    { "name": "Busdak", "zip": "4338" },
+    { "name": "Kilogan", "zip": "4338" },
+    { "name": "Luod", "zip": "4338" },
+    { "name": "Patnanungan Norte", "zip": "4338" },
+    { "name": "Patnanungan Sur (Pob.)", "zip": "4338" }
+  ]
+}

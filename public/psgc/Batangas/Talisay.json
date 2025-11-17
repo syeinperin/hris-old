@@ -1,0 +1,28 @@
+{
+  "province": "Batangas",
+  "city": "Talisay",
+  "zip": "4220",
+  "barangays": [
+    { "name": "Aya", "zip": "4220" },
+    { "name": "Balas", "zip": "4220" },
+    { "name": "Banga", "zip": "4220" },
+    { "name": "Buco", "zip": "4220" },
+    { "name": "Caloocan", "zip": "4220" },
+    { "name": "Leynes", "zip": "4220" },
+    { "name": "Miranda", "zip": "4220" },
+    { "name": "Poblacion Barangay 1", "zip": "4220" },
+    { "name": "Poblacion Barangay 2", "zip": "4220" },
+    { "name": "Poblacion Barangay 3", "zip": "4220" },
+    { "name": "Poblacion Barangay 4", "zip": "4220" },
+    { "name": "Poblacion Barangay 5", "zip": "4220" },
+    { "name": "Poblacion Barangay 6", "zip": "4220" },
+    { "name": "Poblacion Barangay 7", "zip": "4220" },
+    { "name": "Poblacion Barangay 8", "zip": "4220" },
+    { "name": "Quiling", "zip": "4220" },
+    { "name": "Sampaloc", "zip": "4220" },
+    { "name": "San Guillermo", "zip": "4220" },
+    { "name": "Santa Maria", "zip": "4220" },
+    { "name": "Tranca", "zip": "4220" },
+    { "name": "Tumaway", "zip": "4220" }
+  ]
+}

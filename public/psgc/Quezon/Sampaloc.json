@@ -1,0 +1,21 @@
+{
+  "province": "Quezon",
+  "city": "Sampaloc",
+  "zip": "4329",
+  "barangays": [
+    { "name": "Alupay", "zip": "4329" },
+    { "name": "Apasan", "zip": "4329" },
+    { "name": "Banot", "zip": "4329" },
+    { "name": "Bataan", "zip": "4329" },
+    { "name": "Bayongon", "zip": "4329" },
+    { "name": "Bilucao", "zip": "4329" },
+    { "name": "Caldong", "zip": "4329" },
+    { "name": "Ibabang Owain", "zip": "4329" },
+    { "name": "Ilayang Owain", "zip": "4329" },
+    { "name": "Mamala", "zip": "4329" },
+    { "name": "San Bueno", "zip": "4329" },
+    { "name": "San Isidro (Pob.)", "zip": "4329" },
+    { "name": "San Roque (Pob.)", "zip": "4329" },
+    { "name": "Taquico", "zip": "4329" }
+  ]
+}

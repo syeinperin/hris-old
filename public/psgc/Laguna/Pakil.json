@@ -1,0 +1,20 @@
+{
+  "province": "Laguna",
+  "city": "Pakil",
+  "zip": "4017",
+  "barangays": [
+    { "name": "Baño (Pob.)", "zip": "4017" },
+    { "name": "Banilan", "zip": "4017" },
+    { "name": "Burgos (Pob.)", "zip": "4017" },
+    { "name": "Casa Real", "zip": "4017" },
+    { "name": "Casinsin", "zip": "4017" },
+    { "name": "Dorado", "zip": "4017" },
+    { "name": "Gonzales (Pob.)", "zip": "4017" },
+    { "name": "Kabulusan", "zip": "4017" },
+    { "name": "Matikiw", "zip": "4017" },
+    { "name": "Rizal (Pob.)", "zip": "4017" },
+    { "name": "Saray", "zip": "4017" },
+    { "name": "Taft (Pob.)", "zip": "4017" },
+    { "name": "Tavera (Pob.)", "zip": "4017" }
+  ]
+}

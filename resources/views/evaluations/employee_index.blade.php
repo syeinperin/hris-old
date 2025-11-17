@@ -1,12 +1,15 @@
 @extends('layouts.app')
-@section('page_title','My Evaluations')
+@section('page_title', 'My Evaluations')
 
 @section('content')
 <div class="container-fluid">
   <div class="card shadow-sm">
-    <div class="card-header bg-white">
-      <h4 class="mb-0"><i class="bi bi-clipboard2-check me-2"></i> My Evaluations</h4>
+    <div class="card-header bg-white d-flex justify-content-between align-items-center">
+      <h4 class="mb-0">
+        <i class="bi bi-clipboard2-check me-2"></i> My Evaluations
+      </h4>
     </div>
+
     <div class="card-body">
       <div class="table-responsive">
         <table class="table table-hover table-bordered align-middle">
@@ -15,90 +18,86 @@
               <th>#</th>
               <th>Period</th>
               <th>Overall %</th>
-              <th>Discipline</th> {{-- NEW --}}
               <th>Evaluator</th>
               <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             @forelse($evaluations as $e)
-              @php
-                $disc = $e->discipline_summary ?? ['violations'=>0,'suspensions'=>0,'suspension_days'=>0];
-              @endphp
               <tr>
                 <td>{{ $loop->iteration + ($evaluations->currentPage()-1)*$evaluations->perPage() }}</td>
                 <td>{{ $e->period_start->toDateString() }} – {{ $e->period_end->toDateString() }}</td>
-                <td class="fw-semibold">{{ number_format($e->overall_score,2) }}%</td>
-                <td>
-                  @if(($disc['violations'] ?? 0) > 0)
-                    <span class="badge bg-danger me-1">{{ $disc['violations'] }} Violation{{ $disc['violations']>1?'s':'' }}</span>
-                  @else
-                    <span class="badge bg-secondary me-1">0 Violations</span>
-                  @endif
-
-                  @if(($disc['suspension_days'] ?? 0) > 0)
-                    <span class="badge bg-warning text-dark me-1">{{ $disc['suspension_days'] }} Suspension day{{ ($disc['suspension_days']>1)?'s':'' }}</span>
-                  @else
-                    <span class="badge bg-secondary">0 Suspension days</span>
-                  @endif
-                </td>
+                <td class="fw-semibold">{{ number_format($e->overall_score, 2) }}%</td>
                 <td>{{ $e->evaluator->name ?? '—' }}</td>
                 <td>
-                  {{-- Link hits the show route, which returns this same page with $showEval set --}}
-                  <a href="{{ route('my.evaluations.show',$e) }}" class="btn btn-sm btn-outline-dark">
+                  <button type="button"
+                          class="btn btn-sm btn-outline-primary js-view-eval"
+                          data-id="{{ $e->id }}">
                     <i class="bi bi-eye"></i> View
-                  </a>
+                  </button>
                 </td>
               </tr>
             @empty
-              <tr><td colspan="6" class="text-center text-muted py-4">No evaluations yet.</td></tr>
+              <tr><td colspan="5" class="text-center text-muted py-4">No evaluations yet.</td></tr>
             @endforelse
           </tbody>
         </table>
       </div>
+
       {{ $evaluations->links('pagination::bootstrap-5') }}
+    </div>
+  </div>
+</div>
+
+{{-- MODAL (empty, dynamically filled) --}}
+<div class="modal fade" id="evaluationModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-scrollable">
+    <div class="modal-content shadow-lg border-0">
+      <div class="modal-header bg-white border-bottom">
+        <h5 class="modal-title">
+          <i class="bi bi-eye me-2"></i> Evaluation Details
+        </h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body text-center py-5">
+        <div class="spinner-border text-primary" role="status">
+          <span class="visually-hidden">Loading...</span>
+        </div>
+      </div>
     </div>
   </div>
 </div>
 @endsection
 
-@push('modals')
-  @isset($showEval)
-    <div class="modal fade" id="myEvalShowModal" tabindex="-1" aria-hidden="true">
-      <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">
-              <i class="bi bi-clipboard2-check me-2"></i>
-              Evaluation — {{ $showEval->period_start->toDateString() }} to {{ $showEval->period_end->toDateString() }}
-            </h5>
-            <span class="badge {{ $showEval->status === 'submitted' ? 'bg-success' : 'bg-secondary' }}">
-              {{ ucfirst($showEval->status) }}
-            </span>
-            <button type="button" class="btn-close ms-2" data-bs-dismiss="modal"></button>
-          </div>
-          <div class="modal-body" style="max-height:70vh; overflow:auto;">
-            @include('evaluations.partials.show', [
-              'evaluation'       => $showEval,
-              'periodActions'    => $periodActions ?? collect(),
-              'disciplineSummary'=> $disciplineSummary ?? ['violations'=>0,'suspensions'=>0,'suspension_days'=>0],
-            ])
-          </div>
-          <div class="modal-footer">
-            <a href="{{ route('my.evaluations.index') }}" class="btn btn-outline-secondary">Close</a>
-          </div>
-        </div>
-      </div>
-    </div>
-  @endisset
-@endpush
-
 @push('scripts')
-  @isset($showEval)
-    <script>
-      document.addEventListener('DOMContentLoaded', () => {
-        new bootstrap.Modal(document.getElementById('myEvalShowModal')).show();
-      });
-    </script>
-  @endisset
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const modalEl = document.getElementById('evaluationModal');
+  const modal = new bootstrap.Modal(modalEl);
+
+  document.querySelectorAll('.js-view-eval').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const id = btn.dataset.id;
+      const body = modalEl.querySelector('.modal-body');
+      body.innerHTML = `
+        <div class="text-center py-5">
+          <div class="spinner-border text-primary" role="status">
+            <span class="visually-hidden">Loading...</span>
+          </div>
+        </div>`;
+
+      modal.show();
+
+      try {
+        const response = await fetch(`/evaluations/${id}?ajax=1`);
+        const html = await response.text();
+        body.innerHTML = html;
+      } catch (err) {
+        console.error(err);
+        body.innerHTML = `<div class="alert alert-danger">Failed to load evaluation details.</div>`;
+      }
+    });
+  });
+});
+</script>
 @endpush

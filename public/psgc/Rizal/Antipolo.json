@@ -1,0 +1,23 @@
+{
+  "province": "Rizal",
+  "city": "Antipolo City",
+  "zip": "1870",
+  "barangays": [
+    { "name": "Calawis", "zip": "1870" },
+    { "name": "Cupang", "zip": "1870" },
+    { "name": "Dela Paz (Pob.)", "zip": "1870" },
+    { "name": "Mayamot", "zip": "1870" },
+    { "name": "San Isidro (Pob.)", "zip": "1870" },
+    { "name": "San Jose (Pob.)", "zip": "1870" },
+    { "name": "San Roque (Pob.)", "zip": "1870" },
+    { "name": "Mambugan", "zip": "1870" },
+    { "name": "Bagong Nayon", "zip": "1870" },
+    { "name": "Beverly Hills", "zip": "1870" },
+    { "name": "Dalig", "zip": "1870" },
+    { "name": "Inarawan", "zip": "1870" },
+    { "name": "San Juan", "zip": "1870" },
+    { "name": "San Luis", "zip": "1870" },
+    { "name": "Santa Cruz", "zip": "1870" },
+    { "name": "Muntingdilaw", "zip": "1870" }
+  ]
+}

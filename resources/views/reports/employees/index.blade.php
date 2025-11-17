@@ -19,8 +19,8 @@
         <th>Name</th>
         <th>Department</th>
         <th>Position</th>
-        <th class="text-center">PDF</th>
-        <th class="text-center">Certificate</th>
+        <th class="text-center">Info Sheet</th>
+        <th class="text-center">COE</th>
       </tr>
     </thead>
     <tbody>
@@ -34,14 +34,14 @@
           <a href="{{ route('reports.employees.pdf', $e) }}"
              target="_blank" rel="noopener"
              class="btn btn-sm btn-outline-secondary">
-            PDF
+            Download
           </a>
         </td>
         <td class="text-center">
           <a href="{{ route('reports.employees.cert', $e) }}"
              target="_blank" rel="noopener"
              class="btn btn-sm btn-outline-secondary">
-            Cert
+            Download
           </a>
         </td>
       </tr>

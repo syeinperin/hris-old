@@ -17,6 +17,16 @@ class LeaveAllocation extends Model
         'days_used',
     ];
 
+   public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    /** Optional: who approved it */
+    public function approver()
+    {
+        return $this->belongsTo(User::class, 'approved_by');
+    }
     public function getEntitledDaysAttribute(): float
     {
         return round($this->days_allocated, 2);

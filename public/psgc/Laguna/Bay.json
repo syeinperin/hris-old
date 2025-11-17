@@ -1,0 +1,22 @@
+{
+  "province": "Laguna",
+  "city": "Bay",
+  "zip": "4033",
+  "barangays": [
+    { "name": "Bitin", "zip": "4033" },
+    { "name": "Calo", "zip": "4033" },
+    { "name": "Dila", "zip": "4033" },
+    { "name": "Maitim", "zip": "4033" },
+    { "name": "Masaya", "zip": "4033" },
+    { "name": "Paciano Rizal", "zip": "4033" },
+    { "name": "Puypuy", "zip": "4033" },
+    { "name": "San Antonio", "zip": "4033" },
+    { "name": "San Isidro", "zip": "4033" },
+    { "name": "Santa Cruz", "zip": "4033" },
+    { "name": "Santo Domingo", "zip": "4033" },
+    { "name": "Tagumpay", "zip": "4033" },
+    { "name": "Tranca", "zip": "4033" },
+    { "name": "San Agustin (Pob.)", "zip": "4033" },
+    { "name": "San Nicolas (Pob.)", "zip": "4033" }
+  ]
+}

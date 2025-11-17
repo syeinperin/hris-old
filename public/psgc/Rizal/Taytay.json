@@ -1,0 +1,12 @@
+{
+  "province": "Rizal",
+  "city": "Taytay",
+  "zip": "1920",
+  "barangays": [
+    { "name": "Dolores (Pob.)", "zip": "1920" },
+    { "name": "Muzon", "zip": "1920" },
+    { "name": "San Isidro", "zip": "1920" },
+    { "name": "San Juan", "zip": "1920" },
+    { "name": "Santa Ana", "zip": "1920" }
+  ]
+}

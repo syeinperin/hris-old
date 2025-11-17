@@ -1,0 +1,23 @@
+{
+  "province": "Batangas",
+  "city": "Mataasnakahoy",
+  "zip": "4223",
+  "barangays": [
+    { "name": "District I (Pob.)", "zip": "4223" },
+    { "name": "District II (Pob.)", "zip": "4223" },
+    { "name": "District III (Pob.)", "zip": "4223" },
+    { "name": "District IV (Pob.)", "zip": "4223" },
+    { "name": "Bayorbor", "zip": "4223" },
+    { "name": "Bubuyan", "zip": "4223" },
+    { "name": "Calingatan", "zip": "4223" },
+    { "name": "Kinalaglagan", "zip": "4223" },
+    { "name": "Loob", "zip": "4223" },
+    { "name": "Lumang Lipa", "zip": "4223" },
+    { "name": "Manggahan", "zip": "4223" },
+    { "name": "Nangkaan", "zip": "4223" },
+    { "name": "San Sebastian", "zip": "4223" },
+    { "name": "Santol", "zip": "4223" },
+    { "name": "Upa", "zip": "4223" },
+    { "name": "Barangay II-A (Pob.)", "zip": "4223" }
+  ]
+}

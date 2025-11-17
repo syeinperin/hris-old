@@ -1,0 +1,12 @@
+{
+  "province": "Quezon",
+  "city": "Jomalig",
+  "zip": "4342",
+  "barangays": [
+    { "name": "Bukal", "zip": "4342" },
+    { "name": "Casuguran", "zip": "4342" },
+    { "name": "Gango", "zip": "4342" },
+    { "name": "Talisoy (Pob.)", "zip": "4342" },
+    { "name": "Apad", "zip": "4342" }
+  ]
+}

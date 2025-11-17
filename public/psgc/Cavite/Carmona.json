@@ -1,0 +1,21 @@
+{
+  "province": "Cavite",
+  "city": "Carmona",
+  "zip": "4116",
+  "barangays": [
+    { "name": "Bancal", "zip": "4116" },
+    { "name": "Cabilang Baybay", "zip": "4116" },
+    { "name": "Lantic", "zip": "4116" },
+    { "name": "Mabuhay", "zip": "4116" },
+    { "name": "Maduya", "zip": "4116" },
+    { "name": "Milagrosa", "zip": "4116" },
+    { "name": "Barangay 1 (Pob.)", "zip": "4116" },
+    { "name": "Barangay 2 (Pob.)", "zip": "4116" },
+    { "name": "Barangay 3 (Pob.)", "zip": "4116" },
+    { "name": "Barangay 4 (Pob.)", "zip": "4116" },
+    { "name": "Barangay 5 (Pob.)", "zip": "4116" },
+    { "name": "Barangay 6 (Pob.)", "zip": "4116" },
+    { "name": "Barangay 7 (Pob.)", "zip": "4116" },
+    { "name": "Barangay 8 (Pob.)", "zip": "4116" }
+  ]
+}

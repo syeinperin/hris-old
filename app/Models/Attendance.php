@@ -3,8 +3,8 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Builder; // ⬅️ added
 
 class Attendance extends Model
 {
@@ -27,15 +27,13 @@ class Attendance extends Model
         return $this->belongsTo(Employee::class);
     }
 
-    /** Handy accessor to group by date */
-    public function getDayAttribute()
+    /** Optional helper to group by date */
+    public function getDayAttribute(): ?string
     {
-        return $this->time_in
-                    ? $this->time_in->toDateString()
-                    : null;
+        return $this->time_in?->toDateString();
     }
 
-    /** ⬅️ optional helper used by reports */
+    /** Filter by time_in date range */
     public function scopeBetween(Builder $q, string $from, string $to): Builder
     {
         return $q->whereDate('time_in', '>=', $from)

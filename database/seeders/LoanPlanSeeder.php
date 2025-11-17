@@ -7,24 +7,17 @@ use App\Models\LoanPlan;
 
 class LoanPlanSeeder extends Seeder
 {
-    public function run()
+    public function run(): void
     {
         $plans = [
-            // you decide the rate (%) for each term
-            ['name'   => '6-month plan',  'months' =>  6,  'rate' => 3.0],
-            ['name'   => '12-month plan', 'months' => 12,  'rate' => 5.0],
-            ['name'   => '24-month plan', 'months' => 24,  'rate' => 8.0],
+            ['name' => 'Semi-Monthly Deduction', 'deduction_type' => 'semi-monthly', 'interest_rate' => 3.00],
+            ['name' => 'Monthly Deduction', 'deduction_type' => 'monthly', 'interest_rate' => 3.50],
+            ['name' => 'One-Time Deduction', 'deduction_type' => 'one-time', 'interest_rate' => 0.00],
+            ['name' => 'Quarterly Deduction', 'deduction_type' => 'quarterly', 'interest_rate' => 5.00],
         ];
 
-        foreach ($plans as $p) {
-            LoanPlan::updateOrCreate(
-                ['months' => $p['months']],
-                [
-                  'name'   => $p['name'],
-                  'months' => $p['months'],
-                  'rate'   => $p['rate'],
-                ]
-            );
+        foreach ($plans as $plan) {
+            LoanPlan::create($plan);
         }
     }
 }

@@ -1,0 +1,10 @@
+{
+  "province": "Laguna",
+  "city": "Kalayaan",
+  "zip": "4015",
+  "barangays": [
+    { "name": "Longos", "zip": "4015" },
+    { "name": "San Antonio", "zip": "4015" },
+    { "name": "San Juan (Pob.)", "zip": "4015" }
+  ]
+}

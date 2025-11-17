@@ -1,0 +1,19 @@
+{
+  "province": "Rizal",
+  "cities": [
+    { "city": "Angono", "slug": "Angono" },
+    { "city": "Antipolo City", "slug": "Antipolo" },
+    { "city": "Baras", "slug": "Baras" },
+    { "city": "Binangonan", "slug": "Binangonan" },
+    { "city": "Cainta", "slug": "Cainta" },
+    { "city": "Cardona", "slug": "Cardona" },
+    { "city": "Jala-jala", "slug": "Jalajala" },
+    { "city": "Rodriguez", "slug": "Rodriguez" },
+    { "city": "Morong", "slug": "Morong" },
+    { "city": "Pililla", "slug": "Pililla" },
+    { "city": "San Mateo", "slug": "San-Mateo" },
+    { "city": "Tanay", "slug": "Tanay" },
+    { "city": "Taytay", "slug": "Taytay" },
+    { "city": "Teresa", "slug": "Teresa" }
+  ]
+}

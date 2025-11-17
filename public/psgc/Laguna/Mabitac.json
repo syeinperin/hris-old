@@ -1,0 +1,22 @@
+{
+  "province": "Laguna",
+  "city": "Mabitac",
+  "zip": "4020",
+  "barangays": [
+    { "name": "Amuyong", "zip": "4020" },
+    { "name": "Lambac (Pob.)", "zip": "4020" },
+    { "name": "Lucong", "zip": "4020" },
+    { "name": "Matalatala", "zip": "4020" },
+    { "name": "Nanguma", "zip": "4020" },
+    { "name": "Numero", "zip": "4020" },
+    { "name": "Paagahan", "zip": "4020" },
+    { "name": "Bayanihan (Pob.)", "zip": "4020" },
+    { "name": "Libis ng Nayon (Pob.)", "zip": "4020" },
+    { "name": "Maligaya (Pob.)", "zip": "4020" },
+    { "name": "Masikap (Pob.)", "zip": "4020" },
+    { "name": "Pag-Asa (Pob.)", "zip": "4020" },
+    { "name": "Sinagtala (Pob.)", "zip": "4020" },
+    { "name": "San Antonio", "zip": "4020" },
+    { "name": "San Miguel", "zip": "4020" }
+  ]
+}

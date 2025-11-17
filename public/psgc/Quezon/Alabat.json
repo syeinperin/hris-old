@@ -1,0 +1,26 @@
+{
+  "province": "Quezon",
+  "city": "Alabat",
+  "zip": "4333",
+  "barangays": [
+    { "name": "Angeles", "zip": "4333" },
+    { "name": "Bacong", "zip": "4333" },
+    { "name": "Balungay", "zip": "4333" },
+    { "name": "Buenavista", "zip": "4333" },
+    { "name": "Caglate", "zip": "4333" },
+    { "name": "Camagong", "zip": "4333" },
+    { "name": "Gordon", "zip": "4333" },
+    { "name": "Pambilan Norte", "zip": "4333" },
+    { "name": "Pambilan Sur", "zip": "4333" },
+    { "name": "Barangay 1 (Pob.)", "zip": "4333" },
+    { "name": "Barangay 2 (Pob.)", "zip": "4333" },
+    { "name": "Barangay 3 (Pob.)", "zip": "4333" },
+    { "name": "Barangay 4 (Pob.)", "zip": "4333" },
+    { "name": "Barangay 5 (Pob.)", "zip": "4333" },
+    { "name": "Villa Esperanza", "zip": "4333" },
+    { "name": "Villa Jesus Este", "zip": "4333" },
+    { "name": "Villa Jesus Weste", "zip": "4333" },
+    { "name": "Villa Norte", "zip": "4333" },
+    { "name": "Villa Victoria", "zip": "4333" }
+  ]
+}

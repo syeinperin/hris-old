@@ -46,7 +46,7 @@
     </div>
   </div>
 
-  <a href="{{ route('notifications.index') }}" class="btn btn-secondary mt-3">
+  <a href="{{ route('notifications.show') }}" class="btn btn-secondary mt-3">
     ← Back to Notifications
   </a>
 </div>

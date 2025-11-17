@@ -1,0 +1,24 @@
+{
+  "province": "Laguna",
+  "city": "Pila",
+  "zip": "4010",
+  "barangays": [
+    { "name": "Aplaya", "zip": "4010" },
+    { "name": "Bagong Pook", "zip": "4010" },
+    { "name": "Bukal", "zip": "4010" },
+    { "name": "Bulilan Norte (Pob.)", "zip": "4010" },
+    { "name": "Bulilan Sur (Pob.)", "zip": "4010" },
+    { "name": "Concepcion", "zip": "4010" },
+    { "name": "Labuin", "zip": "4010" },
+    { "name": "Linga", "zip": "4010" },
+    { "name": "Masico", "zip": "4010" },
+    { "name": "Mojon", "zip": "4010" },
+    { "name": "Pansol", "zip": "4010" },
+    { "name": "Pinagbayanan", "zip": "4010" },
+    { "name": "San Antonio", "zip": "4010" },
+    { "name": "San Miguel", "zip": "4010" },
+    { "name": "Santa Clara Norte (Pob.)", "zip": "4010" },
+    { "name": "Santa Clara Sur (Pob.)", "zip": "4010" },
+    { "name": "Tubuan", "zip": "4010" }
+  ]
+}

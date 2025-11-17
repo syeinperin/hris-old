@@ -1,0 +1,22 @@
+{
+  "province": "Batangas",
+  "city": "Tingloy",
+  "zip": "4203",
+  "barangays": [
+    { "name": "Corona", "zip": "4203" },
+    { "name": "Gamao", "zip": "4203" },
+    { "name": "Makawayan", "zip": "4203" },
+    { "name": "Marikaban", "zip": "4203" },
+    { "name": "Papaya", "zip": "4203" },
+    { "name": "Pisa", "zip": "4203" },
+    { "name": "Barangay 13 (Poblacion 1)", "zip": "4203" },
+    { "name": "Barangay 14 (Poblacion 2)", "zip": "4203" },
+    { "name": "Barangay 15 (Poblacion 3)", "zip": "4203" },
+    { "name": "San Isidro", "zip": "4203" },
+    { "name": "San Jose", "zip": "4203" },
+    { "name": "San Juan", "zip": "4203" },
+    { "name": "San Pedro", "zip": "4203" },
+    { "name": "Santo Tomas", "zip": "4203" },
+    { "name": "Talahib", "zip": "4203" }
+  ]
+}

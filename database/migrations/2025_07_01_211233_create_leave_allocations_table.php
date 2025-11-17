@@ -10,14 +10,23 @@ class CreateLeaveAllocationsTable extends Migration
     {
         Schema::create('leave_allocations', function (Blueprint $table) {
             $table->id();
+
+            // Relationships
             $table->foreignId('leave_type_id')->constrained()->onDelete('cascade');
             $table->foreignId('employee_id')->constrained()->onDelete('cascade');
+
+            // Core fields
             $table->year('year');
-            $table->integer('days_allocated')->default(0);
-            $table->integer('days_used')->default(0);
+
+            // ✅ Updated leave tracking fields
+            $table->decimal('days_allocated', 6, 2)->default(0); // Entitled / credit
+            $table->decimal('days_used', 6, 2)->default(0);       // Used leave
+            $table->decimal('balance_days', 6, 2)->default(0);    // Remaining balance
+
             $table->timestamps();
 
-            $table->unique(['leave_type_id', 'employee_id', 'year']);
+            // Unique combination per employee, type, and year
+            $table->unique(['leave_type_id', 'employee_id', 'year'], 'unique_leave_allocation');
         });
     }
 

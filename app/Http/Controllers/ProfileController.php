@@ -3,142 +3,137 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
-use Carbon\Carbon;
-use App\Models\Employee;
-use App\Models\Department;
-use App\Models\Designation;
-use App\Models\Schedule;
+use Illuminate\Support\Facades\Notification;
+use App\Models\{Employee, Department, Designation, Schedule, Approval, User};
+use App\Notifications\PendingRequestNotification;
 
 class ProfileController extends Controller
 {
     public function edit()
     {
-        $user     = Auth::user();
-        $employee = Employee::where('user_id',$user->id)->firstOrFail();
-        $isHr     = $user->role->name === 'hr';
+        $user = Auth::user();
+        $employee = $user->employee;
+        $isHr = $user->role->name === 'hr';
 
-        // only HR needs these dropdowns
-        $departments  = Department::pluck('name','id');
-        $designations = Designation::pluck('name','id');
-        $schedules    = Schedule::pluck('name','id');
+        $departments = Department::pluck('name', 'id');
+        $designations = Designation::pluck('name', 'id');
+        $schedules = Schedule::pluck('name', 'id');
         $employmentTypes = [
-            'regular'      => 'Regular',
-            'casual'       => 'Casual',
-            'project'      => 'Project',
-            'seasonal'     => 'Seasonal',
-            'fixed-term'   => 'Fixed-term',
+            'regular' => 'Regular',
             'probationary' => 'Probationary',
+            'contractual' => 'Contractual',
+            'ojt' => 'On-the-Job Trainee',
         ];
 
         return view('profile.edit', compact(
-            'user','employee','isHr',
-            'departments','designations','schedules','employmentTypes'
+            'user', 'employee', 'departments', 'designations', 'schedules', 'employmentTypes', 'isHr'
         ));
     }
 
     public function update(Request $request)
     {
-        $user     = Auth::user();
-        $employee = Employee::where('user_id',$user->id)->firstOrFail();
-        $isHr     = $user->role->name === 'hr';
+        $user = Auth::user();
+        $employee = $user->employee;
+        $isHr = $user->role->name === 'hr';
 
-        // 30-day lockout for non-HR
-        if (! $isHr && $employee->profile_updated_at) {
-            $days = Carbon::parse($employee->profile_updated_at)
-                          ->diffInDays(now());
-            if ($days < 30) {
-                return back()
-                    ->withErrors(['too_soon'=>"Wait ".(30-$days)." more days."])
-                    ->withInput();
+        $validated = $request->validate([
+            'email' => ['required', 'email', Rule::unique('users')->ignore($user->id)],
+            'password' => ['nullable', 'confirmed', 'min:8'],
+            'first_name' => 'required|string|max:255',
+            'middle_name' => 'nullable|string|max:255',
+            'last_name' => 'required|string|max:255',
+            'gender' => 'required|in:male,female,other',
+            'civil_status' => 'nullable|string|max:50',
+            'dob' => 'required|date',
+            'permanent_address' => 'nullable|string|max:255',
+            'department_id' => 'nullable|exists:departments,id',
+            'designation_id' => 'nullable|exists:designations,id',
+            'schedule_id' => 'nullable|exists:schedules,id',
+            'employment_type' => 'nullable|string|max:50',
+            'employment_start_date' => 'nullable|date',
+            'employment_end_date' => 'nullable|date',
+            'sss_no' => 'nullable|string|max:50',
+            'pagibig_id_no' => 'nullable|string|max:50',
+            'philhealth_tin_id_no' => 'nullable|string|max:50',
+            'elementary_school' => 'nullable|string|max:255',
+            'elementary_year_graduated' => 'nullable|string|max:20',
+            'high_school' => 'nullable|string|max:255',
+            'high_school_year_graduated' => 'nullable|string|max:20',
+            'college' => 'nullable|string|max:255',
+            'college_year_graduated' => 'nullable|string|max:20',
+            'degree_received' => 'nullable|string|max:255',
+            'special_skills' => 'nullable|string|max:255',
+            'emp1_company' => 'nullable|string|max:255',
+            'emp1_position' => 'nullable|string|max:255',
+            'emp1_from' => 'nullable|date',
+            'emp1_to' => 'nullable|date',
+            'char1_name' => 'nullable|string|max:255',
+            'char1_position' => 'nullable|string|max:255',
+            'char1_company' => 'nullable|string|max:255',
+            'char1_contact' => 'nullable|string|max:255',
+            'profile_picture' => 'nullable|image|max:2048',
+        ]);
+
+        if ($request->hasFile('profile_picture')) {
+            $validated['profile_picture'] = $request->file('profile_picture')->store('profiles', 'public');
+        }
+
+        // ✅ HR updates directly
+        if ($isHr) {
+            $user->update(['email' => $validated['email']]);
+            if (!empty($validated['password'])) {
+                $user->update(['password' => Hash::make($validated['password'])]);
+            }
+
+            $employee->fill($validated)->save();
+            return back()->with('success', 'Profile updated successfully.');
+        }
+
+        // ✅ Employee requests approval
+        $changes = [];
+        foreach ($validated as $key => $value) {
+            if ($key === 'password') continue;
+
+            if ($key === 'dob') {
+                $old = optional($employee->dob)?->format('Y-m-d');
+                $new = date('Y-m-d', strtotime($value));
+                if ($old !== $new) $changes[$key] = $new;
+                continue;
+            }
+
+            if ((string)$employee->{$key} !== (string)$value) {
+                $changes[$key] = $value;
             }
         }
 
-        // base rules
-        $rules = [
-            'email'             => ['required','email','max:255',Rule::unique('users')->ignore($user)],
-            'password'          => ['nullable','min:8','confirmed'],
-            'first_name'        => ['required','string','max:255'],
-            'middle_name'       => ['nullable','string','max:255'],
-            'last_name'         => ['required','string','max:255'],
-            'gender'            => ['required','in:male,female,other'],
-            'dob'               => ['required','date'],
-            'current_address'   => ['required','string','max:255'],
-            'permanent_address' => ['nullable','string','max:255'],
-            'profile_picture'   => ['nullable','image','max:2048'],
-        ];
-
-        if ($isHr) {
-            $rules = array_merge($rules, [
-                'department_id'        => ['required','exists:departments,id'],
-                'designation_id'       => ['required','exists:designations,id'],
-                'schedule_id'          => ['nullable','exists:schedules,id'],
-                'employment_type'      => ['required','in:regular,casual,project,seasonal,fixed-term,probationary'],
-                'employment_start_date'=> ['required','date'],
-                'employment_end_date'  => ['required','date'],
-                'sss_no'               => ['nullable','string','max:50'],
-                'pagibig_id_no'        => ['nullable','string','max:50'],
-                'philhealth_tin_id_no' => ['nullable','string','max:50'],
-                'previous_company'     => ['nullable','string','max:255'],
-                'job_title'            => ['nullable','string','max:255'],
-                'years_experience'     => ['nullable','numeric','min:0'],
-                'nationality'          => ['nullable','string','max:255'],
-                'fingerprint_id'       => ['nullable','string',Rule::unique('employees')->ignore($employee)],
-            ]);
+        if (empty($changes)) {
+            return back()->with('warning', 'No changes detected.');
         }
 
-        $data = $request->validate($rules);
+        Approval::create([
+            'approvable_type' => Employee::class,
+            'approvable_id'   => $employee->id,
+            'requested_by'    => $user->id,
+            'status'          => 'pending',
+            'data'            => $changes,
+        ]);
 
-        // update User
-        $user->email = $data['email'];
-        if (! empty($data['password'])) {
-            $user->password = Hash::make($data['password']);
-        }
-        $user->save();  
+        // 🔔 Notify HR & Supervisors
+        $hrUsers = User::whereHas('role', fn($q) => $q->where('name', 'hr'))->get();
+        $supervisors = User::whereHas('role', fn($q) => $q->where('name', 'supervisor'))->get();
 
-        // prepare Employee
-        $fill = [
-            'first_name'        => $data['first_name'],
-            'middle_name'       => $data['middle_name'] ?? null,
-            'last_name'         => $data['last_name'],
-            'name'              => "{$data['first_name']} {$data['last_name']}",
-            'gender'            => $data['gender'],
-            'dob'               => $data['dob'],
-            'current_address'   => $data['current_address'],
-            'permanent_address' => $data['permanent_address'] ?? null,
-        ];
+        Notification::send(
+            $hrUsers->merge($supervisors),
+            new PendingRequestNotification(
+                'Profile Update Request',
+                "{$user->name} submitted a profile update request.",
+                route('approvals.index')
+            )
+        );
 
-        if ($isHr) {
-            $fill = array_merge($fill, [
-                'department_id'        => $data['department_id'],
-                'designation_id'       => $data['designation_id'],
-                'schedule_id'          => $data['schedule_id'] ?? null,
-                'employment_type'      => $data['employment_type'],
-                'employment_start_date'=> $data['employment_start_date'],
-                'employment_end_date'  => $data['employment_end_date'],
-                'sss_no'               => $data['sss_no'] ?? null,
-                'pagibig_id_no'        => $data['pagibig_id_no'] ?? null,
-                'philhealth_tin_id_no' => $data['philhealth_tin_id_no'] ?? null,
-                'previous_company'     => $data['previous_company'] ?? null,
-                'job_title'            => $data['job_title'] ?? null,
-                'years_experience'     => $data['years_experience'] ?? null,
-                'nationality'          => $data['nationality'] ?? null,
-                'fingerprint_id'       => $data['fingerprint_id'] ?? null,
-            ]);
-        }
-
-        if ($request->hasFile('profile_picture')) {
-            $fill['profile_picture'] = $request
-                ->file('profile_picture')
-                ->store('profiles','public');
-        }
-
-        $employee->fill($fill);
-        $employee->profile_updated_at = now();
-        $employee->save();
-
-        return back()->with('success','Profile updated.');
+        return back()->with('success', 'Profile update submitted for HR approval.');
     }
 }

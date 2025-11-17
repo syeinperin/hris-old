@@ -1,0 +1,21 @@
+{
+  "province": "Cavite",
+  "city": "General Emilio Aguinaldo",
+  "zip": "4124",
+  "barangays": [
+    { "name": "A. Dalusag", "zip": "4124" },
+    { "name": "Batas Dao", "zip": "4124" },
+    { "name": "Castaños Cerca", "zip": "4124" },
+    { "name": "Castaños Lejos", "zip": "4124" },
+    { "name": "Kabulusan", "zip": "4124" },
+    { "name": "Kaymisas", "zip": "4124" },
+    { "name": "Kaypaaba", "zip": "4124" },
+    { "name": "Lumipa", "zip": "4124" },
+    { "name": "Narvaez", "zip": "4124" },
+    { "name": "Poblacion I", "zip": "4124" },
+    { "name": "Poblacion II", "zip": "4124" },
+    { "name": "Poblacion III", "zip": "4124" },
+    { "name": "Poblacion IV", "zip": "4124" },
+    { "name": "Tabora", "zip": "4124" }
+  ]
+}

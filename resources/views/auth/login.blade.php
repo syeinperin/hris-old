@@ -21,20 +21,32 @@
       <h2>Log In</h2>
       <p class="text-muted mb-4">Enter your credentials</p>
 
-      <form method="POST" action="{{ route('login') }}">
+      @if ($errors->any())
+        <div class="alert alert-danger">
+          <ul class="mb-0">
+            @foreach ($errors->all() as $error)
+              <li>{{ $error }}</li>
+            @endforeach
+          </ul>
+        </div>
+      @endif
+
+      <form method="POST" action="{{ route('login') }}" novalidate>
         @csrf
 
+        {{-- Email OR Contact Number --}}
         <div class="mb-3">
           <input
-            id="email"
-            type="email"
-            name="email"
-            class="form-control @error('email') is-invalid @enderror"
-            placeholder="Email"
-            value="{{ old('email') }}"
-            required autofocus
+            id="login"
+            type="text"
+            name="login"
+            class="form-control @error('login') is-invalid @enderror"
+            placeholder="Email or Contact Number"
+            value="{{ old('login') }}"
+            autocomplete="username"
+            required
           >
-          @error('email')
+          @error('login')
             <div class="invalid-feedback">{{ $message }}</div>
           @enderror
         </div>
@@ -46,17 +58,12 @@
             name="password"
             class="form-control @error('password') is-invalid @enderror"
             placeholder="Password"
+            autocomplete="current-password"
             required
           >
           @error('password')
             <div class="invalid-feedback">{{ $message }}</div>
           @enderror
-        </div>
-
-        <div class="d-flex justify-content-end mb-4">
-          <a href="{{ route('password.request') }}" class="text-decoration-none">
-            Forgot Password?
-          </a>
         </div>
 
         <button type="submit" class="btn btn-primary w-100">

@@ -1,0 +1,28 @@
+﻿{
+  "province": "Batangas-City",
+  "city": "Agoncillo",
+  "zip": "4211",
+  "barangays": [
+    { "name": "Adia", "zip": "4211" },
+    { "name": "Bagong Sikat", "zip": "4211" },
+    { "name": "Balangon", "zip": "4211" },
+    { "name": "Bilibinwang", "zip": "4211" },
+    { "name": "Bangin", "zip": "4211" },
+    { "name": "Barigon", "zip": "4211" },
+    { "name": "Coral Na Munti", "zip": "4211" },
+    { "name": "Guitna", "zip": "4211" },
+    { "name": "Mabini", "zip": "4211" },
+    { "name": "Pamiga", "zip": "4211" },
+    { "name": "Panhulan", "zip": "4211" },
+    { "name": "Pansipit", "zip": "4211" },
+    { "name": "Poblacion", "zip": "4211" },
+    { "name": "Pook", "zip": "4211" },
+    { "name": "San Jacinto", "zip": "4211" },
+    { "name": "San Teodoro", "zip": "4211" },
+    { "name": "Santa Cruz", "zip": "4211" },
+    { "name": "Santo Tomas", "zip": "4211" },
+    { "name": "Subic Ibaba", "zip": "4211" },
+    { "name": "Subic Ilaya", "zip": "4211" },
+    { "name": "Banyaga", "zip": "4211" }
+  ]
+}

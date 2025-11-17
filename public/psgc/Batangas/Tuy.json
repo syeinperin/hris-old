@@ -1,0 +1,29 @@
+{
+  "province": "Batangas",
+  "city": "Tuy",
+  "zip": "4214",
+  "barangays": [
+    { "name": "Acle", "zip": "4214" },
+    { "name": "Bayudbud", "zip": "4214" },
+    { "name": "Bolboc", "zip": "4214" },
+    { "name": "Dalima", "zip": "4214" },
+    { "name": "Dao", "zip": "4214" },
+    { "name": "Guinhawa", "zip": "4214" },
+    { "name": "Lumbangan", "zip": "4214" },
+    { "name": "Luntal", "zip": "4214" },
+    { "name": "Magahis", "zip": "4214" },
+    { "name": "Malibu", "zip": "4214" },
+    { "name": "Mataywanac", "zip": "4214" },
+    { "name": "Palincaro", "zip": "4214" },
+    { "name": "Luna (Pob.)", "zip": "4214" },
+    { "name": "Burgos (Pob.)", "zip": "4214" },
+    { "name": "Rizal (Pob.)", "zip": "4214" },
+    { "name": "Rillo (Pob.)", "zip": "4214" },
+    { "name": "Putol", "zip": "4214" },
+    { "name": "Sabang", "zip": "4214" },
+    { "name": "San Jose", "zip": "4214" },
+    { "name": "Talon", "zip": "4214" },
+    { "name": "Toong", "zip": "4214" },
+    { "name": "Tuyon-tuyon", "zip": "4214" }
+  ]
+}

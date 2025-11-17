@@ -1,0 +1,25 @@
+{
+  "province": "Laguna",
+  "city": "Santa Rosa City",
+  "zip": "4026",
+  "barangays": [
+    { "name": "Aplaya", "zip": "4026" },
+    { "name": "Balibago", "zip": "4026" },
+    { "name": "Caingin", "zip": "4026" },
+    { "name": "Dila", "zip": "4026" },
+    { "name": "Dita", "zip": "4026" },
+    { "name": "Don Jose", "zip": "4026" },
+    { "name": "Ibaba", "zip": "4026" },
+    { "name": "Labas", "zip": "4026" },
+    { "name": "Macabling", "zip": "4026" },
+    { "name": "Malitlit", "zip": "4026" },
+    { "name": "Malusak (Pob.)", "zip": "4026" },
+    { "name": "Market Area (Pob.)", "zip": "4026" },
+    { "name": "Kanluran (Pob.)", "zip": "4026" },
+    { "name": "Pook", "zip": "4026" },
+    { "name": "Pulong Santa Cruz", "zip": "4026" },
+    { "name": "Santo Domingo", "zip": "4026" },
+    { "name": "Sinalhan", "zip": "4026" },
+    { "name": "Tagapo", "zip": "4026" }
+  ]
+}

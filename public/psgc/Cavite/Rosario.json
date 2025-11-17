@@ -1,0 +1,27 @@
+{
+  "province": "Cavite",
+  "city": "Rosario",
+  "zip": "4106",
+  "barangays": [
+    { "name": "Bagbag I", "zip": "4106" },
+    { "name": "Bagbag II", "zip": "4106" },
+    { "name": "Kanluran", "zip": "4106" },
+    { "name": "Ligtong I", "zip": "4106" },
+    { "name": "Ligtong II", "zip": "4106" },
+    { "name": "Ligtong III", "zip": "4106" },
+    { "name": "Ligtong IV", "zip": "4106" },
+    { "name": "Muzon I", "zip": "4106" },
+    { "name": "Muzon II", "zip": "4106" },
+    { "name": "Poblacion", "zip": "4106" },
+    { "name": "Sapa I", "zip": "4106" },
+    { "name": "Sapa II", "zip": "4106" },
+    { "name": "Sapa III", "zip": "4106" },
+    { "name": "Sapa IV", "zip": "4106" },
+    { "name": "Silangan I", "zip": "4106" },
+    { "name": "Silangan II", "zip": "4106" },
+    { "name": "Tejeros Convention", "zip": "4106" },
+    { "name": "Wawa I", "zip": "4106" },
+    { "name": "Wawa II", "zip": "4106" },
+    { "name": "Wawa III", "zip": "4106" }
+  ]
+}

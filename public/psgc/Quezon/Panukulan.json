@@ -1,0 +1,19 @@
+{
+  "province": "Quezon",
+  "city": "Panukulan",
+  "zip": "4337",
+  "barangays": [
+    { "name": "Balungay", "zip": "4337" },
+    { "name": "Bato", "zip": "4337" },
+    { "name": "Bonbon", "zip": "4337" },
+    { "name": "Calasumanga", "zip": "4337" },
+    { "name": "Kinalagti", "zip": "4337" },
+    { "name": "Libo", "zip": "4337" },
+    { "name": "Lipata", "zip": "4337" },
+    { "name": "Matangkap", "zip": "4337" },
+    { "name": "Milawid", "zip": "4337" },
+    { "name": "Pagitan", "zip": "4337" },
+    { "name": "Pandan", "zip": "4337" },
+    { "name": "San Juan (Pob.)", "zip": "4337" }
+  ]
+}

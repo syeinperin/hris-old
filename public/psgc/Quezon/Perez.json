@@ -1,0 +1,21 @@
+{
+  "province": "Quezon",
+  "city": "Perez",
+  "zip": "4339",
+  "barangays": [
+    { "name": "Maabot", "zip": "4339" },
+    { "name": "Mainit Norte", "zip": "4339" },
+    { "name": "Mainit Sur", "zip": "4339" },
+    { "name": "Pambuhan", "zip": "4339" },
+    { "name": "Pinagtubigan Este", "zip": "4339" },
+    { "name": "Pinagtubigan Weste", "zip": "4339" },
+    { "name": "Pagkakaisa Pob. (Barangay 1)", "zip": "4339" },
+    { "name": "Mapagmahal Pob. (Barangay 2)", "zip": "4339" },
+    { "name": "Bagong Pag-Asa Pob. (Barangay 3)", "zip": "4339" },
+    { "name": "Bagong Silang Pob. (Barangay 4)", "zip": "4339" },
+    { "name": "Rizal", "zip": "4339" },
+    { "name": "Sangirin", "zip": "4339" },
+    { "name": "Villamanzano Norte", "zip": "4339" },
+    { "name": "Villamanzano Sur", "zip": "4339" }
+  ]
+}

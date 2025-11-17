@@ -1,0 +1,24 @@
+{
+  "province": "Batangas",
+  "city": "Santa Teresita",
+  "zip": "4206",
+  "barangays": [
+    { "name": "Antipolo", "zip": "4206" },
+    { "name": "Bihis", "zip": "4206" },
+    { "name": "Burol", "zip": "4206" },
+    { "name": "Calayaan", "zip": "4206" },
+    { "name": "Calumala", "zip": "4206" },
+    { "name": "Cuta East", "zip": "4206" },
+    { "name": "Cutang Cawayan", "zip": "4206" },
+    { "name": "Irukan", "zip": "4206" },
+    { "name": "Pacifico", "zip": "4206" },
+    { "name": "Poblacion I", "zip": "4206" },
+    { "name": "Poblacion II", "zip": "4206" },
+    { "name": "Poblacion III", "zip": "4206" },
+    { "name": "Saimsim", "zip": "4206" },
+    { "name": "Sampa", "zip": "4206" },
+    { "name": "Sinipian", "zip": "4206" },
+    { "name": "Tambo Ibaba", "zip": "4206" },
+    { "name": "Tambo Ilaya", "zip": "4206" }
+  ]
+}

@@ -24,7 +24,7 @@
 
     {{-- Free-text search --}}
     <div class="col">
-      <label class="form-label">Keyword</label>
+      <label class="form-label">Search</label>
       <input type="text"
              name="{{ $qName }}"
              value="{{ old($qName, $qValue) }}"

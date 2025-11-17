@@ -1,0 +1,30 @@
+{
+  "province": "Laguna",
+  "city": "Luisiana",
+  "zip": "4032",
+  "barangays": [
+    { "name": "De La Paz", "zip": "4032" },
+    { "name": "Barangay Zone I (Pob.)", "zip": "4032" },
+    { "name": "Barangay Zone II (Pob.)", "zip": "4032" },
+    { "name": "Barangay Zone III (Pob.)", "zip": "4032" },
+    { "name": "Barangay Zone IV (Pob.)", "zip": "4032" },
+    { "name": "Barangay Zone V (Pob.)", "zip": "4032" },
+    { "name": "Barangay Zone VI (Pob.)", "zip": "4032" },
+    { "name": "Barangay Zone VII (Pob.)", "zip": "4032" },
+    { "name": "Barangay Zone VIII (Pob.)", "zip": "4032" },
+    { "name": "San Antonio", "zip": "4032" },
+    { "name": "San Buenaventura", "zip": "4032" },
+    { "name": "San Diego", "zip": "4032" },
+    { "name": "San Isidro", "zip": "4032" },
+    { "name": "San Jose", "zip": "4032" },
+    { "name": "San Juan", "zip": "4032" },
+    { "name": "San Luis", "zip": "4032" },
+    { "name": "San Pablo", "zip": "4032" },
+    { "name": "San Pedro", "zip": "4032" },
+    { "name": "San Rafael", "zip": "4032" },
+    { "name": "San Roque", "zip": "4032" },
+    { "name": "San Salvador", "zip": "4032" },
+    { "name": "Santo Domingo", "zip": "4032" },
+    { "name": "Santo Tomas", "zip": "4032" }
+  ]
+}

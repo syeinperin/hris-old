@@ -1,0 +1,26 @@
+{
+  "province": "Batangas-City",
+  "city": "Alitagtag",
+  "zip": "4205",
+  "barangays": [
+    { "name": "Balagbag", "zip": "4205" },
+    { "name": "Concepcion", "zip": "4205" },
+    { "name": "Concordia", "zip": "4205" },
+    { "name": "Dalipit East", "zip": "4205" },
+    { "name": "Dalipit West", "zip": "4205" },
+    { "name": "Dominador East", "zip": "4205" },
+    { "name": "Dominador West", "zip": "4205" },
+    { "name": "Munlawin Sur", "zip": "4205" },
+    { "name": "Munlawin Norte", "zip": "4205" },
+    { "name": "Muzon Primero", "zip": "4205" },
+    { "name": "Muzon Segundo", "zip": "4205" },
+    { "name": "Pinagkurusan", "zip": "4205" },
+    { "name": "Ping-As", "zip": "4205" },
+    { "name": "Poblacion East", "zip": "4205" },
+    { "name": "Poblacion West", "zip": "4205" },
+    { "name": "San Jose", "zip": "4205" },
+    { "name": "Santa Cruz", "zip": "4205" },
+    { "name": "Tadlac", "zip": "4205" },
+    { "name": "San Juan", "zip": "4205" }
+  ]
+}

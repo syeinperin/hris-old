@@ -11,22 +11,25 @@ use App\Models\Employee;
 
 class FaceRecognitionController extends Controller
 {
-    // Lower = stricter, Higher = more tolerant
     private const MATCH_THRESHOLD = 0.45;
 
-    /** Fallback if something calls /face */
-    public function index() {
-    // show the Face Recognition hub page with the two big buttons
-    return view('face.index');
+   public function index()
+{
+    $templates = \App\Models\FaceTemplate::with(['employee.department'])
+        ->latest('updated_at')
+        ->get();
+
+    return view('face.index', compact('templates'));
 }
 
-    /** Admin/HR enrollment page (keep as-is if you want) */
+
     public function enroll()
     {
         $query = Employee::query();
         if (DbSchema::hasColumn('employees', 'status')) {
             $query->where('status', 'active');
         }
+
         $employees = $query->orderBy('last_name')->orderBy('first_name')
             ->get(['id','employee_code','first_name','last_name']);
 
@@ -35,10 +38,8 @@ class FaceRecognitionController extends Controller
         return view('face.enroll', compact('employees','templates'));
     }
 
-    /** Save descriptor + optional snapshot */
     public function enrollStore(Request $request)
     {
-        // If descriptor arrived as JSON string, decode it
         if (is_string($request->input('descriptor'))) {
             $decoded = json_decode($request->input('descriptor'), true);
             if (json_last_error() === JSON_ERROR_NONE) {
@@ -82,31 +83,26 @@ class FaceRecognitionController extends Controller
         return back()->with('success', 'Face template saved.');
     }
 
-    /** Internal app face attendance (if you keep it) */
-    public function attendance() { return view('face.attendance'); }
-
-    /** NEW: Public kiosk face attendance page (no sidebar, no auth) */
-    public function kiosk()
+    public function attendance()
     {
-        return view('kiosk.face'); // standalone HTML; see view file below
+        return view('face.attendance');
     }
 
-    /** Match API (used by both internal page and kiosk page) */
-    public function match(Request $request)
+    public function kiosk()
     {
+        return view('kiosk.face');
+    }public function match(Request $request)
+{
+    try {
         $data = $request->validate([
             'descriptor' => 'required|array|size:128',
         ]);
 
         $probe = array_map('floatval', $data['descriptor']);
-
         $templates = FaceTemplate::with('employee')->get();
+
         if ($templates->isEmpty()) {
-            return response()->json([
-                'matched'  => false,
-                'distance' => null,
-                'employee' => null,
-            ]);
+            return response()->json(['matched' => false, 'employee' => null]);
         }
 
         $best = null;
@@ -118,30 +114,62 @@ class FaceRecognitionController extends Controller
         }
 
         $isMatch = $best['distance'] <= self::MATCH_THRESHOLD;
+        if (!$isMatch) {
+            return response()->json(['matched' => false, 'employee' => null]);
+        }
+
+        $emp = $best['template']->employee;
+        $photoUrl = $this->resolvePhoto($emp, $best['template']);
 
         return response()->json([
-            'matched'  => $isMatch,
-            'distance' => round($best['distance'], 4),
-            'employee' => $isMatch ? [
-                'id'            => $best['template']->employee->id,
-                'name'          => trim(($best['template']->employee->first_name ?? '').' '.($best['template']->employee->last_name ?? '')),
-                'employee_code' => $best['template']->employee->employee_code,
-            ] : null,
+            'matched' => true,
+            'employee' => [
+                'id' => $emp->id,
+                'name' => trim("{$emp->first_name} {$emp->last_name}"),
+                'employee_code' => $emp->employee_code,
+                'profile_picture_url' => $photoUrl,
+            ],
         ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'matched' => false,
+            'error' => $e->getMessage(),
+        ], 500);
+    }
+}
+
+private function resolvePhoto($employee, $template)
+{
+    $paths = [];
+
+    if (!empty($employee->profile_picture)) {
+        $clean = str_replace(['\\', 'public/'], ['/', ''], $employee->profile_picture);
+        $clean = str_replace('uploads/profile_pictures/', 'uploads/profile_picture/', $clean);
+        $paths[] = 'storage/' . ltrim($clean, '/');
     }
 
-    /** Delete stored template */
+    if (!empty($template->image_path)) {
+        $clean = str_replace(['\\', 'public/'], ['/', ''], $template->image_path);
+        $paths[] = 'storage/' . ltrim($clean, '/');
+    }
+
+    foreach ($paths as $path) {
+        if (file_exists(public_path($path))) return asset($path);
+    }
+
+    return asset('images/default-profile.png');
+}
+
+
     public function destroy(FaceTemplate $template)
     {
         if ($template->image_path) {
             Storage::disk('public')->delete($template->image_path);
         }
         $template->delete();
-
         return back()->with('success', 'Template removed.');
     }
 
-    // ---------- helpers ----------
     private function euclidean(array $a, array $b): float
     {
         $sum = 0.0; $n = count($a);

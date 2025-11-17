@@ -3,81 +3,81 @@
 namespace App\Http\Controllers;
 
 use App\Models\Department;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class DepartmentController extends Controller
 {
     /**
-     * Display departments (GET), optionally filtered by ?search=
+     * Display department assignment page.
      */
     public function index(Request $request)
     {
         $search = $request->input('search');
-        $term   = $search ? "%{$search}%" : null;
+        $term = $search ? "%{$search}%" : null;
 
-        $departments = Department::latest()
-            ->when($term, fn($q) => $q->where('name','like',$term))
+        // Departments with supervisors
+        $departments = Department::with('supervisors')
+            ->when($term, fn($q) => $q->where('name', 'like', $term))
+            ->orderBy('name')
             ->paginate(10)
             ->withQueryString();
 
-        return view('departments.index', compact('departments'));
+        // Supervisors list for assignment
+        $supervisors = User::query()->role('supervisor')
+
+            ->orderBy('name')
+            ->get(['id', 'name']);
+
+        return view('departments.index', compact('departments', 'supervisors'));
     }
 
     /**
-     * Show the form for creating a new department.
+     * 🔍 Search (same logic as index, used by search bar)
      */
-    public function create()
+    public function search(Request $request)
     {
-        return view('departments.create');
+        return $this->index($request);
     }
 
     /**
-     * Store a newly created department.
+     * Assign supervisors to a department (instead of adding new).
      */
     public function store(Request $request)
     {
-        $request->validate([
-            'name' => 'required|unique:departments|max:255',
+        $data = $request->validate([
+            'department_id' => 'required|exists:departments,id',
+            'supervisor_ids' => 'nullable|array',
+            'supervisor_ids.*' => 'exists:users,id',
         ]);
 
-        Department::create($request->only('name'));
+        $department = Department::findOrFail($data['department_id']);
+        $department->supervisors()->sync($data['supervisor_ids'] ?? []);
 
         return redirect()
             ->route('departments.index')
-            ->with('success', 'Department added successfully.');
+            ->with('success', 'Supervisors assigned successfully.');
     }
 
     /**
-     * Show the form for editing the specified department.
-     * Passes all existing department names for the dropdown.
-     */
-    public function edit(Department $department)
-    {
-        $departmentNames = Department::orderBy('name')
-            ->pluck('name')
-            ->toArray();
-
-        return view('departments.edit', compact('department', 'departmentNames'));
-    }
-
-    /**
-     * Update the specified department.
+     * Update supervisor assignments for existing department.
      */
     public function update(Request $request, Department $department)
     {
-        $request->validate([
-            'name' => 'required|unique:departments,name,'.$department->id.'|max:255',
+        $data = $request->validate([
+            'supervisor_ids' => 'nullable|array',
+            'supervisor_ids.*' => 'exists:users,id',
         ]);
 
-        $department->update($request->only('name'));
+        $department->supervisors()->sync($data['supervisor_ids'] ?? []);
 
         return redirect()
             ->route('departments.index')
-            ->with('success', 'Department updated successfully.');
+            ->with('success', 'Supervisor assignments updated successfully.');
     }
 
     /**
-     * Remove the specified department.
+     * Delete department (optional).
      */
     public function destroy(Department $department)
     {

@@ -1,0 +1,25 @@
+{
+  "province": "Batangas",
+  "city": "San Nicolas",
+  "zip": "4207",
+  "barangays": [
+    { "name": "Abelo", "zip": "4207" },
+    { "name": "Balete", "zip": "4207" },
+    { "name": "Baluk-baluk", "zip": "4207" },
+    { "name": "Bancoro", "zip": "4207" },
+    { "name": "Bangin", "zip": "4207" },
+    { "name": "Calangay", "zip": "4207" },
+    { "name": "Hipit", "zip": "4207" },
+    { "name": "Maabud North", "zip": "4207" },
+    { "name": "Maabud South", "zip": "4207" },
+    { "name": "Munlawin", "zip": "4207" },
+    { "name": "Pansipit", "zip": "4207" },
+    { "name": "Poblacion", "zip": "4207" },
+    { "name": "Santo Niño", "zip": "4207" },
+    { "name": "Sinturisan", "zip": "4207" },
+    { "name": "Tagudtod", "zip": "4207" },
+    { "name": "Talang", "zip": "4207" },
+    { "name": "Alas-as", "zip": "4207" },
+    { "name": "Pulang-Bato", "zip": "4207" }
+  ]
+}

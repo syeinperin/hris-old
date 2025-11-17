@@ -9,10 +9,10 @@ class SidebarSeeder extends Seeder
 {
     public function run(): void
     {
-        // Reset
         Sidebar::truncate();
 
-        // ── Top-Level (HR/Supervisor) ─────────────────────
+        /* ────────────── HR & SUPERVISOR ────────────── */
+
         Sidebar::create([
             'title'     => 'Dashboard',
             'route'     => 'dashboard',
@@ -25,7 +25,7 @@ class SidebarSeeder extends Seeder
         Sidebar::create([
             'title'     => 'Announcements',
             'route'     => 'announcements.index',
-            'icon'      => 'bullhorn',
+            'icon'      => 'megaphone',
             'parent_id' => null,
             'order'     => 2,
             'roles'     => ['hr','supervisor'],
@@ -34,7 +34,7 @@ class SidebarSeeder extends Seeder
         Sidebar::create([
             'title'     => 'User List',
             'route'     => 'users.index',
-            'icon'      => 'address-book',
+            'icon'      => 'people',
             'parent_id' => null,
             'order'     => 3,
             'roles'     => ['hr'],
@@ -49,14 +49,13 @@ class SidebarSeeder extends Seeder
             'roles'     => ['hr','supervisor'],
         ]);
 
-        // HR/Supervisor evaluation manager
         Sidebar::create([
             'title'     => 'Performance Evaluation',
             'route'     => 'evaluations.index',
             'icon'      => 'clipboard2-check',
             'parent_id' => null,
             'order'     => 5,
-            'roles'     => ['hr','supervisor'],
+            'roles'     => ['supervisor'],
         ]);
 
         Sidebar::create([
@@ -65,7 +64,7 @@ class SidebarSeeder extends Seeder
             'icon'      => 'person-lines-fill',
             'parent_id' => null,
             'order'     => 6,
-            'roles'     => ['hr'],
+            'roles'     => ['hr','supervisor'],
         ]);
 
         Sidebar::create([
@@ -74,11 +73,11 @@ class SidebarSeeder extends Seeder
             'icon'      => 'clipboard-data',
             'parent_id' => null,
             'order'     => 7,
-            'roles'     => ['hr'],
+            'roles'     => ['hr','supervisor'],
         ]);
 
         Sidebar::create([
-            'title'     => 'Schedule',
+            'title'     => 'Schedule Management',
             'route'     => 'schedule.index',
             'icon'      => 'calendar-check',
             'parent_id' => null,
@@ -95,23 +94,71 @@ class SidebarSeeder extends Seeder
             'roles'     => ['hr'],
         ]);
 
-        // ── Global Reports ────────────────────────────────
+        Sidebar::create([
+            'title'     => 'Offboarding',
+            'route'     => 'offboarding.index',
+            'icon'      => 'box-arrow-right',
+            'parent_id' => null,
+            'order'     => 10,
+            'roles'     => ['hr'],
+        ]);
+
         Sidebar::create([
             'title'     => 'Reports',
             'route'     => 'reports.index',
             'icon'      => 'file-earmark-bar-graph',
             'parent_id' => null,
             'order'     => 11,
-            'roles'     => ['hr','supervisor'],
+            'roles'     => ['hr'],
         ]);
 
-        // ── Employee-only (Self-Service) ──────────────────
+        Sidebar::create([
+            'title'     => 'Employee Documents',
+            'route'     => 'documents.index',
+            'icon'      => 'folder2-open',
+            'parent_id' => null,
+            'order'     => 12,
+            'roles'     => ['hr'],
+        ]);
+
+        Sidebar::create([
+            'title'     => 'Face Recognition',
+            'route'     => 'face.index',
+            'icon'      => 'camera-video',
+            'parent_id' => null,
+            'order'     => 13,
+            'roles'     => ['hr'],
+        ]);
+
+  
+
+
+        /* ────────────── EMPLOYEE SELF-SERVICE ────────────── */
+
         Sidebar::create([
             'title'     => 'My Dashboard',
             'route'     => 'dashboard.employee',
             'icon'      => 'house',
             'parent_id' => null,
-            'order'     => 12,
+            'order'     => 20,
+            'roles'     => ['employee'],
+        ]);
+
+        Sidebar::create([
+            'title'     => 'My Time Card',
+            'route'     => 'employee.timecard.index',
+            'icon'      => 'journal-check',
+            'parent_id' => null,
+            'order'     => 21,
+            'roles'     => ['employee'],
+        ]);
+
+        Sidebar::create([
+            'title'     => 'My Schedule',
+            'route'     => 'employees.schedule',
+            'icon'      => 'calendar-week',
+            'parent_id' => null,
+            'order'     => 22,
             'roles'     => ['employee'],
         ]);
 
@@ -120,16 +167,16 @@ class SidebarSeeder extends Seeder
             'route'     => 'leaves.index',
             'icon'      => 'calendar',
             'parent_id' => null,
-            'order'     => 13,
+            'order'     => 23,
             'roles'     => ['employee'],
         ]);
 
         Sidebar::create([
-            'title'     => 'Payslips',
-            'route'     => 'payslips.index',
-            'icon'      => 'file-earmark-text',
+            'title'     => 'My Evaluations',
+            'route'     => 'my.evaluations.index',
+            'icon'      => 'clipboard2-check',
             'parent_id' => null,
-            'order'     => 14,
+            'order'     => 24,
             'roles'     => ['employee'],
         ]);
 
@@ -138,28 +185,36 @@ class SidebarSeeder extends Seeder
             'route'     => 'employee.loans.index',
             'icon'      => 'piggy-bank',
             'parent_id' => null,
-            'order'     => 15,
+            'order'     => 25,
             'roles'     => ['employee'],
         ]);
 
-        // Employee evaluation self-view
         Sidebar::create([
-            'title'     => 'My Evaluations',
-            'route'     => 'my.evaluations.index',
-            'icon'      => 'clipboard2-check',
+            'title'     => 'My Payslips',
+            'route'     => 'payslips.index',
+            'icon'      => 'file-earmark-text',
             'parent_id' => null,
-            'order'     => 16,
+            'order'     => 26,
             'roles'     => ['employee'],
         ]);
 
-        // ── Face Recognition (ONE combined menu item) ─────
         Sidebar::create([
-            'title'     => 'Face Recognition',
-            'route'     => 'face.index',   // hub page with buttons
-            'icon'      => 'camera-video',
+            'title'     => 'My Documents',
+            'route'     => 'mydocs.index',
+            'icon'      => 'files',
             'parent_id' => null,
-            'order'     => 19,
-            'roles'     => ['hr','supervisor'],
+            'order'     => 27,
+            'roles'     => ['employee'],
         ]);
-    }
+    
+
+          Sidebar::create([
+            'title'     => 'Formal Complaints',
+            'route'     => 'concerns.index',
+            'icon'      => 'exclamation-triangle',
+            'parent_id' => null,
+            'order'     => 14,
+            'roles'     => ['hr','supervisor','employee'],
+        ]);
+}
 }

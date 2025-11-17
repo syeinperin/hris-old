@@ -1,0 +1,15 @@
+{
+  "province": "Rizal",
+  "city": "Morong",
+  "zip": "1960",
+  "barangays": [
+    { "name": "Bombongan", "zip": "1960" },
+    { "name": "Can-Cal-Lan (Caniogan-Calero-Lanang)", "zip": "1960" },
+    { "name": "Lagundi", "zip": "1960" },
+    { "name": "Maybancal", "zip": "1960" },
+    { "name": "San Guillermo", "zip": "1960" },
+    { "name": "San Jose (Pob.)", "zip": "1960" },
+    { "name": "San Juan (Pob.)", "zip": "1960" },
+    { "name": "San Pedro (Pob.)", "zip": "1960" }
+  ]
+}

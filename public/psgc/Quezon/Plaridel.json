@@ -1,0 +1,16 @@
+{
+  "province": "Quezon",
+  "city": "Plaridel",
+  "zip": "4309",
+  "barangays": [
+    { "name": "Concepcion", "zip": "4309" },
+    { "name": "Duhat", "zip": "4309" },
+    { "name": "Ilaya", "zip": "4309" },
+    { "name": "Ilosong", "zip": "4309" },
+    { "name": "Tanauan", "zip": "4309" },
+    { "name": "Central (Pob.)", "zip": "4309" },
+    { "name": "Paang Bundok (Pob.)", "zip": "4309" },
+    { "name": "Pampaaralan (Pob.)", "zip": "4309" },
+    { "name": "M. L. Tumagay Pob. (Remas Mabuton)", "zip": "4309" }
+  ]
+}

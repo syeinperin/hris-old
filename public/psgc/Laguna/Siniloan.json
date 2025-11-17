@@ -1,0 +1,27 @@
+{
+  "province": "Laguna",
+  "city": "Siniloan",
+  "zip": "4019",
+  "barangays": [
+    { "name": "Acevida", "zip": "4019" },
+    { "name": "Bagong Pag-Asa (Pob.)", "zip": "4019" },
+    { "name": "Bagumbarangay (Pob.)", "zip": "4019" },
+    { "name": "Buhay", "zip": "4019" },
+    { "name": "Gen. Luna", "zip": "4019" },
+    { "name": "Halayhayin", "zip": "4019" },
+    { "name": "Mendiola", "zip": "4019" },
+    { "name": "Kapatalan", "zip": "4019" },
+    { "name": "Laguio", "zip": "4019" },
+    { "name": "Liyang", "zip": "4019" },
+    { "name": "Llavac", "zip": "4019" },
+    { "name": "Pandeno", "zip": "4019" },
+    { "name": "Magsaysay", "zip": "4019" },
+    { "name": "Macatad", "zip": "4019" },
+    { "name": "Mayatba", "zip": "4019" },
+    { "name": "P. Burgos", "zip": "4019" },
+    { "name": "G. Redor (Pob.)", "zip": "4019" },
+    { "name": "Salubungan", "zip": "4019" },
+    { "name": "Wawa", "zip": "4019" },
+    { "name": "J. Rizal (Pob.)", "zip": "4019" }
+  ]
+}

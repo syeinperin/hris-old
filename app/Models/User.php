@@ -55,6 +55,27 @@ class User extends Authenticatable
         return $this->hasOne(\App\Models\Employee::class, 'user_id', 'id');
     }
 
+    protected static function booted()
+{
+    static::created(function ($user) {
+        // Auto-assign Spatie role when a new user is created
+        $map = [
+            1 => 'hr',
+            2 => 'supervisor',
+            3 => 'employee',
+        ];
+
+        if (isset($map[$user->role_id])) {
+            try {
+                $user->assignRole($map[$user->role_id]);
+            } catch (\Throwable $e) {
+                \Log::error("Failed to assign role to user {$user->id}: " . $e->getMessage());
+            }
+        }
+    });
+}
+
+
     /**
      * All payslips generated for this user.
      */
@@ -72,6 +93,20 @@ class User extends Authenticatable
     }
 
     /**
+ * All leave requests the supervisor can approve.
+ */
+public function leavesToApprove()
+{
+    return $this->hasMany(\App\Models\LeaveRequest::class, 'supervisor_id');
+}
+
+public function supervisedDepartments()
+{
+    return $this->belongsToMany(Department::class, 'department_supervisor', 'supervisor_id', 'department_id');
+}
+
+
+    /**
      * Simple name‐based role check against domain roles.
      */
     public function hasRoleName(string $roleName): bool
@@ -86,4 +121,6 @@ class User extends Authenticatable
     {
         return $this->notifications();
     }
+
+    
 }

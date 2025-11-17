@@ -1,44 +1,52 @@
 // public/js/ph-location.js
-
 document.addEventListener('DOMContentLoaded', () => {
   const provinceSelect = document.getElementById('current_province');
-  const citySelect     = document.getElementById('current_city');
+  const citySelect     = document.getElementById('current_city_select');
+  const cityHidden     = document.getElementById('current_city');
+  const brgySelect     = document.getElementById('current_barangay_select');
+  const brgyHidden     = document.getElementById('current_barangay');
   const postalInput    = document.getElementById('current_postal_code');
 
+  if (!provinceSelect || !citySelect || !cityHidden || !brgySelect || !brgyHidden || !postalInput) {
+    console.warn("ph-location.js: Some required elements are missing on this page.");
+    return;
+  }
+
   const phLocations = {
-    // ── LAGUNA (30 LGUs) ──────────────────────────────────────────────
+    // ── LAGUNA (sample; add others as needed) ──
     "Laguna": [
-      { name: "Alaminos",    zip: "4024" },
-      { name: "Bay",         zip: "4008" },
-      { name: "Biñan",       zip: "4024" },
-      { name: "Cabuyao",     zip: "4025" },
-      { name: "Calamba",     zip: "4027" },
-      { name: "Calauan",     zip: "4004" },
-      { name: "Cavinti",     zip: "4014" },
-      { name: "Famy",        zip: "4009" },
-      { name: "Kalayaan",    zip: "4026" },
-      { name: "Liliw",       zip: "4006" },
-      { name: "Luisiana",    zip: "4005" },
-      { name: "Lumban",      zip: "4010" },
-      { name: "Mabitac",     zip: "4013" },
-      { name: "Magdalena",   zip: "4022" },
-      { name: "Majayjay",    zip: "4016" },
-      { name: "Nagcarlan",   zip: "4002" },
-      { name: "Paete",       zip: "4007" },
-      { name: "Pagsanjan",   zip: "4016" },
-      { name: "Pakil",       zip: "4011" },
-      { name: "Pangil",      zip: "4017" },
-      { name: "Pila",        zip: "4005" },
-      { name: "Rizal",       zip: "4028" },
-      { name: "San Pablo",   zip: "4000" },
-      { name: "San Pedro",   zip: "4023" },
-      { name: "Santa Cruz",  zip: "4000" },
+      { name: "Alaminos", zip: "4024" },
+      { name: "Bay", zip: "4008" },
+      { name: "Biñan", zip: "4024" },
+      { name: "Cabuyao", zip: "4025" },
+      { name: "Calamba", zip: "4027" },
+      { name: "Calauan", zip: "4004" },
+      { name: "Cavinti", zip: "4014" },
+      { name: "Famy", zip: "4009" },
+      { name: "Kalayaan", zip: "4026" },
+      { name: "Liliw", zip: "4006" },
+      { name: "Luisiana", zip: "4005" },
+      { name: "Lumban", zip: "4010" },
+      { name: "Mabitac", zip: "4013" },
+      { name: "Magdalena", zip: "4022" },
+      { name: "Majayjay", zip: "4016" },
+      { name: "Nagcarlan", zip: "4002" },
+      { name: "Paete", zip: "4007" },
+      { name: "Pagsanjan", zip: "4016" },
+      { name: "Pakil", zip: "4011" },
+      { name: "Pangil", zip: "4017" },
+      { name: "Pila", zip: "4005" },
+      { name: "Rizal", zip: "4028" },
+      { name: "San Pablo", zip: "4000" },
+      { name: "San Pedro", zip: "4023" },
+      { name: "Santa Cruz", zip: "4000" },
       { name: "Santa Maria", zip: "4029" },
-      { name: "Santa Rosa",  zip: "4026" },
-      { name: "Siniloan",    zip: "4018" },
-      { name: "Victoria",    zip: "4019" }
+      { name: "Santa Rosa", zip: "4026" },
+      { name: "Siniloan", zip: "4018" },
+      { name: "Victoria", zip: "4019" }
     ],
 
+  
     // ── CAVITE (23 LGUs) ──────────────────────────────────────────────
     "Cavite": [
       { name: "Alfonso",        zip: "4123" },
@@ -164,20 +172,18 @@ document.addEventListener('DOMContentLoaded', () => {
     ]
   };
 
-  function resetCityAndZip() {
+  function resetCityAndBrgy() {
     citySelect.innerHTML = '<option value="" disabled selected>Select City / Municipality</option>';
-    postalInput.value   = '';
-    citySelect.disabled = true;
-    postalInput.readOnly = true;
+    brgySelect.innerHTML = '<option value="" disabled selected>Select Barangay</option>';
+    cityHidden.value = '';
+    brgyHidden.value = '';
+    postalInput.value = '';
   }
 
-  // on province change → populate cities
+  // Province change → populate cities
   provinceSelect.addEventListener('change', () => {
-    resetCityAndZip();
-
+    resetCityAndBrgy();
     const list = phLocations[provinceSelect.value] || [];
-    if (!list.length) return;
-
     list.forEach(({ name, zip }) => {
       const opt = document.createElement('option');
       opt.value = name;
@@ -185,16 +191,55 @@ document.addEventListener('DOMContentLoaded', () => {
       opt.dataset.zip = zip;
       citySelect.appendChild(opt);
     });
-
-    citySelect.disabled = false;
   });
 
-  // on city change → fill zip
+  // City change → update hidden + postal
   citySelect.addEventListener('change', () => {
     const sel = citySelect.selectedOptions[0];
-    postalInput.value = sel ? sel.dataset.zip : '';
+    if (!sel) return;
+    cityHidden.value = sel.value;
+    postalInput.value = sel.dataset.zip || '';
   });
 
-  // initialize
-  resetCityAndZip();
+  // Barangay change → update hidden
+  brgySelect.addEventListener('change', () => {
+    const sel = brgySelect.selectedOptions[0];
+    if (!sel) return;
+    brgyHidden.value = sel.value;
+  });
+
+  // 🔄 Auto-restore values (useful for edit form)
+  (function restoreExisting() {
+    const prov = provinceSelect.value;
+    const city = cityHidden.value;
+    const brgy = brgyHidden.value;
+
+    if (!prov) return;
+
+    const list = phLocations[prov] || [];
+    if (!list.length) return;
+
+    // Populate city dropdown
+    list.forEach(({ name, zip }) => {
+      const opt = document.createElement('option');
+      opt.value = name;
+      opt.textContent = name;
+      opt.dataset.zip = zip;
+      if (name === city) opt.selected = true;
+      citySelect.appendChild(opt);
+    });
+
+    // Restore postal code
+    const foundCity = list.find(c => c.name === city);
+    if (foundCity) postalInput.value = foundCity.zip;
+
+    // Restore barangay (if you maintain a barangay list)
+    if (brgy) {
+      const opt = document.createElement('option');
+      opt.value = brgy;
+      opt.textContent = brgy;
+      opt.selected = true;
+      brgySelect.appendChild(opt);
+    }
+  })();
 });

@@ -1,0 +1,17 @@
+{
+  "province": "Rizal",
+  "city": "Angono",
+  "zip": "1930",
+  "barangays": [
+    { "name": "Bagumbayan", "zip": "1930" },
+    { "name": "Kalayaan", "zip": "1930" },
+    { "name": "Poblacion Ibaba", "zip": "1930" },
+    { "name": "Poblacion Itaas", "zip": "1930" },
+    { "name": "San Isidro", "zip": "1930" },
+    { "name": "San Pedro", "zip": "1930" },
+    { "name": "San Roque", "zip": "1930" },
+    { "name": "San Vicente", "zip": "1930" },
+    { "name": "Santo Niño", "zip": "1930" },
+    { "name": "Mahabang Parang", "zip": "1930" }
+  ]
+}

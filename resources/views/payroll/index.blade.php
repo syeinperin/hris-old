@@ -13,9 +13,6 @@
         <a href="{{ route('designations.index') }}" class="btn btn-outline-secondary btn-sm">
           <i class="bi bi-percent me-1"></i> Salary Rates
         </a>
-        <a href="{{ route('payroll.manual') }}" class="btn btn-outline-primary btn-sm">
-          <i class="bi bi-pencil-square me-1"></i> Manual Payroll
-        </a>
         <a href="{{ route('loans.index') }}" class="btn btn-outline-secondary btn-sm">
           <i class="bi bi-journal-medical me-1"></i> Loans
         </a>
@@ -45,7 +42,7 @@
             </tr>
           </thead>
           <tbody>
-            @forelse($rows as $row)
+@forelse($paginator as $row)
               <tr>
                 <td class="text-nowrap">{{ $row['employee_code'] }}</td>
                 <td>{{ $row['employee_name'] }}</td>
@@ -55,8 +52,7 @@
                     $monthParam = substr(request('start_date', $date), 0, 7);
                   @endphp
                   <a
-                    href="{{ route('payroll.show', $row['employee_id']) }}?month={{ $monthParam }}"
-                    class="btn btn-sm btn-primary"
+  href="{{ route('payroll.show', ['employee' => $row['employee_id']]) }}?month={{ $monthParam }}"                    class="btn btn-sm btn-primary"
                   >
                     View
                   </a>
@@ -75,11 +71,12 @@
 
       {{-- Pagination --}}
       <div class="d-flex justify-content-between align-items-center mt-4">
-        <small class="text-muted">
-          Showing {{ $rows->firstItem() }}–{{ $rows->lastItem() }}
-          of {{ $rows->total() }}
-        </small>
-        {{ $rows->withQueryString()->links('pagination::bootstrap-5') }}
+<small class="text-muted">
+  Showing {{ $paginator->firstItem() }}–{{ $paginator->lastItem() }}
+  of {{ $paginator->total() }}
+</small>
+{{ $paginator->withQueryString()->links('pagination::bootstrap-5') }}
+
       </div>
     </div>
   </div>

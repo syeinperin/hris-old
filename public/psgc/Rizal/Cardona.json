@@ -1,0 +1,25 @@
+{
+  "province": "Rizal",
+  "city": "Cardona",
+  "zip": "1950",
+  "barangays": [
+    { "name": "Balibago", "zip": "1950" },
+    { "name": "Boor", "zip": "1950" },
+    { "name": "Calahan", "zip": "1950" },
+    { "name": "Dalig", "zip": "1950" },
+    { "name": "Del Remedio (Pob.)", "zip": "1950" },
+    { "name": "Iglesia (Pob.)", "zip": "1950" },
+    { "name": "Lambac", "zip": "1950" },
+    { "name": "Looc", "zip": "1950" },
+    { "name": "Malanggam-Calubacan", "zip": "1950" },
+    { "name": "Nagsulo", "zip": "1950" },
+    { "name": "Navotas", "zip": "1950" },
+    { "name": "Patunhay", "zip": "1950" },
+    { "name": "Real (Pob.)", "zip": "1950" },
+    { "name": "Sampad", "zip": "1950" },
+    { "name": "San Roque (Pob.)", "zip": "1950" },
+    { "name": "Subay", "zip": "1950" },
+    { "name": "Ticulio", "zip": "1950" },
+    { "name": "Tuna", "zip": "1950" }
+  ]
+}

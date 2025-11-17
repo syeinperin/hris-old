@@ -17,11 +17,27 @@ class DisciplinaryActionController extends Controller
         $this->middleware('auth');
     }
 
-    /** Table-only page with optional filters */
+    /* =========================================================
+     * INDEX — table with filters and role-based visibility
+     * ========================================================= */
     public function index(Request $request)
     {
+        $user = auth()->user();
+
         $query = DisciplinaryAction::with(['employee', 'issuer'])->latest();
 
+        // 🔹 Supervisors: only see actions within their supervised departments
+        if ($user->hasRole('supervisor')) {
+            $deptIds = $user->supervisedDepartments()->pluck('departments.id');
+            $query->whereHas('employee', fn($q) => $q->whereIn('department_id', $deptIds));
+        }
+
+        // 🔹 Employees: only their own
+        if ($user->hasRole('employee') && $user->employee) {
+            $query->where('employee_id', $user->employee->id);
+        }
+
+        // 🔹 Filters
         if ($request->filled('employee_id')) {
             $query->where('employee_id', $request->employee_id);
         }
@@ -32,20 +48,63 @@ class DisciplinaryActionController extends Controller
             $query->where('status', $request->status);
         }
 
-        $actions   = $query->paginate(15)->withQueryString();
-        $employees = Employee::orderBy('name')->pluck('name', 'id');
+        $actions = $query->paginate(15)->withQueryString();
+
+        // 🔹 Employee dropdown filtered by role
+        $employees = Employee::query()
+            ->where('status', 'active')
+            ->when($user->hasRole('supervisor'), function ($q) use ($user) {
+                $deptIds = $user->supervisedDepartments()->pluck('departments.id');
+                $q->whereIn('department_id', $deptIds);
+            })
+            ->when($user->hasRole('employee') && $user->employee, function ($q) use ($user) {
+                $q->where('id', $user->employee->id);
+            })
+            // 🚫 exclude self (supervisor’s own employee record)
+            ->when($user->employee, function ($q) use ($user) {
+                $q->where('id', '!=', $user->employee->id);
+            })
+            ->orderBy('name')
+            ->pluck('name', 'id');
 
         return view('discipline.index', compact('actions', 'employees'));
     }
 
-    /** Separate create form page */
+    /* =========================================================
+     * CREATE — form page or modal (filtered employees)
+     * ========================================================= */
     public function create()
     {
-        $employees = Employee::orderBy('name')->pluck('name', 'id');
-        return view('discipline.create', compact('employees'));
+        $user = auth()->user();
+
+        $query = Employee::query()
+            ->where('status', 'active');
+
+        // 🔹 Supervisors: only their supervised departments
+        if ($user->hasRole('supervisor')) {
+            $deptIds = $user->supervisedDepartments()->pluck('departments.id');
+            $query->whereIn('department_id', $deptIds);
+        }
+
+        // 🚫 Exclude the supervisor’s own employee record
+        if ($user->employee) {
+            $query->where('id', '!=', $user->employee->id);
+        }
+
+        // 🔹 Employees themselves cannot issue actions
+        if ($user->hasRole('employee')) {
+            $query->where('id', 0);
+        }
+
+        $employees = $query->orderBy('name')->pluck('name', 'id');
+        $recentActions = DisciplinaryAction::latest()->take(10)->get();
+
+        return view('discipline.create', compact('employees', 'recentActions'));
     }
 
-    /** Save a new violation / suspension */
+    /* =========================================================
+     * STORE — save violation / suspension
+     * ========================================================= */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -70,39 +129,52 @@ class DisciplinaryActionController extends Controller
             $data['end_date']   = null;
         }
 
-        foreach (['category','notes'] as $k) {
-            if (!isset($data[$k]) || $data[$k] === '') $data[$k] = null;
+        foreach (['category', 'notes'] as $k) {
+            if (empty($data[$k])) $data[$k] = null;
         }
-        if (!isset($data['points']) || $data['points'] === '') $data['points'] = null;
+        if (empty($data['points'])) $data['points'] = null;
 
         $data['issued_by'] = auth()->id();
-        $data['status']    = 'active';
+        $data['status'] = 'active';
 
         try {
-            DB::transaction(fn () => DisciplinaryAction::create($data));
-            return redirect()->route('discipline.index')->with('success', 'Disciplinary action recorded.');
+            DB::transaction(fn() => DisciplinaryAction::create($data));
+            return redirect()->route('discipline.index')
+                ->with('success', 'Disciplinary action recorded successfully.');
         } catch (\Throwable $e) {
-            Log::error('DisciplinaryAction store failed: '.$e->getMessage());
+            Log::error('DisciplinaryAction store failed', [
+                'message' => $e->getMessage(),
+                'file'    => $e->getFile(),
+                'line'    => $e->getLine(),
+            ]);
             return back()->withInput()->with('error', 'Failed to save disciplinary action.');
         }
     }
 
+    /* =========================================================
+     * RESOLVE
+     * ========================================================= */
     public function resolve(DisciplinaryAction $action)
     {
         $action->update(['status' => 'resolved']);
         return back()->with('success', 'Action marked as resolved.');
     }
 
+    /* =========================================================
+     * DESTROY
+     * ========================================================= */
     public function destroy(DisciplinaryAction $action)
     {
         $action->delete();
         return back()->with('success', 'Disciplinary action deleted.');
     }
 
-    /** Generate certificate-style PDF letter */
+    /* =========================================================
+     * PDF
+     * ========================================================= */
     public function pdf(DisciplinaryAction $action)
     {
-        $action->load(['employee','issuer']);
+        $action->load(['employee', 'issuer']);
 
         $company = [
             'name'    => 'Asia Textile Mills, Inc.',
@@ -111,8 +183,7 @@ class DisciplinaryActionController extends Controller
                 'Calamba, Laguna, Philippines',
                 '(049) 531 7239 | asiatex84@gmail.com',
             ],
-            // absolute path is safest for Dompdf
-            'logo'    => public_path('images/asiatex.png'),
+            'logo' => public_path('images/asiatex.png'),
         ];
 
         $data = [
@@ -122,8 +193,7 @@ class DisciplinaryActionController extends Controller
         ];
 
         $pdf = Pdf::loadView('discipline.pdf', $data)->setPaper('a4');
-
-        $name = Str::slug($action->action_type.'-'.$action->id).'.pdf';
+        $name = Str::slug($action->action_type . '-' . $action->id) . '.pdf';
         return $pdf->stream($name);
     }
 }

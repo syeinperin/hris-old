@@ -3,67 +3,62 @@
 
 @section('page_title', 'Add Employee')
 
-@push('styles')
-<style>
-  :root{
-    --brand:#26264e; --brand-2:#3a3a84;
-    --muted:#6b7380; --ring:#e8ebf6;
-  }
-  .page-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:12px}
-  .page-head h2{margin:0;font-weight:800}
-  .page-sub{color:var(--muted);margin-bottom:18px}
-  .tabs{display:flex;gap:18px;border-bottom:1px solid var(--ring);margin-bottom:18px;flex-wrap:wrap}
-  .tabs a{padding:10px 0;font-weight:700;color:#2563eb;text-decoration:none;border-bottom:3px solid transparent}
-  .tabs a.active{color:#111827;border-bottom-color:#111827}
-  .panel{background:#fff;border:1px solid #eef0f6;border-radius:14px;padding:16px;margin-bottom:18px}
-  .stage{background:#0e1624;border-radius:12px;position:relative;overflow:hidden;border:1px dashed #2a3345}
-  .stage video{width:100%;height:380px;object-fit:cover}
-  .box{position:absolute;border:2px solid #60a5fa;border-radius:10px;pointer-events:none}
-  .box-label{position:absolute;left:0;top:-22px;background:#60a5fa;color:#0b1020;font-size:12px;padding:2px 6px;border-radius:6px}
-  .btn-k{display:inline-flex;align-items:center;gap:8px;font-weight:700;border-radius:12px;padding:10px 14px}
-  .btn-outline-brand{border:2px solid var(--brand-2);color:var(--brand-2);background:#fff}
-  .btn-brand{border:2px solid var(--brand-2);background:var(--brand-2);color:#fff}
-  .btn-k[disabled]{opacity:.6;cursor:not-allowed}
-  .thumb{background:#f6f8fe;border:1px dashed #dbe1ef;border-radius:12px;height:180px;display:flex;align-items:center;justify-content:center}
-  .form-text-muted{color:var(--muted);font-size:.9rem}
-  .autofilled { background:#f3f6ff; }
-</style>
-@endpush
-
 @section('content')
-<div class="container py-3">
+<div class="container py-2">
 
   <div class="page-head">
     <div>
       <h2>Add Employee</h2>
       <div class="page-sub">Create the account, fill in details, and (optionally) capture a face template.</div>
     </div>
-    <a href="{{ route('employees.index') }}" class="btn btn-outline-secondary">
+    <a href="{{ route('employees.index') }}" class="btn btn-outline-primary">
       <i class="bi bi-arrow-left"></i> Back to list
     </a>
   </div>
 
-  {{-- Errors --}}
+  {{-- ===== Server-side notices ===== --}}
   @if(session('error'))
-    <div class="alert alert-danger mb-3">
-      <strong>Error:</strong> {!! nl2br(e(session('error'))) !!}
-    </div>
+    <div class="alert alert-danger mb-3"><strong>Error:</strong> {!! nl2br(e(session('error'))) !!}</div>
   @endif
-  @if($errors->any())
-    <div class="alert alert-danger mb-3">
-      <strong>Please fix the errors below:</strong>
-      <ul class="mb-0">
-        @foreach($errors->all() as $err)
-          <li>{{ $err }}</li>
-        @endforeach
-      </ul>
-    </div>
-  @endif
+ @if ($errors->any())
+<div class="alert alert-info mb-3 shadow-sm" style="border-left: 4px solid #0d6efd;">
+  <div class="fw-bold mb-1">Please correct the following errors:</div>
+  <ul class="mb-0">
+    @foreach ($errors->all() as $error)
+      <li>{{ $error }}</li>
+    @endforeach
+  </ul>
+</div>
+@endif
 
-  <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data" id="empCreateForm">
+
+  {{-- ===== Client-side upload sanity (php.ini + live file list) ===== --}}
+  @php
+    $phpFileOn   = (bool) ini_get('file_uploads');
+    $phpMaxFile  = ini_get('upload_max_filesize') ?: '—';
+    $phpMaxPost  = ini_get('post_max_size') ?: '—';
+    $phpMaxFiles = ini_get('max_file_uploads') ?: '—';
+  @endphp
+  <div class="alert {{ $phpFileOn ? 'alert-info' : 'alert-danger' }} mb-3">
+    <div class="fw-semibold mb-1">
+      File uploads {{ $phpFileOn ? 'are enabled' : 'are <u>disabled</u>' }} on this server.
+    </div>
+    <div class="small">
+      <span class="me-3">upload_max_filesize: <code>{{ $phpMaxFile }}</code></span>
+      <span class="me-3">post_max_size: <code>{{ $phpMaxPost }}</code></span>
+      <span>max_file_uploads: <code>{{ $phpMaxFiles }}</code></span>
+    </div>
+    <div id="cl-upload-warning" class="mt-2 text-danger small d-none"></div>
+  </div>
+  <div id="cl-file-summary" class="alert alert-secondary small d-none mb-3">
+    <div class="fw-semibold mb-1">Files queued for upload</div>
+    <ul id="cl-file-list" class="mb-0"></ul>
+  </div>
+
+  <form action="{{ route('employees.store') }}" method="POST" enctype="multipart/form-data" id="empCreateForm" class="form-compact">
     @csrf
 
-    {{-- Top tabs (Personal before Account; Personal active) --}}
+    {{-- Tabs --}}
     <nav class="tabs" id="tabs">
       <a href="#tab-face">Face</a>
       <a href="#tab-personal" class="active">Personal</a>
@@ -78,80 +73,66 @@
 
     {{-- FACE --}}
     <section id="tab-face" class="tab-panel" hidden>
-      <div class="row g-3">
-        <div class="col-lg-7">
-          <div class="panel">
-            <div class="d-flex align-items-center justify-content-between mb-2">
-              <h5 class="mb-0">Live Camera</h5>
-              <div class="form-text-muted">Models load from <code>{{ asset('face-models') }}</code></div>
+      <div class="panel">
+        <div class="row g-12">
+          <div class="col-lg-8">
+            <h5 class="mb-2 fw-bold">Live Camera</h5>
+            <div id="stage" class="ratio ratio-16x9 face-stage">
+              <video id="video" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;"></video>
             </div>
-
-            <div class="stage" id="stage">
-              <video id="video" autoplay muted playsinline></video>
-              <!-- dynamic blue box is added by JS -->
+            <div class="d-flex gap-2 mt-2">
+              <button type="button" id="btnStart" class="btn btn-outline-primary"><i class="bi bi-camera-video"></i> Start</button>
+              <button type="button" id="btnCapture" class="btn" disabled><i class="bi bi-record-circle"></i> Capture</button>
             </div>
-
-            <div class="mt-2 form-text-muted" id="camStatus">
-              Click <strong>Start Camera</strong>, keep your face inside the blue box, then <strong>Capture</strong>.
-            </div>
-
-            <div class="mt-2 d-flex gap-2 flex-wrap">
-              <button type="button" id="btnStart" class="btn-k btn-outline-brand">
-                <i class="bi bi-camera-video"></i> Start Camera
-              </button>
-              <button type="button" id="btnCapture" class="btn-k btn-brand" disabled>
-                <i class="bi bi-record-circle"></i> Capture
-              </button>
-            </div>
-
-            {{-- Hidden fields to post together with the employee --}}
+            <small id="camStatus" class="text-muted d-block mt-2 help-minor"></small>
             <input type="hidden" name="face_descriptor" id="face_descriptor">
             <input type="hidden" name="face_image_base64" id="face_image_base64">
           </div>
-        </div>
-
-        <div class="col-lg-5">
-          <div class="panel">
-            <h5 class="mb-2">Preview</h5>
-            <div class="thumb"><canvas id="facePreview" width="380" height="180"></canvas></div>
-            <div class="mt-2 form-text-muted">
-              We only save a 128-dimension face descriptor and a small preview for auditing.
+          <div class="col-lg-4">
+            <h5 class="mb-2 fw-bold">Preview</h5>
+            <div class="ratio ratio-4x3 preview-frame">
+              <canvas id="facePreview" width="600" height="800" style="width:100%;height:100%"></canvas>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    {{-- PERSONAL (default visible) --}}
+    {{-- PERSONAL --}}
     <section id="tab-personal" class="tab-panel">
       <div class="panel">
-        <div class="row g-3">
-          <div class="col-md-4 form-floating">
+        <div class="form-grid">
+
+          {{-- Names --}}
+          <div class="form-floating span-4">
             <input type="text" name="first_name" class="form-control @error('first_name') is-invalid @enderror"
                    placeholder="First Name *" value="{{ old('first_name') }}" required>
             <label>First Name *</label>
           </div>
-          <div class="col-md-4 form-floating">
-            <input type="text" name="middle_name" class="form-control @error('middle_name') is-invalid @enderror"
-                   placeholder="Middle Name" value="{{ old('middle_name') }}">
+          <div class="form-floating span-4">
+            <input type="text" name="middle_name" class="form-control" placeholder="Middle Name"
+                   value="{{ old('middle_name') }}">
             <label>Middle Name</label>
           </div>
-          <div class="col-md-4 form-floating">
+          <div class="form-floating span-4">
             <input type="text" name="last_name" id="last_name"
-                   class="form-control @error('last_name') is-invalid @enderror"
-                   placeholder="Last Name *" value="{{ old('last_name') }}" required>
+                   class="form-control @error('last_name') is-invalid @enderror" placeholder="Last Name *"
+                   value="{{ old('last_name') }}" required>
             <label>Last Name *</label>
           </div>
 
-          <div class="col-12"><strong>Current Address *</strong></div>
-          <div class="col-12 form-floating">
+          <div class="span-12"><h6 class="fw-bold mb-0 mt-1">Current Address</h6></div>
+
+          {{-- Street --}}
+          <div class="form-floating span-12">
             <input type="text" name="current_street_address"
                    class="form-control @error('current_street_address') is-invalid @enderror"
                    placeholder="Street Address *" value="{{ old('current_street_address') }}" required>
             <label>Street Address *</label>
           </div>
 
-          <div class="col-md-4 form-floating">
+          {{-- Province / City / Barangay --}}
+          <div class="form-floating span-4">
             <select id="current_province" name="current_province"
                     class="form-select @error('current_province') is-invalid @enderror" required>
               <option value="" disabled {{ old('current_province')? '' : 'selected' }}>Province *</option>
@@ -162,26 +143,31 @@
             <label>Province *</label>
           </div>
 
-          {{-- visible select (mirrors to hidden input) --}}
-          <div class="col-md-4 form-floating">
-            <select id="current_city_select"
-                    class="form-select @error('current_city') is-invalid @enderror" required>
+          <div class="form-floating span-4">
+            <select id="current_city_select" class="form-select @error('current_city') is-invalid @enderror" required>
               <option value="" disabled selected>Select City / Municipality</option>
             </select>
             <label>City *</label>
             <input type="hidden" name="current_city" id="current_city" value="{{ old('current_city') }}">
           </div>
 
-          <div class="col-md-4 form-floating">
+          <div class="form-floating span-4">
+            <select id="current_barangay_select" class="form-select @error('current_barangay') is-invalid @enderror" required>
+              <option value="" disabled selected>Select Barangay</option>
+            </select>
+            <label>Barangay *</label>
+            <input type="hidden" name="current_barangay" id="current_barangay" value="{{ old('current_barangay') }}">
+          </div>
+
+          {{-- ZIP / Gender / DOB --}}
+          <div class="form-floating span-3">
             <input type="text" id="current_postal_code" name="current_postal_code"
-                   class="form-control @error('current_postal_code') is-invalid @enderror"
-                   placeholder="ZIP Code" value="{{ old('current_postal_code') }}">
+                   class="form-control @error('current_postal_code') is-invalid @enderror" placeholder="ZIP Code"
+                   value="{{ old('current_postal_code') }}">
             <label>ZIP Code</label>
           </div>
 
-          {{-- Permanent Address removed --}}
-
-          <div class="col-md-3 form-floating">
+          <div class="form-floating span-3">
             <select name="gender" class="form-select @error('gender') is-invalid @enderror" required>
               <option value="" disabled {{ old('gender')? '' : 'selected' }}>Gender *</option>
               <option value="male"   {{ old('gender')=='male'?'selected':'' }}>Male</option>
@@ -191,37 +177,89 @@
             <label>Gender *</label>
           </div>
 
-          <div class="col-md-3 form-floating">
+          <div class="form-floating span-3">
             <input type="date" name="dob" id="dob"
-                   class="form-control @error('dob') is-invalid @enderror"
-                   placeholder="Date of Birth *" value="{{ old('dob') }}" required>
+                   class="form-control @error('dob') is-invalid @enderror" placeholder="Date of Birth *"
+                   value="{{ old('dob') }}" required>
             <label>Date of Birth *</label>
           </div>
 
-          <div class="col-md-4">
-            <label class="form-label">Profile Picture</label>
-            <input type="file" name="profile_picture"
-                   class="form-control @error('profile_picture') is-invalid @enderror">
+          {{-- Profile picture (full row) --}}
+          <div class="span-12">
+            <label class="form-label fw-bold">Profile Picture</label>
+            <div class="d-flex gap-2 flex-wrap">
+              <input type="file" name="profile_picture" id="profile_picture_file"
+                     class="form-control flex-grow-1 @error('profile_picture') is-invalid @enderror" accept="image/*">
+              <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal" data-bs-target="#cameraModal">
+                <i class="bi bi-camera-video"></i> Use Camera
+              </button>
+            </div>
+            @error('profile_picture')<div class="invalid-feedback d-block">{{ $message }}</div>@enderror
+            <input type="hidden" name="profile_picture_camera" id="profile_picture_camera">
           </div>
 
-          <div class="col-md-4 form-floating">
-            <input type="text" name="birth_place"
-                   class="form-control @error('birth_place') is-invalid @enderror"
-                   placeholder="Birth Place" value="{{ old('birth_place') }}">
+          {{-- Birth place / Civil status --}}
+          <div class="form-floating span-6">
+            <input type="text" name="birth_place" class="form-control" placeholder="Birth Place" value="{{ old('birth_place') }}">
             <label>Birth Place</label>
           </div>
-
-          <div class="col-md-4 form-floating">
-            <select name="civil_status" class="form-select @error('civil_status') is-invalid @enderror">
+          <div class="form-floating span-6">
+            <select name="civil_status" id="civil_status" class="form-select">
               <option value="">—</option>
-              <option value="single"     {{ old('civil_status')=='single'     ? 'selected' : '' }}>Single</option>
-              <option value="married"    {{ old('civil_status')=='married'    ? 'selected' : '' }}>Married</option>
-              <option value="widowed"    {{ old('civil_status')=='widowed'    ? 'selected' : '' }}>Widowed</option>
-              <option value="separated"  {{ old('civil_status')=='separated'  ? 'selected' : '' }}>Separated</option>
-              <option value="other"      {{ old('civil_status')=='other'      ? 'selected' : '' }}>Other</option>
+              <option value="single"       {{ old('civil_status')=='single'?'selected':'' }}>Single</option>
+              <option value="married"      {{ old('civil_status')=='married'?'selected':'' }}>Married</option>
+              <option value="widowed"      {{ old('civil_status')=='widowed'?'selected':'' }}>Widowed</option>
+              <option value="separated"    {{ old('civil_status')=='separated'?'selected':'' }}>Separated</option>
+              <option value="other"        {{ old('civil_status')=='other'?'selected':'' }}>Other</option>
             </select>
             <label>Civil Status</label>
           </div>
+
+          {{-- Parents --}}
+          <div class="form-floating span-6">
+            <input type="text" name="father_name" class="form-control" placeholder="Father's Name" value="{{ old('father_name') }}">
+            <label>Father's Name</label>
+          </div>
+          <div class="form-floating span-6">
+            <input type="text" name="mother_name" class="form-control" placeholder="Mother's Name" value="{{ old('mother_name') }}">
+            <label>Mother's Name</label>
+          </div>
+
+          {{-- Emergency contact --}}
+          <div class="form-floating span-6">
+            <input type="text" name="emergency_contact_name" class="form-control"
+                   placeholder="Emergency Contact Person" value="{{ old('emergency_contact_name') }}">
+            <label>Emergency Contact Person</label>
+          </div>
+          <div class="form-floating span-6">
+<input
+  type="tel"
+  name="contact_number"
+  class="form-control @error('contact_number') is-invalid @enderror"
+  placeholder="09171234567"
+  pattern="^(09\d{9}|9\d{9}|639\d{9}|\+639\d{9})$"
+  title="Enter a valid PH mobile: 0917xxxxxxx"
+  required
+                   placeholder="Emergency Contact Number" value="{{ old('emergency_contact_number') }}">
+            <label>Emergency Contact Number</label>
+          </div>
+
+          {{-- Spouse (only if married) --}}
+          <div id="spouseRow" class="span-12" hidden>
+            <div class="form-grid">
+              <div class="form-floating span-6">
+                <input type="text" name="spouse_name" id="spouse_name" class="form-control"
+                       placeholder="Spouse Name" value="{{ old('spouse_name') }}">
+                <label>Spouse Name</label>
+              </div>
+              <div class="form-floating span-6">
+                <input type="tel" name="spouse_contact" id="spouse_contact" class="form-control"
+                       placeholder="Spouse Contact" value="{{ old('spouse_contact') }}">
+                <label>Spouse Contact</label>
+              </div>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -229,33 +267,23 @@
     {{-- ACCOUNT --}}
     <section id="tab-account" class="tab-panel" hidden>
       <div class="panel">
-        <div class="row g-3 align-items-end">
+        <div class="row g-12 align-items-end">
           <div class="col-md-4 form-floating">
-            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror"
-              placeholder="Email *" value="{{ old('email') }}" required>
-            <label>Email *</label>
+            <input type="email" name="email" class="form-control @error('email') is-invalid @enderror" placeholder="Email" value="{{ old('email') }}">
+            <label>Email</label>
           </div>
-
-          {{-- Auto-generate password controls --}}
-          <div class="col-md-3 form-floating">
-            <input type="password" name="password" id="password"
-                   class="form-control @error('password') is-invalid @enderror"
-                   placeholder="Password *" required>
-            <label>Password *</label>
+          <div class="col-md-4 form-floating">
+<input
+  type="tel"
+  name="contact_number"
+  class="form-control @error('contact_number') is-invalid @enderror"
+  placeholder="09171234567"
+  pattern="^(09\d{9}|9\d{9}|639\d{9}|\+639\d{9})$"
+  title="Enter a valid PH mobile: 0917xxxxxxx"
+  required
+>
+            <label>Contact Number</label>
           </div>
-          <div class="col-md-3 form-floating">
-            <input type="password" name="password_confirmation" id="password_confirm"
-                   class="form-control" placeholder="Confirm *" required>
-            <label>Confirm *</label>
-          </div>
-          <div class="col-md-2">
-            <div class="form-check mb-1">
-              <input class="form-check-input" type="checkbox" id="autoPwd" checked>
-              <label class="form-check-label" for="autoPwd">Auto-generate</label>
-            </div>
-            <small class="text-muted d-block">Default: <em>lastName + birthYear</em></small>
-          </div>
-
           <div class="col-md-2 form-floating">
             <select name="role" class="form-select @error('role') is-invalid @enderror" required>
               <option value="" disabled selected>-- Select Role --</option>
@@ -265,6 +293,22 @@
             </select>
             <label>Role *</label>
           </div>
+          <div class="col-md-2"></div>
+
+          <div class="col-md-4 form-floating">
+            <input type="password" name="password" id="password" class="form-control @error('password') is-invalid @enderror" placeholder="Password *" required>
+            <label>Password *</label>
+          </div>
+          <div class="col-md-4 form-floating">
+            <input type="password" name="password_confirmation" id="password_confirm" class="form-control" placeholder="Confirm *" required>
+            <label>Confirm *</label>
+          </div>
+          <div class="col-md-4">
+            <div class="form-check">
+              <input class="form-check-input" type="checkbox" id="autoPwd" checked>
+              <label class="form-check-label" for="autoPwd">Auto-generate</label>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -272,15 +316,16 @@
     {{-- WORK --}}
     <section id="tab-work" class="tab-panel" hidden>
       <div class="panel">
-        <div class="row g-3">
+        <div class="row g-12">
           <div class="col-md-4 form-floating">
             <select name="department_id" class="form-select @error('department_id') is-invalid @enderror" required>
-              <option value="" disabled selected>Department *</option>
-              @foreach($departments as $id=>$name)
-                <option value="{{ $id }}" {{ old('department_id')==$id?'selected':'' }}>{{ $name }}</option>
-              @endforeach
-            </select>
-            <label>Department *</label>
+  <option value="" disabled {{ old('department_id') ? '' : 'selected' }}>Select Department *</option>
+  @foreach($departments as $id => $name)
+    <option value="{{ $id }}" {{ old('department_id') == $id ? 'selected' : '' }}>{{ $name }}</option>
+  @endforeach
+</select>
+<label>Department *</label>
+  
           </div>
           <div class="col-md-4 form-floating">
             <select name="designation_id" class="form-select @error('designation_id') is-invalid @enderror" required>
@@ -291,19 +336,18 @@
             </select>
             <label>Designation *</label>
           </div>
-          <div class="col-md-4 form-floating">
-            <select name="schedule_id" class="form-select @error('schedule_id') is-invalid @enderror">
-              <option value="">Schedule (optional)</option>
-              @foreach($schedules as $id=>$name)
-                <option value="{{ $id }}" {{ old('schedule_id')==$id?'selected':'' }}>{{ $name }}</option>
-              @endforeach
-            </select>
-            <label>Schedule</label>
+
+          {{-- NOTE: Schedule selection removed. Supervisors assign shifts in Schedule page. --}}
+          <div class="col-md-4">
+            <div class="alert alert-info small mb-0">
+              <div class="fw-semibold">Schedule is assigned by Supervisors</div>
+              <div>Use <strong>Schedule → Assign Shifts</strong> after saving this employee.</div>
+            </div>
           </div>
 
           <div class="col-md-4 form-floating">
-            <select name="employment_type" class="form-select @error('employment_type') is-invalid @enderror" required>
-              <option value="" disabled selected>Employment Type *</option>
+            <select name="employment_type" id="employment_type" class="form-select @error('employment_type') is-invalid @enderror" required>
+              <option value="" disabled {{ old('employment_type')? '' : 'selected' }}>Employment Type *</option>
               @foreach($employmentTypes as $k=>$lbl)
                 <option value="{{ $k }}" {{ old('employment_type')==$k?'selected':'' }}>{{ $lbl }}</option>
               @endforeach
@@ -311,22 +355,12 @@
             <label>Employment Type *</label>
           </div>
           <div class="col-md-4 form-floating">
-            <input type="date" name="employment_start_date"
-                   class="form-control @error('employment_start_date') is-invalid @enderror"
-                   placeholder="Start Date" value="{{ old('employment_start_date') }}">
-            <label>Start Date</label>
+            <input type="date" name="employment_start_date" id="employment_start_date" class="form-control @error('employment_start_date') is-invalid @enderror" placeholder="Start Date *" value="{{ old('employment_start_date') }}" required>
+            <label>Start Date *</label>
           </div>
           <div class="col-md-4 form-floating">
-            <input type="date" name="employment_end_date"
-                   class="form-control @error('employment_end_date') is-invalid @enderror"
-                   placeholder="End Date *" value="{{ old('employment_end_date') }}" required>
-            <label>End Date *</label>
-          </div>
-          <div class="col-md-4 form-floating">
-            <input type="text" name="fingerprint_id"
-                   class="form-control @error('fingerprint_id') is-invalid @enderror"
-                   placeholder="Fingerprint ID" value="{{ old('fingerprint_id') }}">
-            <label>Fingerprint ID</label>
+            <input type="date" name="employment_end_date" id="employment_end_date" class="form-control @error('employment_end_date') is-invalid @enderror" placeholder="End Date" value="{{ old('employment_end_date') }}">
+            <label id="endDateLabel">End Date</label>
           </div>
         </div>
       </div>
@@ -335,35 +369,29 @@
     {{-- BENEFITS --}}
     <section id="tab-benefits" class="tab-panel" hidden>
       <div class="panel">
-        <div class="row g-3">
+        <div class="row g-12">
           <div class="col-md-4 form-floating">
-            <input type="text" name="gsis_id_no" class="form-control @error('gsis_id_no') is-invalid @enderror"
-                   placeholder="GSIS ID No." value="{{ old('gsis_id_no') }}">
+            <input type="text" name="gsis_id_no" class="form-control" placeholder="GSIS ID No." value="{{ old('gsis_id_no') }}">
             <label>GSIS ID No.</label>
           </div>
           <div class="col-md-4 form-floating">
-            <input type="text" name="pagibig_id_no" class="form-control @error('pagibig_id_no') is-invalid @enderror"
-                   placeholder="PAGIBIG ID No." value="{{ old('pagibig_id_no') }}">
+            <input type="text" name="pagibig_id_no" class="form-control" placeholder="PAGIBIG ID No." value="{{ old('pagibig_id_no') }}">
             <label>PAGIBIG ID No.</label>
           </div>
           <div class="col-md-4 form-floating">
-            <input type="text" name="philhealth_tin_id_no" class="form-control @error('philhealth_tin_id_no') is-invalid @enderror"
-                   placeholder="PHILHEALTH TIN ID No." value="{{ old('philhealth_tin_id_no') }}">
+            <input type="text" name="philhealth_tin_id_no" class="form-control" placeholder="PHILHEALTH TIN ID No." value="{{ old('philhealth_tin_id_no') }}">
             <label>PHILHEALTH TIN ID No.</label>
           </div>
           <div class="col-md-4 form-floating">
-            <input type="text" name="sss_no" class="form-control @error('sss_no') is-invalid @enderror"
-                   placeholder="SSS No." value="{{ old('sss_no') }}">
+            <input type="text" name="sss_no" class="form-control" placeholder="SSS No." value="{{ old('sss_no') }}">
             <label>SSS No.</label>
           </div>
           <div class="col-md-4 form-floating">
-            <input type="text" name="tin_no" class="form-control @error('tin_no') is-invalid @enderror"
-                   placeholder="TIN No." value="{{ old('tin_no') }}">
+            <input type="text" name="tin_no" class="form-control" placeholder="TIN No." value="{{ old('tin_no') }}">
             <label>TIN No.</label>
           </div>
           <div class="col-md-4 form-floating">
-            <input type="text" name="agency_employee_no" class="form-control @error('agency_employee_no') is-invalid @enderror"
-                   placeholder="Agency Emp. No." value="{{ old('agency_employee_no') }}">
+            <input type="text" name="agency_employee_no" class="form-control" placeholder="Agency Emp. No." value="{{ old('agency_employee_no') }}">
             <label>Agency Emp. No.</label>
           </div>
         </div>
@@ -373,7 +401,7 @@
     {{-- EDUCATION --}}
     <section id="tab-education" class="tab-panel" hidden>
       <div class="panel">
-        <div class="row g-3">
+        <div class="row g-12">
           <div class="col-12"><h6 class="fw-bold">🎓 Educational Background</h6></div>
           <div class="col-md-6 form-floating">
             <input type="text" name="elementary_school" class="form-control" placeholder="Elementary School" value="{{ old('elementary_school') }}">
@@ -404,7 +432,7 @@
             <label>Degree Received</label>
           </div>
           <div class="col-12 form-floating">
-            <textarea name="special_skills" class="form-control" placeholder="Special Skills">{{ old('special_skills') }}</textarea>
+            <textarea name="special_skills" class="form-control" placeholder="Special Skills" style="height:120px">{{ old('special_skills') }}</textarea>
             <label>Special Skills</label>
           </div>
         </div>
@@ -414,37 +442,41 @@
     {{-- EMPLOYMENT HISTORY --}}
     <section id="tab-employment" class="tab-panel" hidden>
       <div class="panel">
-        <div class="row g-3">
-          <div class="col-12"><h6 class="fw-bold">💼 Employment Record</h6></div>
-          <div class="col-md-6 form-floating">
-            <input type="text" name="emp1_company" class="form-control" placeholder="Company 1" value="{{ old('emp1_company') }}">
+        <div class="form-grid">
+          <div class="span-12"><h6 class="fw-bold">💼 Employment Record</h6></div>
+
+          {{-- Row 1 --}}
+          <div class="form-floating span-5">
+            <input type="text" name="emp1_company" class="form-control" placeholder="Company" value="{{ old('emp1_company') }}">
             <label>Company</label>
           </div>
-          <div class="col-md-4 form-floating">
+          <div class="form-floating span-3">
             <input type="text" name="emp1_position" class="form-control" placeholder="Position" value="{{ old('emp1_position') }}">
             <label>Position</label>
           </div>
-          <div class="col-md-2 form-floating">
+          <div class="form-floating span-2">
             <input type="date" name="emp1_from" class="form-control" placeholder="From" value="{{ old('emp1_from') }}">
             <label>From</label>
           </div>
-          <div class="col-md-2 form-floating">
+          <div class="form-floating span-2">
             <input type="date" name="emp1_to" class="form-control" placeholder="To" value="{{ old('emp1_to') }}">
             <label>To</label>
           </div>
-          <div class="col-md-6 form-floating">
-            <input type="text" name="emp2_company" class="form-control" placeholder="Company 2" value="{{ old('emp2_company') }}">
+
+          {{-- Row 2 --}}
+          <div class="form-floating span-5">
+            <input type="text" name="emp2_company" class="form-control" placeholder="Company" value="{{ old('emp2_company') }}">
             <label>Company</label>
           </div>
-          <div class="col-md-4 form-floating">
+          <div class="form-floating span-3">
             <input type="text" name="emp2_position" class="form-control" placeholder="Position" value="{{ old('emp2_position') }}">
             <label>Position</label>
           </div>
-          <div class="col-md-2 form-floating">
+          <div class="form-floating span-2">
             <input type="date" name="emp2_from" class="form-control" placeholder="From" value="{{ old('emp2_from') }}">
             <label>From</label>
           </div>
-          <div class="col-md-2 form-floating">
+          <div class="form-floating span-2">
             <input type="date" name="emp2_to" class="form-control" placeholder="To" value="{{ old('emp2_to') }}">
             <label>To</label>
           </div>
@@ -452,41 +484,44 @@
       </div>
     </section>
 
-    {{-- REFERENCES --}}
+    {{-- CHARACTER REFERENCES --}}
     <section id="tab-refs" class="tab-panel" hidden>
       <div class="panel">
-        <div class="row g-3">
-          <div class="col-12"><h6 class="fw-bold">📝 Character References</h6></div>
-          <div class="col-md-6 form-floating">
+        <div class="form-grid">
+          <div class="span-12"><h6 class="fw-bold">📝 Character References</h6></div>
+
+          {{-- Row 1 --}}
+          <div class="form-floating span-4">
             <input type="text" name="char1_name" class="form-control" placeholder="Name" value="{{ old('char1_name') }}">
             <label>Name</label>
           </div>
-          <div class="col-md-3 form-floating">
+          <div class="form-floating span-3">
             <input type="text" name="char1_position" class="form-control" placeholder="Position" value="{{ old('char1_position') }}">
             <label>Position</label>
           </div>
-          <div class="col-md-3 form-floating">
+          <div class="form-floating span-3">
             <input type="text" name="char1_company" class="form-control" placeholder="Company" value="{{ old('char1_company') }}">
             <label>Company</label>
           </div>
-          <div class="col-md-4 form-floating">
+          <div class="form-floating span-2">
             <input type="text" name="char1_contact" class="form-control" placeholder="Contact" value="{{ old('char1_contact') }}">
             <label>Contact</label>
           </div>
 
-          <div class="col-md-6 form-floating">
+          {{-- Row 2 --}}
+          <div class="form-floating span-4">
             <input type="text" name="char2_name" class="form-control" placeholder="Name" value="{{ old('char2_name') }}">
             <label>Name</label>
           </div>
-          <div class="col-md-3 form-floating">
+          <div class="form-floating span-3">
             <input type="text" name="char2_position" class="form-control" placeholder="Position" value="{{ old('char2_position') }}">
             <label>Position</label>
           </div>
-          <div class="col-md-3 form-floating">
+          <div class="form-floating span-3">
             <input type="text" name="char2_company" class="form-control" placeholder="Company" value="{{ old('char2_company') }}">
             <label>Company</label>
           </div>
-          <div class="col-md-4 form-floating">
+          <div class="form-floating span-2">
             <input type="text" name="char2_contact" class="form-control" placeholder="Contact" value="{{ old('char2_contact') }}">
             <label>Contact</label>
           </div>
@@ -494,378 +529,492 @@
       </div>
     </section>
 
-    {{-- CERTS --}}
+    {{-- CERTIFICATES & DOCS --}}
     <section id="tab-docs" class="tab-panel" hidden>
       <div class="panel">
-        <div class="row g-3">
-          <div class="col-12"><h6 class="fw-bold">📑 Certificates & Docs</h6></div>
-          <div class="col-md-4 form-floating">
-            <input type="text" name="res_cert_no" class="form-control" placeholder="Res. Cert. No." value="{{ old('res_cert_no') }}">
-            <label>Res. Cert. No.</label>
+        <div class="row g-12">
+          <div class="col-12">
+            <h6 class="fw-bold">📑 Certificates & Docs</h6>
           </div>
-          <div class="col-md-4 form-floating">
-            <input type="text" name="res_cert_issued_at" class="form-control" placeholder="Issued At" value="{{ old('res_cert_issued_at') }}">
-            <label>Issued At</label>
+
+          <div class="col-md-6">
+            <label class="form-label">Resume</label>
+            <input type="file" name="resume_file" class="form-control @error('resume_file') is-invalid @enderror" accept=".pdf,.doc,.docx,image/*">
+            @error('resume_file')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
-          <div class="col-md-4 form-floating">
-            <input type="date" name="res_cert_issued_on" class="form-control" placeholder="Issued On" value="{{ old('res_cert_issued_on') }}">
-            <label>Issued On</label>
+
+          <div class="col-md-6">
+            <label class="form-label">MDR – PhilHealth</label>
+            <input type="file" name="mdr_philhealth_file" class="form-control @error('mdr_philhealth_file') is-invalid @enderror" accept=".pdf,image/*">
+            @error('mdr_philhealth_file')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
-          <div class="col-md-4 form-floating">
-            <input type="text" name="nbi_no" class="form-control" placeholder="NBI No." value="{{ old('nbi_no') }}">
-            <label>NBI No.</label>
+
+          <div class="col-md-6">
+            <label class="form-label">MDR – SSS</label>
+            <input type="file" name="mdr_sss_file" class="form-control @error('mdr_sss_file') is-invalid @enderror" accept=".pdf,image/*">
+            @error('mdr_sss_file')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
-          <div class="col-md-4 form-floating">
-            <input type="text" name="passport_no" class="form-control" placeholder="Passport No." value="{{ old('passport_no') }}">
-            <label>Passport No.</label>
+
+          <div class="col-md-6">
+            <label class="form-label">MDR – Pag-IBIG</label>
+            <input type="file" name="mdr_pagibig_file" class="form-control @error('mdr_pagibig_file') is-invalid @enderror" accept=".pdf,image/*">
+            @error('mdr_pagibig_file')<div class="invalid-feedback">{{ $message }}</div>@enderror
+          </div>
+
+          <div class="col-12">
+            <label class="form-label">Medical Documents</label>
+            <input type="file" name="medical_documents[]" multiple class="form-control @error('medical_documents.*') is-invalid @enderror" accept=".pdf,image/*">
+            @error('medical_documents.*')<div class="invalid-feedback">{{ $message }}</div>@enderror
           </div>
         </div>
       </div>
     </section>
 
-    <div class="d-flex gap-2">
-      <button type="submit" class="btn btn-success">
+<div class="form-actions mt-4 p-3 bg-light border-top d-flex justify-content-end gap-2 sticky-bottom">
+
+    <!-- Cancel -->
+    <a href="{{ route('employees.index') }}" class="btn btn-outline-secondary">
+        <i class="bi bi-x-circle"></i> Cancel
+    </a>
+
+    <!-- NEXT (visible except last tab) -->
+    <button type="button" id="nextBtn" class="btn btn-primary">
+        Next <i class="bi bi-arrow-right-short ms-1"></i>
+    </button>
+
+    <!-- SAVE (only visible on last tab) -->
+    <button type="submit" id="saveBtn" class="btn btn-success d-none">
         <i class="bi bi-save2 me-1"></i> Save
-      </button>
-      <a href="{{ route('employees.index') }}" class="btn btn-outline-secondary">Cancel</a>
-    </div>
-  </form>
+    </button>
+
 </div>
+
+
 @endsection
+
+@push('modals')
+{{-- CAMERA MODAL --}}
+<div class="modal fade" id="cameraModal" tabindex="-1" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title"><i class="bi bi-camera-video"></i> Capture Profile Picture</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <div class="ratio ratio-4x3 face-stage">
+          <video id="ppVideo" autoplay muted playsinline style="width:100%;height:100%;object-fit:cover;"></video>
+        </div>
+        <div class="form-text mt-2 help-minor" id="ppStatus">Allow camera access, then click Capture.</div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-outline-secondary" id="ppStop"><i class="bi bi-stop-circle"></i> Stop</button>
+        <button type="button" class="btn btn-primary" id="ppSnap"><i class="bi bi-record-circle"></i> Capture</button>
+      </div>
+    </div>
+  </div>
+</div>
+@endpush
 
 @push('scripts')
 <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js"></script>
 <script>
-  // ─────────────────────────────────────────────────────────────
-  // Tabs (Personal shown by default)
-  // ─────────────────────────────────────────────────────────────
-  const tabsNav = document.getElementById('tabs');
-  const panels = Array.from(document.querySelectorAll('.tab-panel'));
-  tabsNav.addEventListener('click', (e)=>{
-    const a = e.target.closest('a'); if(!a) return;
-    e.preventDefault();
-    tabsNav.querySelectorAll('a').forEach(x=>x.classList.remove('active'));
-    a.classList.add('active');
-    const id = a.getAttribute('href');
-    panels.forEach(p=> p.hidden = ('#'+p.id) !== id);
-  });
-  // ensure Personal is visible if server didn't set hidden flags
-  panels.forEach(p=> p.hidden = (p.id !== 'tab-personal'));
 
-  // ─────────────────────────────────────────────────────────────
-  // Province → Cities (expanded lists) + ZIP auto-fill
-  // ─────────────────────────────────────────────────────────────
-  const CITY_MAP = {
-    Cavite: [
-      "Alfonso","Amadeo","Bacoor","Carmona","Cavite City","Dasmariñas","General Emilio Aguinaldo",
-      "General Mariano Alvarez","General Trias","Imus","Indang","Kawit","Magallanes","Maragondon",
-      "Mendez","Naic","Noveleta","Rosario","Silang","Tagaytay","Tanza","Ternate","Trece Martires"
-    ],
-    Laguna: [
-      "Alaminos","Bay","Biñan","Cabuyao","Calamba","Calauan","Cavinti","Famy","Kalayaan","Liliw",
-      "Los Baños","Luisiana","Lumban","Mabitac","Magdalena","Majayjay","Nagcarlan","Paete","Pagsanjan",
-      "Pakil","Pangil","Pila","Rizal","San Pablo","San Pedro","Santa Cruz","Santa Maria","Santa Rosa",
-      "Siniloan","Victora","Victoria"
-    ],
-    Batangas: [
-      "Agoncillo","Alitagtag","Balayan","Balete","Batangas City","Bauan","Calaca","Calatagan","Cuenca",
-      "Ibaan","Laurel","Lemery","Lian","Lipa","Lobo","Mabini","Malvar","Mataasnakahoy","Nasugbu","Padre Garcia",
-      "Rosario","San Jose","San Juan","San Luis","San Nicolas","San Pascual","Santa Teresita","Santo Tomas",
-      "Taal","Talisay","Tanauan","Taysan","Tingloy","Tuy"
-    ],
-    Rizal: [
-      "Angono","Antipolo","Baras","Binangonan","Cainta","Cardona","Jalajala","Morong","Pililla","Rodriguez",
-      "San Mateo","Tanay","Taytay","Teresa"
-    ],
-    Quezon: [
-      "Agdangan","Alabat","Atimonan","Buenavista","Burdeos","Calauag","Candelaria","Catanauan","Dolores",
-      "General Luna","General Nakar","Guinayangan","Gumaca","Infanta","Jomalig","Lopez","Lucban","Lucena",
-      "Macalelon","Mauban","Mulanay","Padre Burgos","Pagbilao","Panukulan","Patnanungan","Perez","Plaridel",
-      "Polillo","Quezon","Real","Sampaloc","San Andres","San Antonio","San Francisco","San Narciso","Sariaya",
-      "Tagkawayan","Tayabas","Tiaong","Unisan"
-    ]
-  };
+/* ===============================================================
+   TAB SWITCHING VALIDATION (UPDATED)
+================================================================ */
+document.addEventListener("DOMContentLoaded", function () {
 
-  // Minimal ZIP map (expand anytime)
-  const POSTAL_MAP = {
-    Cavite: {
-      "Bacoor":"4102","Carmona":"4116","Cavite City":"4100","Dasmariñas":"4114","General Trias":"4107",
-      "Imus":"4103","Kawit":"4104","Naic":"4110","Noveleta":"4105","Rosario":"4106","Silang":"4118",
-      "Tagaytay":"4120","Tanza":"4108","Trece Martires":"4109","Alfonso":"4123","Amadeo":"4119",
-      "Indang":"4122","Gen. Mariano Alvarez":"4117","General Mariano Alvarez":"4117","Magallanes":"4113",
-      "Maragondon":"4112","Mendez":"4121","Ternate":"4111"
-    },
-    Laguna: {
-      "Biñan":"4024","Cabuyao":"4025","Calamba":"4027","San Pablo":"4000","San Pedro":"4023",
-      "Santa Cruz":"4009","Santa Rosa":"4026","Los Baños":"4030","Bay":"4033","Liliw":"4004",
-      "Nagcarlan":"4002","Paete":"4016","Pagsanjan":"4008","Pila":"4010","Siniloan":"4019",
-      "Majayjay":"4005","Cavinti":"4013","Famy":"4021","Kalayaan":"4015","Lumban":"4014",
-      "Mabitac":"4020","Magdalena":"4007","Majayjay":"4005","Pakil":"4017","Pangil":"4018",
-      "Santa Maria":"4022","Luisiana":"4032","Victoria":"4011","Victora":"4011"
-    },
-    Batangas: {
-      "Batangas City":"4200","Lipa":"4217","Tanauan":"4232","Balayan":"4213","Bauan":"4201","Calaca":"4212",
-      "Calatagan":"4215","Lemery":"4209","Nasugbu":"4231","Rosario":"4225","San Jose":"4227","San Juan":"4226",
-      "Santo Tomas":"4234","Taal":"4208","Taysan":"4233","Lian":"4216","Agoncillo":"4211","Alitagtag":"4205",
-      "Balete":"4219","Cuenca":"4222","Ibaan":"4230","Laurel":"4221","Lobo":"4216","Mabini":"4202",
-      "Malvar":"4233","Mataasnakahoy":"4223","Padre Garcia":"4224","San Luis":"4210","San Nicolas":"4207",
-      "San Pascual":"4204","Santa Teresita":"4206","Talisay":"4220","Tingloy":"4203","Tuy":"4214"
-    },
-    Rizal: {
-      "Antipolo":"1870","Cainta":"1900","Taytay":"1920","Binangonan":"1940","Angono":"1930","Baras":"1970",
-      "Cardona":"1950","Jalajala":"1990","Morong":"1960","Pililla":"1910","Rodriguez":"1860","San Mateo":"1850",
-      "Tanay":"1980","Teresa":"1880"
-    },
-    Quezon: {
-      "Lucena":"4301","Lucban":"4328","Tayabas":"4327","Sariaya":"4322","Tiaong":"4325","Candelaria":"4323",
-      "Pagbilao":"4302","Atimonan":"4331","Gumaca":"4307","Lopez":"4316","Real":"4335","Mauban":"4330",
-      "Infanta":"4336","General Nakar":"4338","Polillo":"4339","Quezon":"4332","Unisan":"4305","Tagkawayan":"4321",
-      "Agdangan":"4304","Alabat":"4333","Buenavista":"4320","Burdeos":"4340","Calauag":"4318","Catanauan":"4311",
-      "Dolores":"4326","General Luna":"4310","Guinayangan":"4319","Jomalig":"4341","Macalelon":"4309",
-      "Mulanay":"4312","Padre Burgos":"4303","Panukulan":"4337","Patnanungan":"4342","Perez":"4334",
-      "Plaridel":"4306","Sampaloc":"4329","San Andres":"4314","San Antonio":"4324","San Francisco":"4313",
-      "San Narciso":"4315"
+    const tabs = [...document.querySelectorAll("#tabs a")];
+    const panels = [...document.querySelectorAll(".tab-panel")];
+
+    const nextBtn = document.getElementById("nextBtn");
+    const saveBtn = document.getElementById("saveBtn");
+
+    /* ---------------------------
+       Validate required fields
+    --------------------------- */
+    function validateCurrentTab() {
+        const activeIndex = tabs.findIndex(t => t.classList.contains("active"));
+        const currentPanel = panels[activeIndex];
+        const requiredFields = [...currentPanel.querySelectorAll("[required]")];
+
+        let invalidFields = requiredFields.filter(f => !f.value.trim());
+
+        // reset
+        requiredFields.forEach(f => f.classList.remove("is-invalid"));
+
+        if (invalidFields.length) {
+            invalidFields.forEach(f => f.classList.add("is-invalid"));
+
+            // scroll to first invalid field
+            invalidFields[0].scrollIntoView({ behavior: "smooth", block: "center" });
+
+            alert("Please complete all required fields before proceeding.");
+
+            return false; // ❌ stop switching
+        }
+
+        return true; // ✔ ok to switch
     }
-  };
 
-  const provinceSel = document.getElementById('current_province');
-  const citySel = document.getElementById('current_city_select');
-  const cityHidden = document.getElementById('current_city');
-  const zipInput = document.getElementById('current_postal_code');
+    /* ---------------------------
+       Update buttons visibility
+    --------------------------- */
+    function updateButtons() {
+        const activeIndex = tabs.findIndex(t => t.classList.contains("active"));
 
-  function buildCityOptions(prov, selectedText){
-    citySel.innerHTML = '<option value="" disabled>Select City / Municipality</option>';
-    const list = CITY_MAP[prov] || [];
-    list.forEach(txt=>{
-      const opt = document.createElement('option');
-      opt.value = txt;
-      opt.textContent = txt;
-      if(selectedText && selectedText === txt) opt.selected = true;
-      citySel.appendChild(opt);
+        if (activeIndex === tabs.length - 1) {
+            nextBtn.classList.add("d-none");
+            saveBtn.classList.remove("d-none");
+        } else {
+            nextBtn.classList.remove("d-none");
+            saveBtn.classList.add("d-none");
+        }
+    }
+
+    /* ---------------------------
+       On NEXT button click
+    --------------------------- */
+    nextBtn.addEventListener("click", function () {
+        if (!validateCurrentTab()) return;
+
+        const activeIndex = tabs.findIndex(t => t.classList.contains("active"));
+        if (activeIndex < tabs.length - 1) {
+            const nextTab = tabs[activeIndex + 1];
+
+            tabs.forEach(t => t.classList.remove("active"));
+            nextTab.classList.add("active");
+
+            const nextPanelId = nextTab.getAttribute("href");
+            panels.forEach(p => p.hidden = ("#" + p.id) !== nextPanelId);
+
+            updateButtons();
+        }
     });
-    // mirror to hidden input
-    cityHidden.value = citySel.value || selectedText || '';
-    updatePostalCode();
-  }
 
-  function updatePostalCode(){
-    const prov = provinceSel.value;
-    const city = citySel.value || cityHidden.value;
-    const zip = (POSTAL_MAP[prov] && POSTAL_MAP[prov][city]) ? POSTAL_MAP[prov][city] : '';
-    if (zip) {
-      zipInput.value = zip;
-      zipInput.readOnly = true;
+    /* ---------------------------
+       Manual Tab Click
+    --------------------------- */
+    tabs.forEach(tab => {
+        tab.addEventListener("click", function (e) {
+
+            // prevent skipping tabs if required fields not filled
+            if (!validateCurrentTab()) {
+                e.preventDefault();
+                return;
+            }
+
+            // allow switching
+            tabs.forEach(t => t.classList.remove("active"));
+            tab.classList.add("active");
+
+            const id = tab.getAttribute("href");
+            panels.forEach(p => p.hidden = ("#" + p.id) !== id);
+
+            updateButtons();
+        });
+    });
+
+    updateButtons();
+});
+
+
+/* ===============================================================
+   PSGC Loader + DOB + Auto Password + Other Existing Scripts
+   (UNCHANGED FROM YOUR VERSION)
+================================================================ */
+
+/* ---- Tabs base behavior (still needed for page load) ---- */
+const tabsNav=document.getElementById('tabs');
+const panels=[...document.querySelectorAll('.tab-panel')];
+tabsNav.addEventListener('click',e=>{
+  const a=e.target.closest('a'); if(!a) return; e.preventDefault();
+});
+panels.forEach(p=>p.hidden=(p.id!=='tab-personal'));
+
+/* ---- PSGC loader (unchanged) ---- */
+const PSGC_BASE = @json(asset('psgc'));
+const CITY_INDEX = {
+  'Batangas': `${PSGC_BASE}/Batangas/index.json`,
+  'Cavite'  : `${PSGC_BASE}/Cavite/index.json`,
+  'Laguna'  : `${PSGC_BASE}/Laguna/index.json`,
+  'Rizal'   : `${PSGC_BASE}/Rizal/index.json`,
+  'Quezon'  : `${PSGC_BASE}/Quezon/index.json`,
+};
+
+const provinceSel = document.getElementById('current_province');
+const citySel     = document.getElementById('current_city_select');
+const cityHidden  = document.getElementById('current_city');
+const brgySel     = document.getElementById('current_barangay_select');
+const brgyHidden  = document.getElementById('current_barangay');
+const zipInput    = document.getElementById('current_postal_code');
+
+function clearOptions(sel, ph){
+  sel.innerHTML='';
+  const o=document.createElement('option');
+  o.value=''; o.disabled=true; o.selected=true; o.textContent=ph;
+  sel.appendChild(o);
+}
+
+async function loadJson(url){
+  const r=await fetch(url,{cache:'no-cache'});
+  if(!r.ok) throw new Error('HTTP '+r.status);
+  return r.json();
+}
+
+async function loadProvinceIndex(province){
+  clearOptions(citySel,'Select City / Municipality');
+  clearOptions(brgySel,'Select Barangay');
+  zipInput.value=''; zipInput.readOnly=false; zipInput.classList.remove('autofilled');
+  const url=CITY_INDEX[province]; if(!url) return;
+  const data=await loadJson(url);
+  (data.cities||[]).forEach(c=>{
+    const opt=document.createElement('option');
+    opt.value=c.city;
+    opt.dataset.slug=c.slug;
+    opt.textContent=c.city;
+    citySel.appendChild(opt);
+  });
+}
+
+async function loadCityBarangays(province, city){
+  clearOptions(brgySel,'Select Barangay');
+  zipInput.value=''; zipInput.readOnly=false; zipInput.classList.remove('autofilled');
+
+  const slug = citySel.selectedOptions[0]?.dataset.slug;
+  if(!slug) return;
+
+  const data = await loadJson(`${PSGC_BASE}/${province}/${slug}.json`);
+
+  (data.barangays||[]).forEach(b=>{
+    const opt=document.createElement('option');
+    opt.value=b.name;
+    opt.textContent=b.name;
+    if(b.zip) opt.dataset.zip=b.zip;
+    brgySel.appendChild(opt);
+  });
+
+  brgySel.addEventListener('change',()=>{
+    brgyHidden.value=brgySel.value;
+    const sel=brgySel.selectedOptions[0];
+    if(sel?.dataset.zip){
+      zipInput.value=sel.dataset.zip;
+      zipInput.readOnly=true;
       zipInput.classList.add('autofilled');
     } else {
-      if (!zipInput.value) zipInput.value = '';
-      zipInput.readOnly = false;
+      zipInput.value='';
+      zipInput.readOnly=false;
       zipInput.classList.remove('autofilled');
     }
-  }
-
-  provinceSel.addEventListener('change', ()=> buildCityOptions(provinceSel.value, '') );
-  citySel.addEventListener('change', ()=>{
-    cityHidden.value = citySel.value;
-    updatePostalCode();
   });
+}
 
-  // Initialize from old() values so validation redisplay works
-  (function initCityFromOld(){
-    const oldProv = "{{ old('current_province') }}";
-    const oldCity = "{{ old('current_city') }}";
-    if (oldProv) buildCityOptions(oldProv, oldCity);
-    else updatePostalCode();
-  })();
+provinceSel.addEventListener('change',()=>{ loadProvinceIndex(provinceSel.value).catch(console.error); });
+citySel.addEventListener('change',()=>{ cityHidden.value=citySel.value; loadCityBarangays(provinceSel.value,citySel.value).catch(console.error); });
+brgySel.addEventListener('change',()=>{ brgyHidden.value=brgySel.value; });
 
-  // ─────────────────────────────────────────────────────────────
-  // Age >= 18: limit date input and guard on submit
-  // ─────────────────────────────────────────────────────────────
-  const dobEl = document.getElementById('dob');
-  (function setDobMax18(){
-    const today = new Date();
-    const max = new Date(today.getFullYear()-18, today.getMonth(), today.getDate());
-    const iso = max.toISOString().slice(0,10);
-    dobEl.setAttribute('max', iso);
-  })();
-
-  function isAdult(dateStr){
-    if(!dateStr) return false;
-    const d = new Date(dateStr);
-    if (isNaN(d.getTime())) return false;
-    const today = new Date();
-    let age = today.getFullYear() - d.getFullYear();
-    const m = today.getMonth() - d.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < d.getDate())) age--;
-    return age >= 18;
+(function initOld(){
+  const oldProv=@json(old('current_province')), oldCity=@json(old('current_city')), oldBrgy=@json(old('current_barangay'));
+  if(oldProv){
+    provinceSel.value=oldProv;
+    loadProvinceIndex(oldProv).then(()=>{
+      [...citySel.options].forEach(o=>{ if(o.value===oldCity) o.selected=true; });
+      cityHidden.value=oldCity;
+      return loadCityBarangays(oldProv,oldCity);
+    }).then(()=>{
+      [...brgySel.options].forEach(o=>{ if(o.value===oldBrgy) o.selected=true; });
+      brgyHidden.value=oldBrgy;
+    }).catch(console.error);
   }
+})();
 
-  document.getElementById('empCreateForm').addEventListener('submit', (e)=>{
-    if (!isAdult(dobEl.value)) {
-      e.preventDefault();
-      dobEl.setCustomValidity('Employee must be at least 18 years old.');
-      dobEl.reportValidity();
-      // jump to Personal tab so the user sees the error
-      tabsNav.querySelectorAll('a').forEach(x=>x.classList.remove('active'));
-      tabsNav.querySelector('a[href="#tab-personal"]').classList.add('active');
-      panels.forEach(p=> p.hidden = (p.id !== 'tab-personal'));
-    } else {
-      dobEl.setCustomValidity('');
-    }
-  });
 
-  // ─────────────────────────────────────────────────────────────
-  // Auto-generate password: lastName + birthYear
-  // Checked => fill & lock, Unchecked => manual
-  // ─────────────────────────────────────────────────────────────
-  const lastNameEl = document.getElementById('last_name');
-  const pwdEl  = document.getElementById('password');
-  const pwd2El = document.getElementById('password_confirm');
-  const autoPwd = document.getElementById('autoPwd');
 
-  function nameNoSpaces(s){ return (s || '').trim().replace(/\s+/g,''); }
-  function birthYearFromDOB(){
-    const v = dobEl.value;
-    if (!v) return '';
-    const d = new Date(v);
-    return isNaN(d.getTime()) ? '' : String(d.getFullYear());
-  }
-  function makePassword(){
-    const ln = nameNoSpaces(lastNameEl.value);
-    const yr = birthYearFromDOB();
-    return (ln && yr) ? `${ln}${yr}` : '';
-  }
+/* ---- 18+ guard ---- */
+const dobEl=document.getElementById('dob');
+(function setDobMax18(){ const t=new Date(); const max=new Date(t.getFullYear()-18,t.getMonth(),t.getDate()); dobEl.setAttribute('max', max.toISOString().slice(0,10)); })();
+function isAdult(v){ const d=new Date(v); if(isNaN(d.getTime())) return false; const t=new Date(); let age=t.getFullYear()-d.getFullYear(); const m=t.getMonth()-d.getMonth(); if(m<0||(m===0&&t.getDate()<d.getDate())) age--; return age>=18; }
+document.getElementById('empCreateForm').addEventListener('submit',(e)=>{
+  if(!isAdult(dobEl.value)){
+    e.preventDefault(); dobEl.setCustomValidity('Employee must be at least 18 years old.'); dobEl.reportValidity();
+    tabsNav.querySelectorAll('a').forEach(x=>x.classList.remove('active'));
+    tabsNav.querySelector('a[href="#tab-personal"]').classList.add('active');
+    panels.forEach(p=>p.hidden=(p.id!=='tab-personal'));
+  } else dobEl.setCustomValidity('');
+});
 
-  function applyAutoPassword(){
-    if (autoPwd.checked){
-      const gen = makePassword();
-      pwdEl.value = gen;
-      pwd2El.value = gen;
-      pwdEl.readOnly = true;
-      pwd2El.readOnly = true;
-    } else {
-      pwdEl.readOnly = false;
-      pwd2El.readOnly = false;
-    }
-  }
+/* ---- Auto compute end date for probationary employment ---- */
+const empTypeEl = document.getElementById('employment_type');
+const startDateEl = document.getElementById('employment_start_date');
+const endDateEl = document.getElementById('employment_end_date');
+const endDateLabel = document.getElementById('endDateLabel');
 
-  [lastNameEl, dobEl].forEach(el => el.addEventListener('input', ()=>{
-    if (autoPwd.checked) applyAutoPassword();
-  }));
-  autoPwd.addEventListener('change', applyAutoPassword);
-  document.addEventListener('DOMContentLoaded', applyAutoPassword);
+function computeEndDate() {
+  const empType = (empTypeEl.value || '').toLowerCase();
+  const startVal = startDateEl.value;
 
-  // Optional auto-jump to Account after Personal is sufficient
-  let jumped = false;
-  function maybeJumpToAccount(){
-    if (!jumped && isAdult(dobEl.value) && nameNoSpaces(lastNameEl.value)){
-      jumped = true;
-      tabsNav.querySelectorAll('a').forEach(x=>x.classList.remove('active'));
-      tabsNav.querySelector('a[href="#tab-account"]').classList.add('active');
-      panels.forEach(p=> p.hidden = (p.id !== 'tab-account'));
-    }
-  }
-  [lastNameEl, dobEl].forEach(el => el.addEventListener('input', maybeJumpToAccount));
+  // When employment type is probationary → auto add 6 months
+  if (empType === 'probationary') {
+    if (startVal) {
+      const start = new Date(startVal);
+      if (!isNaN(start.getTime())) {
+        const end = new Date(start);
+        end.setMonth(end.getMonth() + 6);
 
-  // ─────────────────────────────────────────────────────────────
-  // Face capture (unchanged)
-  // ─────────────────────────────────────────────────────────────
-  const MODEL_URI = "{{ asset('face-models') }}";
-  const video = document.getElementById('video');
-  const stage = document.getElementById('stage');
-  const btnStart = document.getElementById('btnStart');
-  const btnCapture = document.getElementById('btnCapture');
-  const camStatus = document.getElementById('camStatus');
-  const prevCanvas = document.getElementById('facePreview');
-  const faceDescInput = document.getElementById('face_descriptor');
-  const faceImgInput  = document.getElementById('face_image_base64');
+        // Handle month overflow (e.g., Jan 31 + 6 months)
+        if (end.getDate() !== start.getDate()) {
+          end.setDate(0);
+        }
 
-  let modelsLoaded = false;
-  let boxEl = null;
-  let stream = null;
-
-  function ensureBox() {
-    if (boxEl) return;
-    boxEl = document.createElement('div');
-    boxEl.className = 'box';
-    const label = document.createElement('div');
-    label.className = 'box-label';
-    label.textContent = 'Face detected';
-    boxEl.appendChild(label);
-    stage.appendChild(boxEl);
-  }
-  function hideBox(){ if(boxEl) boxEl.style.display='none'; }
-  function showBox(x,y,w,h){
-    ensureBox();
-    boxEl.style.display = 'block';
-    boxEl.style.left = x+'px';
-    boxEl.style.top = y+'px';
-    boxEl.style.width = w+'px';
-    boxEl.style.height = h+'px';
-  }
-
-  async function loadModels(){
-    if (modelsLoaded) return;
-    await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URI);
-    await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URI);
-    await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URI);
-    modelsLoaded = true;
-  }
-
-  btnStart.addEventListener('click', async ()=>{
-    try{
-      await loadModels();
-      stream = await navigator.mediaDevices.getUserMedia({ video:{ facingMode:'user' }, audio:false });
-      video.srcObject = stream;
-      camStatus.textContent = 'Camera ready. Keep your face within the box; press Capture.';
-      btnCapture.disabled = false;
-
-      const opts = new faceapi.TinyFaceDetectorOptions({ inputSize: 544, scoreThreshold: 0.35 });
-      const drawLoop = async ()=>{
-        if (!video.srcObject) return;
-        const r = await faceapi.detectSingleFace(video, opts);
-        if (!r) { hideBox(); requestAnimationFrame(drawLoop); return; }
-
-        const vw = video.videoWidth, vh = video.videoHeight;
-        const rw = stage.clientWidth, rh = 380;
-        const sx = rw / vw, sy = rh / vh;
-        const b = r.box;
-        showBox(b.x*sx, b.y*sy, b.width*sx, b.height*sy);
-
-        requestAnimationFrame(drawLoop);
-      };
-      requestAnimationFrame(drawLoop);
-    }catch(e){
-      camStatus.textContent = 'Cannot access camera: ' + e.message;
-    }
-  });
-
-  btnCapture.addEventListener('click', async ()=>{
-    try{
-      await loadModels();
-      if (!video.srcObject) { camStatus.textContent = 'Start the camera first.'; return; }
-
-      const opts = new faceapi.TinyFaceDetectorOptions({ inputSize: 640, scoreThreshold: 0.32 });
-      const det = await faceapi.detectSingleFace(video, opts).withFaceLandmarks().withFaceDescriptor();
-
-      if (!det) {
-        camStatus.textContent = 'No face detected. Move closer and face the camera.';
-        return;
+        // Format YYYY-MM-DD
+        endDateEl.value = end.toISOString().split('T')[0];
       }
-
-      const ctx = prevCanvas.getContext('2d');
-      prevCanvas.width = video.videoWidth; prevCanvas.height = 180;
-      const scale = prevCanvas.height / video.videoHeight;
-      const w = video.videoWidth * scale, h = video.videoHeight * scale;
-      ctx.fillStyle = '#f6f8fe'; ctx.fillRect(0,0,prevCanvas.width,prevCanvas.height);
-      ctx.drawImage(video, (prevCanvas.width-w)/2, 0, w, h);
-
-      faceDescInput.value = JSON.stringify(Array.from(det.descriptor));
-      faceImgInput.value  = prevCanvas.toDataURL('image/png');
-      camStatus.textContent = 'Captured! The face template will be saved with this employee.';
-
-    }catch(e){
-      camStatus.textContent = 'Capture error: ' + e.message;
     }
+    endDateEl.readOnly = true;
+    endDateEl.classList.add('bg-light');
+    endDateLabel.textContent = 'End Date (auto 6 months)';
+  } else {
+    // Other employment types → manual input
+    endDateEl.readOnly = false;
+    endDateEl.classList.remove('bg-light');
+    endDateLabel.textContent = 'End Date';
+    if (empType === 'casual' || empType === 'project' || empType === 'fixed-term' || empType === 'seasonal') {
+      endDateLabel.textContent = 'End Date *';
+    }
+  }
+}
+
+// Trigger computation when fields change
+empTypeEl.addEventListener('change', computeEndDate);
+startDateEl.addEventListener('change', computeEndDate);
+
+// Run once on page load (for old values)
+document.addEventListener('DOMContentLoaded', computeEndDate);
+
+
+/* ---- Auto password ---- */
+const lastNameEl=document.getElementById('last_name'), pwdEl=document.getElementById('password'), pwd2El=document.getElementById('password_confirm'), autoPwd=document.getElementById('autoPwd');
+const nameNoSpaces=s=>(s||'').trim().replace(/\s+/g,''); const birthYear=()=>{ const v=dobEl.value; if(!v) return ''; const d=new Date(v); return isNaN(d.getTime())?'':String(d.getFullYear()); };
+function makePassword(){ const ln=nameNoSpaces(lastNameEl.value), yr=birthYear(); return (ln&&yr)?`${ln}${yr}`:''; }
+function applyAutoPassword(){ if(autoPwd.checked){ const gen=makePassword(); pwdEl.value=gen; pwd2El.value=gen; pwdEl.readOnly=true; pwd2El.readOnly=true; } else { pwdEl.readOnly=false; pwd2El.readOnly=false; } }
+[lastNameEl,dobEl].forEach(el=>el.addEventListener('input', ()=>{ if(autoPwd.checked) applyAutoPassword(); })); autoPwd.addEventListener('change', applyAutoPassword); document.addEventListener('DOMContentLoaded', applyAutoPassword);
+
+/* ---- Face capture overlay ---- */
+const MODEL_URI="{{ asset('face-models') }}";
+const video=document.getElementById('video'); const stage=document.getElementById('stage'); const btnStart=document.getElementById('btnStart'); const btnCapture=document.getElementById('btnCapture'); const camStatus=document.getElementById('camStatus'); const prevCanvas=document.getElementById('facePreview'); let modelsLoaded=false, boxEl=null;
+function ensureBox(){ if(boxEl) return; boxEl=document.createElement('div'); Object.assign(boxEl.style,{position:'absolute',border:'2px solid #60a5fa',borderRadius:'10px',pointerEvents:'none'}); stage.appendChild(boxEl); }
+function hideBox(){ if(boxEl) boxEl.style.display='none'; }
+function showBox(x,y,w,h){ ensureBox(); Object.assign(boxEl.style,{display:'block',left:x+'px',top:y+'px',width:w+'px',height:h+'px'}); }
+async function loadModels(){ if(modelsLoaded) return; await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URI); await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URI); await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URI); modelsLoaded=true; }
+btnStart?.addEventListener('click', async ()=>{ try{ await loadModels(); const stream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false}); video.srcObject=stream; camStatus.textContent='Camera ready. Keep your face within the box; press Capture.'; btnCapture.disabled=false; const opts=new faceapi.TinyFaceDetectorOptions({inputSize:544,scoreThreshold:.35}); const loop=async()=>{ if(!video.srcObject) return; const r=await faceapi.detectSingleFace(video,opts); if(!r){ hideBox(); requestAnimationFrame(loop); return; } const vw=video.videoWidth,vh=video.videoHeight; const rw=stage.clientWidth,rh=stage.clientHeight; const sx=rw/vw, sy=rh/vh; const b=r.box; showBox(b.x*sx,b.y*sy,b.width*sx,b.height*sy); requestAnimationFrame(loop); }; requestAnimationFrame(loop);}catch(e){ camStatus.textContent='Cannot access camera: '+e.message; }});
+btnCapture?.addEventListener('click', async ()=>{ try{ await loadModels(); if(!video.srcObject){ camStatus.textContent='Start the camera first.'; return; } const det=await faceapi.detectSingleFace(video,new faceapi.TinyFaceDetectorOptions({inputSize:640,scoreThreshold:.32})).withFaceLandmarks().withFaceDescriptor(); if(!det){ camStatus.textContent='No face detected. Move closer and face the camera.'; return; } const c=prevCanvas, ctx=c.getContext('2d'); const vw=video.videoWidth, vh=video.videoHeight; c.width=600; c.height=800; const dstR=c.width/c.height, srcR=vw/vh; let sx=0,sy=0,sw=vw,sh=vh; if(srcR>dstR){ sw=vh*dstR; sx=(vw-sw)/2; } else { sh=vw/dstR; sy=(vh-sh)/2; } ctx.fillStyle='#f6f8fe'; ctx.fillRect(0,0,c.width,c.height); ctx.drawImage(video,sx,sy,sw,sh,0,0,c.width,c.height); document.getElementById('face_descriptor').value=JSON.stringify(Array.from(det.descriptor)); document.getElementById('face_image_base64').value=c.toDataURL('image/png'); camStatus.textContent='Captured! The face template will be saved with this employee.'; }catch(e){ camStatus.textContent='Capture error: '+e.message; }});
+
+/* ---- Spouse show/hide ---- */
+const civilSel = document.getElementById('civil_status'); const spouseWrap = document.getElementById('spouseRow');
+function toggleSpouseRow(){ const married = (civilSel?.value || '').toLowerCase() === 'married'; spouseWrap.hidden = !married; document.getElementById('spouse_name')?.toggleAttribute('required', married); document.getElementById('spouse_contact')?.toggleAttribute('required', married); }
+civilSel?.addEventListener('change', toggleSpouseRow); document.addEventListener('DOMContentLoaded', toggleSpouseRow);
+
+/* ---- Camera modal for profile picture ---- */
+const cameraModal=document.getElementById('cameraModal'); const ppHidden=document.getElementById('profile_picture_camera'); const fileInput=document.getElementById('profile_picture_file'); const ppVideo=document.getElementById('ppVideo'); const ppSnap=document.getElementById('ppSnap'); const ppStop=document.getElementById('ppStop'); const ppStatus=document.getElementById('ppStatus'); let ppStream=null;
+function stopPP(){ if(ppStream){ ppStream.getTracks().forEach(t=>t.stop()); ppStream=null; } if(ppVideo) ppVideo.srcObject=null; }
+cameraModal.addEventListener('shown.bs.modal', async ()=>{ try{ ppStream=await navigator.mediaDevices.getUserMedia({video:{facingMode:'user'},audio:false}); ppVideo.srcObject=ppStream; ppStatus.textContent='Camera ready. Click Capture.'; } catch(e){ ppStatus.textContent='Cannot access camera: '+e.message; }});
+cameraModal.addEventListener('hide.bs.modal', stopPP);
+ppStop.addEventListener('click', stopPP);
+ppSnap.addEventListener('click', ()=>{ if(!ppStream){ ppStatus.textContent='Open the modal to start camera.'; return; } const canvas=document.createElement('canvas'); const v=ppVideo; const W=600,H=800; canvas.width=W; canvas.height=H; const ctx=canvas.getContext('2d'); const sw=v.videoWidth, sh=v.videoHeight, dstR=W/H, srcR=sw/sh; let sx=0,sy=0,sW=sw,sH=sh; if(srcR>dstR){ sW=sh*dstR; sx=(sw-sW)/2; } else { sH=sw/dstR; sy=(sh-sH)/2; } ctx.drawImage(v,sx,sy,sW,sH,0,0,W,H); const dataUrl=canvas.toDataURL('image/png'); ppHidden.value=dataUrl; if(fileInput) fileInput.value=''; bootstrap.Modal.getInstance(cameraModal)?.hide(); });
+
+/* ---- Client-side upload diagnostics (NEW) ---- */
+(function(){
+  const form = document.getElementById('empCreateForm'); if(!form) return;
+  const FIELDS_SINGLE = ['profile_picture','resume_file','mdr_philhealth_file','mdr_sss_file','mdr_pagibig_file'];
+  const FIELD_MULTI   = 'medical_documents[]';
+  const phpMaxFile  = "{{ (string) ($phpMaxFile ?? '') }}";
+  const phpMaxPost  = "{{ (string) ($phpMaxPost ?? '') }}";
+  const toBytes = (s)=>{ if(!s) return Infinity; const m=String(s).trim().match(/^(\d+(?:\.\d+)?)([KMG])?$/i); if(!m) return Infinity; let v=parseFloat(m[1]); const u=(m[2]||'').toUpperCase(); if(u==='K') v*=1024; if(u==='M') v*=1024*1024; if(u==='G') v*=1024*1024*1024; return Math.floor(v); };
+  const limitLaravel = 5*1024*1024; // validator max:5120KB
+  const limitPhpFile = toBytes(phpMaxFile);
+  const limitPhpPost = toBytes(phpMaxPost);
+  const hardPerFile  = Math.min(limitLaravel, limitPhpFile);
+  const warnEl       = document.getElementById('cl-upload-warning');
+  const sumWrap      = document.getElementById('cl-file-summary');
+  const listEl       = document.getElementById('cl-file-list');
+  const human = (n)=> n>=1073741824?(n/1073741824).toFixed(2)+' GB': n>=1048576?(n/1048576).toFixed(2)+' MB': n>=1024?(n/1024).toFixed(2)+' KB': n+' B';
+  function collectFiles(){
+    const files=[]; FIELDS_SINGLE.forEach(name=>{ const el=form.querySelector(`input[type="file"][name="${name}"]`); if(el?.files?.length) files.push(...el.files); });
+    const multi=form.querySelector(`input[type="file"][name="${FIELD_MULTI}"]`); if(multi?.files?.length) files.push(...multi.files);
+    return files;
+  }
+  function refreshSummary(){
+    const files=collectFiles(); if(!files.length){ sumWrap.classList.add('d-none'); listEl.innerHTML=''; return; }
+    sumWrap.classList.remove('d-none'); listEl.innerHTML=''; files.forEach(f=>{ const li=document.createElement('li'); li.textContent=`${f.name} — ${human(f.size)} (${f.type || 'type/unknown'})`; if(f.size>hardPerFile){ li.classList.add('text-danger'); li.append('  ✖ exceeds per-file limit'); } listEl.appendChild(li); });
+  }
+  form.addEventListener('change',e=>{ if(e.target.matches('input[type="file"]')) refreshSummary(); });
+  form.addEventListener('submit',e=>{
+    warnEl?.classList.add('d-none');
+    const files=collectFiles();
+    const tooBig=files.find(f=>f.size>hardPerFile);
+    if(tooBig){ e.preventDefault(); warnEl.textContent=`“${tooBig.name}” is ${human(tooBig.size)} but the limit is ${human(hardPerFile)}. Replace the file and try again.`; warnEl.classList.remove('d-none'); refreshSummary(); return; }
+    const total=files.reduce((a,f)=>a+f.size,0);
+    if(total>limitPhpPost && Number.isFinite(limitPhpPost)){ e.preventDefault(); warnEl.innerHTML=`Total size of selected files is ${human(total)}, which likely exceeds <code>post_max_size</code> ({{ $phpMaxPost }}). Increase it in php.ini or upload fewer/smaller files.`; warnEl.classList.remove('d-none'); refreshSummary(); return; }
+    if(!files.length){ warnEl.textContent='No documents selected. That’s fine, but nothing will be saved in the document fields.'; warnEl.classList.remove('d-none'); }
   });
+  refreshSummary();
+
+  
+})();
+
+/* ---------------------------------------------------------------
+   DYNAMIC NEXT / SAVE BUTTON FOR TAB PROGRESS
+---------------------------------------------------------------- */
+document.addEventListener('DOMContentLoaded', function () {
+
+    const tabs = [...document.querySelectorAll('#tabs a')];
+    const panels = [...document.querySelectorAll('.tab-panel')];
+
+    const nextBtn = document.getElementById('nextBtn');
+    const saveBtn = document.getElementById('saveBtn');
+
+    function updateButtons() {
+        const activeIndex = tabs.findIndex(t => t.classList.contains('active'));
+
+        // If last tab → show Save button
+        if (activeIndex === tabs.length - 1) {
+            nextBtn.classList.add('d-none');
+            saveBtn.classList.remove('d-none');
+        } else {
+            nextBtn.classList.remove('d-none');
+            saveBtn.classList.add('d-none');
+        }
+    }
+
+    // NEXT button → switch to next tab
+    nextBtn.addEventListener('click', function () {
+        const activeIndex = tabs.findIndex(t => t.classList.contains('active'));
+
+        if (activeIndex < tabs.length - 1) {
+            const nextTab = tabs[activeIndex + 1];
+
+            // Switch active tab
+            tabs.forEach(t => t.classList.remove('active'));
+            nextTab.classList.add('active');
+
+            // Switch visible panel
+            const nextPanelId = nextTab.getAttribute('href');
+            panels.forEach(p => p.hidden = ('#' + p.id) !== nextPanelId);
+
+            updateButtons();
+        }
+    });
+
+    // When manually clicking tabs
+    tabs.forEach(tab => {
+        tab.addEventListener('click', function () {
+            setTimeout(updateButtons, 50);
+        });
+    });
+
+    updateButtons();
+});
+
 </script>
 @endpush

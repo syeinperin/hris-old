@@ -1,0 +1,27 @@
+{
+  "province": "Quezon",
+  "city": "Polillo",
+  "zip": "4336",
+  "barangays": [
+    { "name": "Anawan", "zip": "4336" },
+    { "name": "Atulayan", "zip": "4336" },
+    { "name": "Balesin", "zip": "4336" },
+    { "name": "Bañadero", "zip": "4336" },
+    { "name": "Binibitinan", "zip": "4336" },
+    { "name": "Bislian", "zip": "4336" },
+    { "name": "Bucao", "zip": "4336" },
+    { "name": "Canicanian", "zip": "4336" },
+    { "name": "Kalubakis", "zip": "4336" },
+    { "name": "Languyin", "zip": "4336" },
+    { "name": "Libjo", "zip": "4336" },
+    { "name": "Pamatdan", "zip": "4336" },
+    { "name": "Pilion", "zip": "4336" },
+    { "name": "Pinaglubayan", "zip": "4336" },
+    { "name": "Poblacion", "zip": "4336" },
+    { "name": "Sabang", "zip": "4336" },
+    { "name": "Salipsip", "zip": "4336" },
+    { "name": "Sibulan", "zip": "4336" },
+    { "name": "Taluong", "zip": "4336" },
+    { "name": "Tamulaya-Anitong", "zip": "4336" }
+  ]
+}

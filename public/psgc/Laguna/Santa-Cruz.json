@@ -1,0 +1,33 @@
+{
+  "province": "Laguna",
+  "city": "Santa Cruz",
+  "zip": "4009",
+  "barangays": [
+    { "name": "Alipit", "zip": "4009" },
+    { "name": "Bagumbayan", "zip": "4009" },
+    { "name": "Bubukal", "zip": "4009" },
+    { "name": "Calios", "zip": "4009" },
+    { "name": "Duhat", "zip": "4009" },
+    { "name": "Gatid", "zip": "4009" },
+    { "name": "Jasaan", "zip": "4009" },
+    { "name": "Labuin", "zip": "4009" },
+    { "name": "Malinao", "zip": "4009" },
+    { "name": "Oogong", "zip": "4009" },
+    { "name": "Pagsawitan", "zip": "4009" },
+    { "name": "Palasan", "zip": "4009" },
+    { "name": "Patimbao", "zip": "4009" },
+    { "name": "Barangay I (Pob.)", "zip": "4009" },
+    { "name": "Barangay II (Pob.)", "zip": "4009" },
+    { "name": "Barangay III (Pob.)", "zip": "4009" },
+    { "name": "Barangay IV (Pob.)", "zip": "4009" },
+    { "name": "Barangay V (Pob.)", "zip": "4009" },
+    { "name": "San Jose", "zip": "4009" },
+    { "name": "San Juan", "zip": "4009" },
+    { "name": "San Pablo Norte", "zip": "4009" },
+    { "name": "San Pablo Sur", "zip": "4009" },
+    { "name": "Santisima Cruz", "zip": "4009" },
+    { "name": "Santo Angel Central", "zip": "4009" },
+    { "name": "Santo Angel Norte", "zip": "4009" },
+    { "name": "Santo Angel Sur", "zip": "4009" }
+  ]
+}

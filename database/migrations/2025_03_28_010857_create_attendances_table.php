@@ -17,11 +17,9 @@ class CreateAttendancesTable extends Migration
             $table->boolean('is_manual')->default(false);
             $table->timestamps();
 
-            // foreign keys
             $table->foreign('employee_id')->references('id')->on('employees');
             $table->foreign('schedule_id')->references('id')->on('schedules');
 
-            // indexes for faster lookups
             $table->index('employee_id');
             $table->index('time_in');
         });

@@ -1,0 +1,26 @@
+{
+  "province": "Rizal",
+  "city": "Tanay",
+  "zip": "1980",
+  "barangays": [
+    { "name": "Cayabu", "zip": "1980" },
+    { "name": "Cuyambay", "zip": "1980" },
+    { "name": "Daraitan", "zip": "1980" },
+    { "name": "Katipunan-Bayan (Pob.)", "zip": "1980" },
+    { "name": "Kaybuto (Pob.)", "zip": "1980" },
+    { "name": "Laiban", "zip": "1980" },
+    { "name": "Mag-Ampon (Pob.)", "zip": "1980" },
+    { "name": "Mamuyao", "zip": "1980" },
+    { "name": "Pinagkamaligan (Pob.)", "zip": "1980" },
+    { "name": "Plaza Aldea (Pob.)", "zip": "1980" },
+    { "name": "Sampaloc", "zip": "1980" },
+    { "name": "San Andres", "zip": "1980" },
+    { "name": "San Isidro (Pob.)", "zip": "1980" },
+    { "name": "Santa Inez", "zip": "1980" },
+    { "name": "Santo Niño", "zip": "1980" },
+    { "name": "Tabing Ilog (Pob.)", "zip": "1980" },
+    { "name": "Tandang Kutyo (Pob.)", "zip": "1980" },
+    { "name": "Tinucan", "zip": "1980" },
+    { "name": "Wawa (Pob.)", "zip": "1980" }
+  ]
+}

@@ -1,0 +1,14 @@
+{
+  "province": "Rizal",
+  "city": "Cainta",
+  "zip": "1900",
+  "barangays": [
+    { "name": "San Andres (Pob.)", "zip": "1900" },
+    { "name": "San Isidro", "zip": "1900" },
+    { "name": "San Juan", "zip": "1900" },
+    { "name": "San Roque", "zip": "1900" },
+    { "name": "Santa Rosa", "zip": "1900" },
+    { "name": "Santo Niño", "zip": "1900" },
+    { "name": "Santo Domingo", "zip": "1900" }
+  ]
+}

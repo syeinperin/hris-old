@@ -1,0 +1,19 @@
+{
+  "province": "Quezon",
+  "city": "Agdangan",
+  "zip": "4304",
+  "barangays": [
+    { "name": "Binagbag", "zip": "4304" },
+    { "name": "Dayap", "zip": "4304" },
+    { "name": "Ibabang Kinagunan", "zip": "4304" },
+    { "name": "Ilayang Kinagunan", "zip": "4304" },
+    { "name": "Kanlurang Calutan", "zip": "4304" },
+    { "name": "Kanlurang Maligaya", "zip": "4304" },
+    { "name": "Salvacion", "zip": "4304" },
+    { "name": "Silangang Calutan", "zip": "4304" },
+    { "name": "Silangang Maligaya", "zip": "4304" },
+    { "name": "Sildora", "zip": "4304" },
+    { "name": "Poblacion I", "zip": "4304" },
+    { "name": "Poblacion II", "zip": "4304" }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "province": "Quezon",
+  "city": "San Francisco (Aurora)",
+  "zip": "4315",
+  "barangays": [
+    { "name": "Butanguiad", "zip": "4315" },
+    { "name": "Casay", "zip": "4315" },
+    { "name": "Cawayan I", "zip": "4315" },
+    { "name": "Cawayan II", "zip": "4315" },
+    { "name": "Huyon-Uyon", "zip": "4315" },
+    { "name": "Ibabang Tayuman", "zip": "4315" },
+    { "name": "Ilayang Tayuman", "zip": "4315" },
+    { "name": "Inabuan", "zip": "4315" },
+    { "name": "Nasalaan", "zip": "4315" },
+    { "name": "Pagsangahan", "zip": "4315" },
+    { "name": "Poblacion", "zip": "4315" },
+    { "name": "Pugon", "zip": "4315" },
+    { "name": "Silongin", "zip": "4315" },
+    { "name": "Don Juan Vercelos", "zip": "4315" },
+    { "name": "Mabuñga", "zip": "4315" },
+    { "name": "Santo Niño", "zip": "4315" }
+  ]
+}

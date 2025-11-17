@@ -1,0 +1,31 @@
+{
+  "province": "Quezon",
+  "city": "San Narciso",
+  "zip": "4313",
+  "barangays": [
+    { "name": "Abuyon", "zip": "4313" },
+    { "name": "Andres Bonifacio", "zip": "4313" },
+    { "name": "Bani", "zip": "4313" },
+    { "name": "Binay", "zip": "4313" },
+    { "name": "Buenavista", "zip": "4313" },
+    { "name": "Busokbusokan", "zip": "4313" },
+    { "name": "Calwit", "zip": "4313" },
+    { "name": "Guinhalinan", "zip": "4313" },
+    { "name": "Lacdayan", "zip": "4313" },
+    { "name": "Maguiting", "zip": "4313" },
+    { "name": "Manlampong", "zip": "4313" },
+    { "name": "Pagkakaisa (Pob.)", "zip": "4313" },
+    { "name": "Maligaya (Pob.)", "zip": "4313" },
+    { "name": "Bayanihan (Pob.)", "zip": "4313" },
+    { "name": "Pagdadamayan (Pob.)", "zip": "4313" },
+    { "name": "Punta", "zip": "4313" },
+    { "name": "Rizal", "zip": "4313" },
+    { "name": "San Isidro", "zip": "4313" },
+    { "name": "San Juan", "zip": "4313" },
+    { "name": "San Vicente", "zip": "4313" },
+    { "name": "Vigo Central", "zip": "4313" },
+    { "name": "Villa Aurin (Pinagsama)", "zip": "4313" },
+    { "name": "Villa Reyes", "zip": "4313" },
+    { "name": "White Cliff", "zip": "4313" }
+  ]
+}

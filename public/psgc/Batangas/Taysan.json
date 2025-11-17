@@ -1,0 +1,27 @@
+{
+  "province": "Batangas",
+  "city": "Taysan",
+  "zip": "4233",
+  "barangays": [
+    { "name": "Bacao", "zip": "4233" },
+    { "name": "Bilogo", "zip": "4233" },
+    { "name": "Bukal", "zip": "4233" },
+    { "name": "Dagatan", "zip": "4233" },
+    { "name": "Guinhawa", "zip": "4233" },
+    { "name": "Laurel", "zip": "4233" },
+    { "name": "Mabayabas", "zip": "4233" },
+    { "name": "Mahanadiong", "zip": "4233" },
+    { "name": "Mapulo", "zip": "4233" },
+    { "name": "Mataas Na Lupa", "zip": "4233" },
+    { "name": "Pag-Asa", "zip": "4233" },
+    { "name": "Panghayaan", "zip": "4233" },
+    { "name": "Piña", "zip": "4233" },
+    { "name": "Pinagbayanan", "zip": "4233" },
+    { "name": "Poblacion East", "zip": "4233" },
+    { "name": "Poblacion West", "zip": "4233" },
+    { "name": "San Isidro", "zip": "4233" },
+    { "name": "San Marcelino", "zip": "4233" },
+    { "name": "Santo Niño", "zip": "4233" },
+    { "name": "Tilambo", "zip": "4233" }
+  ]
+}

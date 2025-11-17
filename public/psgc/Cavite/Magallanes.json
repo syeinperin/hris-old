@@ -1,0 +1,23 @@
+{
+  "province": "Cavite",
+  "city": "Magallanes",
+  "zip": "4113",
+  "barangays": [
+    { "name": "Baliwag", "zip": "4113" },
+    { "name": "Bendita I", "zip": "4113" },
+    { "name": "Bendita II", "zip": "4113" },
+    { "name": "Caluangan", "zip": "4113" },
+    { "name": "Kabulusan", "zip": "4113" },
+    { "name": "Medina", "zip": "4113" },
+    { "name": "Pacheco", "zip": "4113" },
+    { "name": "Ramirez", "zip": "4113" },
+    { "name": "San Agustin", "zip": "4113" },
+    { "name": "Tua", "zip": "4113" },
+    { "name": "Urdaneta", "zip": "4113" },
+    { "name": "Barangay 1 (Pob.)", "zip": "4113" },
+    { "name": "Barangay 2 (Pob.)", "zip": "4113" },
+    { "name": "Barangay 3 (Pob.)", "zip": "4113" },
+    { "name": "Barangay 4 (Pob.)", "zip": "4113" },
+    { "name": "Barangay 5 (Pob.)", "zip": "4113" }
+  ]
+}

@@ -1,0 +1,23 @@
+{
+  "province": "Cavite",
+  "city": "Noveleta",
+  "zip": "4105",
+  "barangays": [
+    { "name": "Magdiwang", "zip": "4105" },
+    { "name": "Poblacion", "zip": "4105" },
+    { "name": "Salcedo I", "zip": "4105" },
+    { "name": "Salcedo II", "zip": "4105" },
+    { "name": "San Antonio I", "zip": "4105" },
+    { "name": "San Antonio II", "zip": "4105" },
+    { "name": "San Jose I", "zip": "4105" },
+    { "name": "San Jose II", "zip": "4105" },
+    { "name": "San Juan I", "zip": "4105" },
+    { "name": "San Juan II", "zip": "4105" },
+    { "name": "San Rafael I", "zip": "4105" },
+    { "name": "San Rafael II", "zip": "4105" },
+    { "name": "San Rafael III", "zip": "4105" },
+    { "name": "San Rafael IV", "zip": "4105" },
+    { "name": "Santa Rosa I", "zip": "4105" },
+    { "name": "Santa Rosa II", "zip": "4105" }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "province": "Quezon",
+  "city": "Real",
+  "zip": "4335",
+  "barangays": [
+    { "name": "Poblacion I (Barangay 1)", "zip": "4335" },
+    { "name": "Capalong", "zip": "4335" },
+    { "name": "Cawayan", "zip": "4335" },
+    { "name": "Kiloloran", "zip": "4335" },
+    { "name": "Llavac", "zip": "4335" },
+    { "name": "Lubayat", "zip": "4335" },
+    { "name": "Malapad", "zip": "4335" },
+    { "name": "Maragondon", "zip": "4335" },
+    { "name": "Pandan", "zip": "4335" },
+    { "name": "Tanauan", "zip": "4335" },
+    { "name": "Tignoan", "zip": "4335" },
+    { "name": "Ungos", "zip": "4335" },
+    { "name": "Poblacion 61 (Barangay 2)", "zip": "4335" },
+    { "name": "Maunlad", "zip": "4335" },
+    { "name": "Bagong Silang", "zip": "4335" },
+    { "name": "Masikap", "zip": "4335" },
+    { "name": "Tagumpay", "zip": "4335" }
+  ]
+}

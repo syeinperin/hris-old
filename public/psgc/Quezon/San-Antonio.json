@@ -1,0 +1,27 @@
+{
+  "province": "Quezon",
+  "city": "San Antonio",
+  "zip": "4324",
+  "barangays": [
+    { "name": "Arawan", "zip": "4324" },
+    { "name": "Bagong Niing", "zip": "4324" },
+    { "name": "Balat Atis", "zip": "4324" },
+    { "name": "Briones", "zip": "4324" },
+    { "name": "Bulihan", "zip": "4324" },
+    { "name": "Buliran", "zip": "4324" },
+    { "name": "Callejon", "zip": "4324" },
+    { "name": "Corazon", "zip": "4324" },
+    { "name": "Manuel del Valle Sr.", "zip": "4324" },
+    { "name": "Loob", "zip": "4324" },
+    { "name": "Magsaysay", "zip": "4324" },
+    { "name": "Matipunso", "zip": "4324" },
+    { "name": "Niing", "zip": "4324" },
+    { "name": "Poblacion", "zip": "4324" },
+    { "name": "Pulo", "zip": "4324" },
+    { "name": "Pury", "zip": "4324" },
+    { "name": "Sampaga", "zip": "4324" },
+    { "name": "Sampaguita", "zip": "4324" },
+    { "name": "San Jose", "zip": "4324" },
+    { "name": "Sinturisan", "zip": "4324" }
+  ]
+}

@@ -2,15 +2,18 @@
 @php
   use Illuminate\Support\Facades\Route as RouteFacade;
 
-  /**
-   * Build a link target for a route name if it exists.
-   * Returns ['url' => string, 'exists' => bool, 'active' => bool]
-   */
-  function menuLinkMeta($routeName) {
-      $exists = $routeName && RouteFacade::has($routeName);
-      $url    = $exists ? route($routeName) : '#';
-      $active = $exists && request()->routeIs($routeName.'*');
-      return compact('url','exists','active');
+  // ✅ Fix: Prevent redeclaration error if sidebar loads multiple times
+  if (!function_exists('menuLinkMeta')) {
+      /**
+       * Build a link target for a route name if it exists.
+       * Returns ['url' => string, 'exists' => bool, 'active' => bool]
+       */
+      function menuLinkMeta($routeName) {
+          $exists = $routeName && RouteFacade::has($routeName);
+          $url    = $exists ? route($routeName) : '#';
+          $active = $exists && request()->routeIs($routeName.'*');
+          return compact('url','exists','active');
+      }
   }
 @endphp
 
@@ -65,13 +68,4 @@
     @endif
   @endforeach
 
-  {{-- Static Settings link --}}
-  <div class="mt-4"></div>
-  <a
-    class="nav-link @if(request()->routeIs('settings*')) active @endif"
-    href="{{ route('settings') }}"
-  >
-    <i class="bi bi-gear me-2"></i>
-    Settings
-  </a>
 </nav>

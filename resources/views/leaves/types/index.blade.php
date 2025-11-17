@@ -1,52 +1,70 @@
 @extends('layouts.app')
-@section('page_title','Leave Types')
+
+@section('page_title', 'My Leave Requests')
 
 @section('content')
-<div class="container">
-  <div class="d-flex justify-content-between mb-3">
-    <h3>Leave Types</h3>
-    <a href="{{ route('leave-types.create') }}" class="btn btn-primary">Add Leave Type</a>
+<div class="container-fluid">
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h3 mb-0">My Leave Requests</h1>
+    <a href="{{ route('leaves.create') }}" class="btn btn-primary">
+      <i class="bi bi-plus-circle me-1"></i> New Request
+    </a>
   </div>
 
   @if(session('success'))
     <div class="alert alert-success">{{ session('success') }}</div>
   @endif
+  @if(session('error'))
+    <div class="alert alert-danger">{{ session('error') }}</div>
+  @endif
 
-  <table class="table table-bordered">
-    <thead>
-      <tr>
-        <th>Name</th>
-        <th>Default Days</th>
-        <th>Description</th>
-        <th>Active</th>
-        <th width="150">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      @forelse($types as $type)
-        <tr>
-          <td>{{ $type->name }}</td>
-          <td>{{ $type->default_days }}</td>
-          <td>{{ $type->description }}</td>
-          <td>{{ $type->is_active ? 'Yes' : 'No' }}</td>
-          <td>
-            <a href="{{ route('leave-types.show',$type) }}" class="btn btn-sm btn-info">View</a>
-            <a href="{{ route('leave-types.edit',$type) }}" class="btn btn-sm btn-secondary">Edit</a>
-            <form action="{{ route('leave-types.destroy',$type) }}"
-                  method="POST"
-                  class="d-inline"
-                  onsubmit="return confirm('Delete this type?');">
-              @csrf @method('DELETE')
-              <button class="btn btn-sm btn-danger">Delete</button>
-            </form>
-          </td>
-        </tr>
-      @empty
-        <tr><td colspan="5" class="text-center">No leave types found.</td></tr>
-      @endforelse
-    </tbody>
-  </table>
-
-  {{ $types->links() }}
+  <div class="card shadow-sm">
+    <div class="card-body table-responsive">
+      <table class="table align-middle">
+        <thead class="table-light">
+          <tr>
+            <th>Leave Type</th>
+            <th>From</th>
+            <th>To</th>
+            <th>Status</th>
+            <th>Attachment</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          @forelse($requests as $leave)
+            <tr>
+              <td>{{ ucfirst($leave->leave_type) }}</td>
+              <td>{{ \Carbon\Carbon::parse($leave->start_date)->format('M d, Y') }}</td>
+              <td>{{ \Carbon\Carbon::parse($leave->end_date)->format('M d, Y') }}</td>
+              <td>
+                <span class="badge bg-{{ $leave->status === 'approved' ? 'success' : ($leave->status === 'rejected' ? 'danger' : 'warning') }}">
+                  {{ ucfirst($leave->status) }}
+                </span>
+              </td>
+              <td>
+                @if($leave->attachment_path)
+                  <a href="{{ asset('storage/'.$leave->attachment_path) }}" target="_blank">View</a>
+                @else
+                  —
+                @endif
+              </td>
+              <td>
+                <form action="{{ route('leaves.destroy', $leave->id) }}" method="POST" onsubmit="return confirm('Delete this request?');">
+                  @csrf @method('DELETE')
+                  <button class="btn btn-sm btn-danger">
+                    <i class="bi bi-trash"></i>
+                  </button>
+                </form>
+              </td>
+            </tr>
+          @empty
+            <tr><td colspan="6" class="text-center text-muted">No leave requests found.</td></tr>
+          @endforelse
+        </tbody>
+      </table>
+      {{ $requests->links() }}
+    </div>
+  </div>
 </div>
 @endsection

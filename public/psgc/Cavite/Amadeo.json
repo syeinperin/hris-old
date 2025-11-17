@@ -1,0 +1,33 @@
+{
+  "province": "Cavite",
+  "city": "Amadeo",
+  "zip": "4119",
+  "barangays": [
+    { "name": "Banaybanay", "zip": "4119" },
+    { "name": "Bucal", "zip": "4119" },
+    { "name": "Dagatan", "zip": "4119" },
+    { "name": "Halang", "zip": "4119" },
+    { "name": "Loma", "zip": "4119" },
+    { "name": "Maitim I", "zip": "4119" },
+    { "name": "Maymangga", "zip": "4119" },
+    { "name": "Minantok Kanluran", "zip": "4119" },
+    { "name": "Pangil", "zip": "4119" },
+    { "name": "Barangay I (Pob.)", "zip": "4119" },
+    { "name": "Barangay II (Pob.)", "zip": "4119" },
+    { "name": "Barangay III (Pob.)", "zip": "4119" },
+    { "name": "Barangay IV (Pob.)", "zip": "4119" },
+    { "name": "Barangay V (Pob.)", "zip": "4119" },
+    { "name": "Barangay VI (Pob.)", "zip": "4119" },
+    { "name": "Barangay VII (Pob.)", "zip": "4119" },
+    { "name": "Barangay VIII (Pob.)", "zip": "4119" },
+    { "name": "Barangay IX (Pob.)", "zip": "4119" },
+    { "name": "Barangay X (Pob.)", "zip": "4119" },
+    { "name": "Barangay XI (Pob.)", "zip": "4119" },
+    { "name": "Barangay XII (Pob.)", "zip": "4119" },
+    { "name": "Salaban", "zip": "4119" },
+    { "name": "Talon", "zip": "4119" },
+    { "name": "Tamacan", "zip": "4119" },
+    { "name": "Buho", "zip": "4119" },
+    { "name": "Minantok Silangan", "zip": "4119" }
+  ]
+}

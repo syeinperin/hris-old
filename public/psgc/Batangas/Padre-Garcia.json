@@ -1,0 +1,25 @@
+{
+  "province": "Batangas",
+  "city": "Padre Garcia",
+  "zip": "4224",
+  "barangays": [
+    { "name": "Banaba", "zip": "4224" },
+    { "name": "Banaybanay", "zip": "4224" },
+    { "name": "Bawi", "zip": "4224" },
+    { "name": "Bukal", "zip": "4224" },
+    { "name": "Castillo", "zip": "4224" },
+    { "name": "Cawongan", "zip": "4224" },
+    { "name": "Manggas", "zip": "4224" },
+    { "name": "Maugat East", "zip": "4224" },
+    { "name": "Maugat West", "zip": "4224" },
+    { "name": "Pansol", "zip": "4224" },
+    { "name": "Payapa", "zip": "4224" },
+    { "name": "Poblacion", "zip": "4224" },
+    { "name": "Quilo-quilo North", "zip": "4224" },
+    { "name": "Quilo-quilo South", "zip": "4224" },
+    { "name": "San Felipe", "zip": "4224" },
+    { "name": "San Miguel", "zip": "4224" },
+    { "name": "Tamak", "zip": "4224" },
+    { "name": "Tangob", "zip": "4224" }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "province": "Laguna",
+  "city": "Rizal",
+  "zip": "4003",
+  "barangays": [
+    { "name": "Antipolo", "zip": "4003" },
+    { "name": "Entablado", "zip": "4003" },
+    { "name": "Laguan", "zip": "4003" },
+    { "name": "Paule 1", "zip": "4003" },
+    { "name": "Paule 2", "zip": "4003" },
+    { "name": "East Poblacion", "zip": "4003" },
+    { "name": "West Poblacion", "zip": "4003" },
+    { "name": "Pook", "zip": "4003" },
+    { "name": "Tala", "zip": "4003" },
+    { "name": "Talaga", "zip": "4003" },
+    { "name": "Tuy", "zip": "4003" }
+  ]
+}

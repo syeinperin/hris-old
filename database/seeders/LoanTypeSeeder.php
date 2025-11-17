@@ -10,10 +10,10 @@ class LoanTypeSeeder extends Seeder
     public function run()
     {
         $types = [
-            'Personal Loan',
-            'Car Loan',
-            'Housing Loan',
-            'Education Loan',
+            'Cash Advance',
+            'SSS Loan',
+            'PAGIBIG Loan',
+            'PhilHealth Loan',
         ];
 
         foreach ($types as $type) {

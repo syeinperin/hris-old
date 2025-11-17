@@ -1,0 +1,16 @@
+{
+  "province": "Laguna",
+  "city": "Paete",
+  "zip": "4016",
+  "barangays": [
+    { "name": "Bagumbayan (Pob.)", "zip": "4016" },
+    { "name": "Bangkusay (Pob.)", "zip": "4016" },
+    { "name": "Ermita (Pob.)", "zip": "4016" },
+    { "name": "Ibaba del Norte (Pob.)", "zip": "4016" },
+    { "name": "Ibaba del Sur (Pob.)", "zip": "4016" },
+    { "name": "Ilaya del Norte (Pob.)", "zip": "4016" },
+    { "name": "Ilaya del Sur (Pob.)", "zip": "4016" },
+    { "name": "Maytoong (Pob.)", "zip": "4016" },
+    { "name": "Quinale (Pob.)", "zip": "4016" }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "province": "Laguna",
+  "city": "Calauan",
+  "zip": "4012",
+  "barangays": [
+    { "name": "Balayhangin", "zip": "4012" },
+    { "name": "Bangyas", "zip": "4012" },
+    { "name": "Dayap", "zip": "4012" },
+    { "name": "Hanggan", "zip": "4012" },
+    { "name": "Imok", "zip": "4012" },
+    { "name": "Lamot 1", "zip": "4012" },
+    { "name": "Lamot 2", "zip": "4012" },
+    { "name": "Limao", "zip": "4012" },
+    { "name": "Mabacan", "zip": "4012" },
+    { "name": "Masiit", "zip": "4012" },
+    { "name": "Paliparan", "zip": "4012" },
+    { "name": "Perez", "zip": "4012" },
+    { "name": "Kanluran (Pob.)", "zip": "4012" },
+    { "name": "Silangan (Pob.)", "zip": "4012" },
+    { "name": "Prinza", "zip": "4012" },
+    { "name": "San Isidro", "zip": "4012" },
+    { "name": "Santo Tomas", "zip": "4012" }
+  ]
+}

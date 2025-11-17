@@ -1,0 +1,29 @@
+{
+  "province": "Cavite",
+  "cities": [
+    { "city": "Bacoor City",              "slug": "Bacoor" },
+    { "city": "Carmona City",             "slug": "Carmona" },
+    { "city": "Cavite City",              "slug": "Cavite-City" },
+    { "city": "Dasmariñas City",          "slug": "Dasmarinas" },
+    { "city": "General Trias City",       "slug": "General-Trias" },
+    { "city": "Imus City",                "slug": "Imus" },
+    { "city": "Tagaytay",                 "slug": "Tagaytay " },
+    { "city": "Trece Martires City",      "slug": "Trece-Martires" },
+
+    { "city": "Alfonso",                  "slug": "Alfonso" },
+    { "city": "Amadeo",                   "slug": "Amadeo" },
+    { "city": "General Emilio Aguinaldo", "slug": "General-Emilio-Aguinaldo" },
+    { "city": "General Mariano Alvarez",  "slug": "General-Mariano-Alvarez" },
+    { "city": "Indang",                   "slug": "Indang" },
+    { "city": "Kawit",                    "slug": "Kawit" },
+    { "city": "Magallanes",               "slug": "Magallanes" },
+    { "city": "Maragondon",               "slug": "Maragondon" },
+    { "city": "Mendez",                   "slug": "Mendez" },
+    { "city": "Naic",                     "slug": "Naic" },
+    { "city": "Noveleta",                 "slug": "Noveleta" },
+    { "city": "Rosario",                  "slug": "Rosario" },
+    { "city": "Silang",                   "slug": "Silang" },
+    { "city": "Tanza",                    "slug": "Tanza" },
+    { "city": "Ternate",                  "slug": "Ternate" }
+  ]
+}

@@ -5,48 +5,63 @@ namespace App\Http\Controllers\Notifications;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use App\Models\Employee;
+use App\Models\User;
+use App\Notifications\EmployeeRegularized;
 use Carbon\Carbon;
 
 class RegularizeProbation extends Controller
 {
     /**
-     * If you register a route to this controller,
-     * visiting that route will run the same logic as the Artisan command:
-     *  - Find all employees marked “probationary” whose probation_end_date ≤ today
-     *  - Flip them to “regular”
-     *  - Return a JSON summary
-     *
-     * Example (in routes/web.php):
-     *   Route::get('/notify/regularize-probation', [RegularizeProbation::class, '__invoke']);
+     * Automatically regularizes employees whose probationary period has ended
+     * and notifies Admin + HR users.
      */
     public function __invoke(): JsonResponse
     {
         $today = Carbon::today();
 
-        $toBeRegularized = Employee::where('employment_type', 'probationary')
-            ->whereNotNull('probation_end_date')
-            ->whereDate('probation_end_date', '<=', $today)
+        // Find probationary employees whose end date has passed
+        $toRegularize = Employee::where('employment_type', 'probationary')
+            ->whereNotNull('employment_end_date')
+            ->whereDate('employment_end_date', '<=', $today)
             ->get();
 
-        if ($toBeRegularized->isEmpty()) {
+        if ($toRegularize->isEmpty()) {
             return response()->json([
-                'message' => 'No probationary employees to regularize today.',
+                'message' => 'No employees due for regularization today.',
+                'count'   => 0,
                 'updated' => [],
-            ], 200);
+            ]);
         }
 
-        $updatedNames = [];
-        foreach ($toBeRegularized as $employee) {
+        // Notify Admin and HR roles
+        $notifyUsers = User::whereIn('role', ['admin', 'hr'])->get();
+
+        $updatedEmployees = [];
+
+        foreach ($toRegularize as $employee) {
+
+            // Regularize employee
             $employee->update([
-                'employment_type'   => 'regular',
-                'probation_end_date'=> null,
+                'employment_type'     => 'regular',
+                'employment_end_date' => null,
             ]);
-            $updatedNames[] = $employee->name;
+
+            // Send notification to admin + hr
+            foreach ($notifyUsers as $user) {
+                $user->notify(new EmployeeRegularized($employee));
+            }
+
+            $updatedEmployees[] = [
+                'id'        => $employee->id,
+                'name'      => $employee->full_name,
+                'code'      => $employee->employee_code,
+            ];
         }
 
         return response()->json([
-            'message' => 'Probationary employees have been regularized.',
-            'updated' => $updatedNames,
-        ], 200);
+            'message' => 'Probationary employees successfully regularized.',
+            'count'   => count($updatedEmployees),
+            'updated' => $updatedEmployees,
+        ]);
     }
 }

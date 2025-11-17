@@ -1,0 +1,31 @@
+{
+  "province": "Laguna",
+  "city": "Magdalena",
+  "zip": "4007",
+  "barangays": [
+    { "name": "Alipit", "zip": "4007" },
+    { "name": "Malaking Ambling", "zip": "4007" },
+    { "name": "Munting Ambling", "zip": "4007" },
+    { "name": "Baanan", "zip": "4007" },
+    { "name": "Balanac", "zip": "4007" },
+    { "name": "Bucal", "zip": "4007" },
+    { "name": "Buenavista", "zip": "4007" },
+    { "name": "Bungkol", "zip": "4007" },
+    { "name": "Buo", "zip": "4007" },
+    { "name": "Burlungan", "zip": "4007" },
+    { "name": "Cigaras", "zip": "4007" },
+    { "name": "Ibabang Atingay", "zip": "4007" },
+    { "name": "Ibabang Butnong", "zip": "4007" },
+    { "name": "Ilayang Atingay", "zip": "4007" },
+    { "name": "Ilayang Butnong", "zip": "4007" },
+    { "name": "Ilog", "zip": "4007" },
+    { "name": "Malinao", "zip": "4007" },
+    { "name": "Maravilla", "zip": "4007" },
+    { "name": "Poblacion", "zip": "4007" },
+    { "name": "Sabang", "zip": "4007" },
+    { "name": "Salasad", "zip": "4007" },
+    { "name": "Tanawan", "zip": "4007" },
+    { "name": "Tipunan", "zip": "4007" },
+    { "name": "Halayhayin", "zip": "4007" }
+  ]
+}

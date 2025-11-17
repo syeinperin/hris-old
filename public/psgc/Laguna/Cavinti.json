@@ -1,0 +1,26 @@
+{
+  "province": "Laguna",
+  "city": "Cavinti",
+  "zip": "4013",
+  "barangays": [
+    { "name": "Anglas", "zip": "4013" },
+    { "name": "Bangco", "zip": "4013" },
+    { "name": "Bukal", "zip": "4013" },
+    { "name": "Bulajo", "zip": "4013" },
+    { "name": "Cansuso", "zip": "4013" },
+    { "name": "Duhat", "zip": "4013" },
+    { "name": "Inao-Awan", "zip": "4013" },
+    { "name": "Kanluran Talaongan", "zip": "4013" },
+    { "name": "Labayo", "zip": "4013" },
+    { "name": "Layasin", "zip": "4013" },
+    { "name": "Layug", "zip": "4013" },
+    { "name": "Mahipon", "zip": "4013" },
+    { "name": "Paowin", "zip": "4013" },
+    { "name": "Poblacion", "zip": "4013" },
+    { "name": "Sisilmin", "zip": "4013" },
+    { "name": "Silangan Talaongan", "zip": "4013" },
+    { "name": "Sumucab", "zip": "4013" },
+    { "name": "Tibatib", "zip": "4013" },
+    { "name": "Udia", "zip": "4013" }
+  ]
+}

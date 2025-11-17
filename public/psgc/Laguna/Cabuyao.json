@@ -1,0 +1,25 @@
+{
+  "province": "Laguna",
+  "city": "Cabuyao City",
+  "zip": "4025",
+  "barangays": [
+    { "name": "Baclaran", "zip": "4025" },
+    { "name": "Banaybanay", "zip": "4025" },
+    { "name": "Banlic", "zip": "4025" },
+    { "name": "Butong", "zip": "4025" },
+    { "name": "Bigaa", "zip": "4025" },
+    { "name": "Casile", "zip": "4025" },
+    { "name": "Gulod", "zip": "4025" },
+    { "name": "Mamatid", "zip": "4025" },
+    { "name": "Marinig", "zip": "4025" },
+    { "name": "Niugan", "zip": "4025" },
+    { "name": "Pittland", "zip": "4025" },
+    { "name": "Pulo", "zip": "4025" },
+    { "name": "Sala", "zip": "4025" },
+    { "name": "San Isidro", "zip": "4025" },
+    { "name": "Diezmo", "zip": "4025" },
+    { "name": "Barangay Uno (Pob.)", "zip": "4025" },
+    { "name": "Barangay Dos (Pob.)", "zip": "4025" },
+    { "name": "Barangay Tres (Pob.)", "zip": "4025" }
+  ]
+}

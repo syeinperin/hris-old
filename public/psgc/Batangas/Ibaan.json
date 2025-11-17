@@ -1,0 +1,33 @@
+{
+  "province": "Batangas",
+  "city": "Ibaan",
+  "zip": "4230",
+  "barangays": [
+    { "name": "Bago", "zip": "4230" },
+    { "name": "Balanga", "zip": "4230" },
+    { "name": "Bungahan", "zip": "4230" },
+    { "name": "Calamias", "zip": "4230" },
+    { "name": "Catandala", "zip": "4230" },
+    { "name": "Coliat", "zip": "4230" },
+    { "name": "Dayapan", "zip": "4230" },
+    { "name": "Lapu-lapu", "zip": "4230" },
+    { "name": "Lucsuhin", "zip": "4230" },
+    { "name": "Mabalor", "zip": "4230" },
+    { "name": "Malainin", "zip": "4230" },
+    { "name": "Matala", "zip": "4230" },
+    { "name": "Munting-Tubig", "zip": "4230" },
+    { "name": "Palindan", "zip": "4230" },
+    { "name": "Pangao", "zip": "4230" },
+    { "name": "Panghayaan", "zip": "4230" },
+    { "name": "Poblacion", "zip": "4230" },
+    { "name": "Quilo", "zip": "4230" },
+    { "name": "Sabang", "zip": "4230" },
+    { "name": "Salaban I", "zip": "4230" },
+    { "name": "Salaban II", "zip": "4230" },
+    { "name": "San Agustin", "zip": "4230" },
+    { "name": "Sandalan", "zip": "4230" },
+    { "name": "Santo Niño", "zip": "4230" },
+    { "name": "Talaibon", "zip": "4230" },
+    { "name": "Tulay Na Patpat", "zip": "4230" }
+  ]
+}

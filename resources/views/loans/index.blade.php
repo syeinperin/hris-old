@@ -11,6 +11,7 @@
         <i class="bi bi-plus-lg me-1"></i> New Loan
       </button>
     </div>
+
     <div class="card-body">
       {{-- SEARCH FORM --}}
       <form method="GET" action="{{ route('loans.index') }}" class="row g-2 mb-4">
@@ -48,9 +49,9 @@
                 <td>{{ $loop->iteration + ($loans->currentPage()-1)*$loans->perPage() }}</td>
                 <td>{{ $loan->employee->name }}</td>
                 <td>{{ $loan->reference_no }}</td>
-                <td>{{ $loan->loanType->name }}</td>
-                <td>{{ $loan->plan->name }}</td>
-                <td>{{ $loan->next_payment_date->toDateString() }}</td>
+                <td>{{ $loan->loanType->name ?? '—' }}</td>
+                <td>{{ $loan->plan->name ?? '—' }}</td>
+                <td>{{ optional($loan->next_payment_date)->toDateString() ?? '—' }}</td>
                 <td>
                   <span class="badge
                     {{ $loan->status=='active'    ? 'bg-primary':'' }}
@@ -60,17 +61,27 @@
                   </span>
                 </td>
                 <td class="text-center">
-                  {{-- link to the edit route --}}
+                  {{-- View payments --}}
+                  <a href="{{ route('loans.payments', $loan->id) }}"
+                     class="btn btn-sm btn-outline-primary"
+                     title="View Payments">
+                    <i class="bi bi-list-ul"></i>
+                  </a>
+
+                  {{-- Edit loan --}}
                   <a href="{{ route('loans.edit', $loan) }}"
-                     class="btn btn-sm btn-outline-primary">
+                     class="btn btn-sm btn-outline-success"
+                     title="Edit Loan">
                     <i class="bi bi-pencil"></i>
                   </a>
+
+                  {{-- Delete loan --}}
                   <form action="{{ route('loans.destroy', $loan) }}"
                         method="POST"
                         class="d-inline"
                         onsubmit="return confirm('Remove this loan?')">
                     @csrf @method('DELETE')
-                    <button class="btn btn-sm btn-outline-danger">
+                    <button class="btn btn-sm btn-outline-danger" title="Delete Loan">
                       <i class="bi bi-trash"></i>
                     </button>
                   </form>
@@ -132,8 +143,8 @@
     </div>
   </div>
 
+  {{-- EDIT MODAL --}}
   @isset($editLoan)
-    {{-- EDIT MODAL --}}
     <div class="modal fade" id="loanEditModal" tabindex="-1" aria-hidden="true">
       <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content">

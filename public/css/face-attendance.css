@@ -1,0 +1,76 @@
+/* public/css/face-attendance.css */
+
+.hero {
+  background: linear-gradient(135deg, #26264e 0%, #3a3a84 100%);
+  color: #fff;
+  border-radius: 16px;
+  padding: 22px 20px;
+  margin-bottom: 18px;
+}
+
+.panel {
+  background: #fff;
+  border: 1px solid #eef0f6;
+  border-radius: 14px;
+  padding: 20px;
+}
+
+.stage {
+  background: #000;
+  border-radius: 14px;
+  overflow: hidden;
+  position: relative;
+  min-height: 420px;
+}
+
+.match-profile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.profile-photo {
+  width: 240px;
+  height: 240px;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 6px solid #fff;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.15);
+}
+
+.profile-photo img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.confirmation-box {
+  margin-top: 10px;
+  background: #2c2c54;
+  color: #fff;
+  font-weight: 700;
+  padding: 12px 26px;
+  border-radius: 30px;
+  display: inline-block;
+  font-size: 1.1rem;
+  letter-spacing: 0.5px;
+}
+
+.btn-outline {
+  background: #fff;
+  color: #26264e;
+  border: 2px solid #26264e;
+  font-weight: 700;
+  border-radius: 12px;
+  padding: 10px 14px;
+}
+
+.log {
+  background: #fafbff;
+  border: 1px solid #eef0f6;
+  border-radius: 12px;
+  padding: 12px;
+  min-height: 80px;
+  font-size: 13px;
+}

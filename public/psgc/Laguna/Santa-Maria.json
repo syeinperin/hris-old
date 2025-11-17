@@ -1,0 +1,32 @@
+{
+  "province": "Laguna",
+  "city": "Santa Maria",
+  "zip": "4022",
+  "barangays": [
+    { "name": "Adia", "zip": "4022" },
+    { "name": "Bagong Pook", "zip": "4022" },
+    { "name": "Bagumbayan", "zip": "4022" },
+    { "name": "Bubukal", "zip": "4022" },
+    { "name": "Cabooan", "zip": "4022" },
+    { "name": "Calangay", "zip": "4022" },
+    { "name": "Cambuja", "zip": "4022" },
+    { "name": "Coralan", "zip": "4022" },
+    { "name": "Cueva", "zip": "4022" },
+    { "name": "Inayapan", "zip": "4022" },
+    { "name": "Jose Laurel Sr.", "zip": "4022" },
+    { "name": "Kayhakat", "zip": "4022" },
+    { "name": "Macasipac", "zip": "4022" },
+    { "name": "Masinao", "zip": "4022" },
+    { "name": "Mataling-Ting", "zip": "4022" },
+    { "name": "Pao-o", "zip": "4022" },
+    { "name": "Parang ng Buho", "zip": "4022" },
+    { "name": "Barangay I (Pob.)", "zip": "4022" },
+    { "name": "Barangay II (Pob.)", "zip": "4022" },
+    { "name": "Barangay III (Pob.)", "zip": "4022" },
+    { "name": "Barangay IV (Pob.)", "zip": "4022" },
+    { "name": "Jose Rizal", "zip": "4022" },
+    { "name": "Santiago", "zip": "4022" },
+    { "name": "Talangka", "zip": "4022" },
+    { "name": "Tungkod", "zip": "4022" }
+  ]
+}

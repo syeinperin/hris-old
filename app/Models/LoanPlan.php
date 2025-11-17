@@ -9,13 +9,10 @@ class LoanPlan extends Model
 {
     protected $fillable = [
         'name',
-        'months',
+        'deduction_type',
         'interest_rate',
     ];
 
-    /**
-     * A plan can be assigned to many loans.
-     */
     public function loans(): HasMany
     {
         return $this->hasMany(Loan::class, 'plan_id');

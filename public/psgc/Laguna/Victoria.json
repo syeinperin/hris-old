@@ -1,0 +1,16 @@
+{
+  "province": "Laguna",
+  "city": "Victoria",
+  "zip": "4011",
+  "barangays": [
+    { "name": "Banca-banca", "zip": "4011" },
+    { "name": "Daniw", "zip": "4011" },
+    { "name": "Masapang", "zip": "4011" },
+    { "name": "Nanhaya (Pob.)", "zip": "4011" },
+    { "name": "Pagalangan", "zip": "4011" },
+    { "name": "San Benito", "zip": "4011" },
+    { "name": "San Felix", "zip": "4011" },
+    { "name": "San Francisco", "zip": "4011" },
+    { "name": "San Roque (Pob.)", "zip": "4011" }
+  ]
+}

@@ -1,0 +1,16 @@
+{
+  "province": "Rizal",
+  "city": "Teresa",
+  "zip": "1880",
+  "barangays": [
+    { "name": "Bagumbayan", "zip": "1880" },
+    { "name": "Dalig", "zip": "1880" },
+    { "name": "Dulumbayan", "zip": "1880" },
+    { "name": "May-Iba", "zip": "1880" },
+    { "name": "Poblacion", "zip": "1880" },
+    { "name": "Prinza", "zip": "1880" },
+    { "name": "San Gabriel", "zip": "1880" },
+    { "name": "San Roque", "zip": "1880" },
+    { "name": "Calumpang Santo Cristo", "zip": "1880" }
+  ]
+}

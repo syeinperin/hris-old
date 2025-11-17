@@ -6,16 +6,18 @@
 <div class="container-fluid">
   <div class="card shadow-sm mb-4">
     <div class="card-header d-flex justify-content-between align-items-center bg-white">
-      <h4 class="mb-0">
+      <h4 class="mb-0 d-flex align-items-center gap-2">
         <i class="bi bi-people me-2"></i> User Management
       </h4>
-      {{-- You can add an "Add User" button here if needed --}}
-      {{-- 
-      <a href="{{ route('users.create') }}" class="btn btn-success btn-sm">
-        <i class="bi bi-plus-lg me-1"></i> Add User
-      </a>
-      --}}
+
+      {{-- ✅ Audit Logs button --}}
+      <div class="d-flex align-items-center gap-2">
+        <a href="{{ route('audit-logs.index') }}" class="btn btn-outline-dark btn-sm">
+          <i class="bi bi-clipboard-check me-1"></i> View Audit Logs
+        </a>
+      </div>
     </div>
+
     <div class="card-body">
       {{-- Filters/Search Bar --}}
       <x-search-bar
@@ -62,9 +64,9 @@
                     data-current-role="{{ $u->role?->name }}"
                   >
                     @foreach(['admin','hr','employee','supervisor','timekeeper'] as $r)
-                      <option value="{{ $r }}"
-                        {{ ($u->role?->name === $r) ? 'selected' : '' }}
-                      >{{ ucfirst($r) }}</option>
+                      <option value="{{ $r }}" {{ ($u->role?->name === $r) ? 'selected' : '' }}>
+                        {{ ucfirst($r) }}
+                      </option>
                     @endforeach
                   </select>
                 </td>
@@ -84,13 +86,10 @@
                 </td>
                 <td class="text-center">
                   <div class="d-flex gap-1 justify-content-center">
-                    <a href="{{ route('users.editPassword', $u) }}"
-                       class="btn btn-outline-primary btn-sm">
+                    <a href="{{ route('users.editPassword', $u) }}" class="btn btn-outline-primary btn-sm">
                       Change Password
                     </a>
-                    <form action="{{ route('users.destroy', $u) }}"
-                          method="POST"
-                          onsubmit="return confirm('Delete this user?')">
+                    <form action="{{ route('users.destroy', $u) }}" method="POST" onsubmit="return confirm('Delete this user?')">
                       @csrf
                       @method('DELETE')
                       <button class="btn btn-outline-danger btn-sm">Delete</button>
@@ -100,9 +99,7 @@
               </tr>
             @empty
               <tr>
-                <td colspan="7" class="text-center text-muted py-4">
-                  No users found.
-                </td>
+                <td colspan="7" class="text-center text-muted py-4">No users found.</td>
               </tr>
             @endforelse
           </tbody>

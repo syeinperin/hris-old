@@ -1,0 +1,22 @@
+{
+  "province": "Laguna",
+  "city": "Alaminos",
+  "zip": "4001",
+  "barangays": [
+    { "name": "Del Carmen", "zip": "4001" },
+    { "name": "Palma", "zip": "4001" },
+    { "name": "Barangay I (Pob.)", "zip": "4001" },
+    { "name": "Barangay II (Pob.)", "zip": "4001" },
+    { "name": "Barangay III (Pob.)", "zip": "4001" },
+    { "name": "Barangay IV (Pob.)", "zip": "4001" },
+    { "name": "San Agustin", "zip": "4001" },
+    { "name": "San Andres", "zip": "4001" },
+    { "name": "San Benito", "zip": "4001" },
+    { "name": "San Gregorio", "zip": "4001" },
+    { "name": "San Ildefonso", "zip": "4001" },
+    { "name": "San Juan", "zip": "4001" },
+    { "name": "San Miguel", "zip": "4001" },
+    { "name": "San Roque", "zip": "4001" },
+    { "name": "Santa Rosa", "zip": "4001" }
+  ]
+}

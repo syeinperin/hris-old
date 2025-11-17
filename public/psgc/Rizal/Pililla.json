@@ -1,0 +1,16 @@
+{
+  "province": "Rizal",
+  "city": "Pililla",
+  "zip": "1910",
+  "barangays": [
+    { "name": "Bagumbayan (Pob.)", "zip": "1910" },
+    { "name": "Halayhayin", "zip": "1910" },
+    { "name": "Hulo (Pob.)", "zip": "1910" },
+    { "name": "Imatong (Pob.)", "zip": "1910" },
+    { "name": "Malaya", "zip": "1910" },
+    { "name": "Niogan", "zip": "1910" },
+    { "name": "Quisao", "zip": "1910" },
+    { "name": "Wawa (Pob.)", "zip": "1910" },
+    { "name": "Takungan (Pob.)", "zip": "1910" }
+  ]
+}

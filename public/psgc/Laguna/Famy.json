@@ -1,0 +1,27 @@
+{
+  "province": "Laguna",
+  "city": "Famy",
+  "zip": "4021",
+  "barangays": [
+    { "name": "Asana (Pob.)", "zip": "4021" },
+    { "name": "Bacong-Sigsigan", "zip": "4021" },
+    { "name": "Bagong Pag-Asa (Pob.)", "zip": "4021" },
+    { "name": "Balitoc", "zip": "4021" },
+    { "name": "Banaba (Pob.)", "zip": "4021" },
+    { "name": "Batuhan", "zip": "4021" },
+    { "name": "Bulihan", "zip": "4021" },
+    { "name": "Caballero (Pob.)", "zip": "4021" },
+    { "name": "Calumpang (Pob.)", "zip": "4021" },
+    { "name": "Kapatalan", "zip": "4021" },
+    { "name": "Cuebang Bato", "zip": "4021" },
+    { "name": "Damayan (Pob.)", "zip": "4021" },
+    { "name": "Kataypuanan", "zip": "4021" },
+    { "name": "Liyang", "zip": "4021" },
+    { "name": "Maate", "zip": "4021" },
+    { "name": "Magdalo (Pob.)", "zip": "4021" },
+    { "name": "Mayatba", "zip": "4021" },
+    { "name": "Minayutan", "zip": "4021" },
+    { "name": "Salangbato", "zip": "4021" },
+    { "name": "Tunhac", "zip": "4021" }
+  ]
+}

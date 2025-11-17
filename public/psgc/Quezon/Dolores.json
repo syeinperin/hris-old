@@ -1,0 +1,23 @@
+{
+  "province": "Quezon",
+  "city": "Dolores",
+  "zip": "4326",
+  "barangays": [
+    { "name": "Antonino (Ayusan)", "zip": "4326" },
+    { "name": "Bagong Anyo (Pob.)", "zip": "4326" },
+    { "name": "Bayanihan (Pob.)", "zip": "4326" },
+    { "name": "Bulakin I", "zip": "4326" },
+    { "name": "Bulakin II", "zip": "4326" },
+    { "name": "Bungoy", "zip": "4326" },
+    { "name": "Cabatang", "zip": "4326" },
+    { "name": "Dagatan", "zip": "4326" },
+    { "name": "Kinabuhayan", "zip": "4326" },
+    { "name": "Maligaya (Pob.)", "zip": "4326" },
+    { "name": "Manggahan", "zip": "4326" },
+    { "name": "Pinagdanlayan", "zip": "4326" },
+    { "name": "Putol", "zip": "4326" },
+    { "name": "San Mateo", "zip": "4326" },
+    { "name": "Santa Lucia", "zip": "4326" },
+    { "name": "Silanganan (Pob.)", "zip": "4326" }
+  ]
+}

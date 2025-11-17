@@ -1,0 +1,27 @@
+{
+  "province": "Laguna",
+  "city": "San Pedro",
+  "zip": "4023",
+  "barangays": [
+    { "name": "Bagong Silang", "zip": "4023" },
+    { "name": "Cuyab", "zip": "4023" },
+    { "name": "Estrella", "zip": "4023" },
+    { "name": "G.S.I.S.", "zip": "4023" },
+    { "name": "Landayan", "zip": "4023" },
+    { "name": "Langgam", "zip": "4023" },
+    { "name": "Laram", "zip": "4023" },
+    { "name": "Magsaysay", "zip": "4023" },
+    { "name": "Nueva", "zip": "4023" },
+    { "name": "Poblacion", "zip": "4023" },
+    { "name": "Riverside", "zip": "4023" },
+    { "name": "San Antonio", "zip": "4023" },
+    { "name": "San Roque", "zip": "4023" },
+    { "name": "San Vicente", "zip": "4023" },
+    { "name": "Santo Niño", "zip": "4023" },
+    { "name": "United Bayanihan", "zip": "4023" },
+    { "name": "United Better Living", "zip": "4023" },
+    { "name": "Sampaguita Village", "zip": "4023" },
+    { "name": "Calendola", "zip": "4023" },
+    { "name": "Narra", "zip": "4023" }
+  ]
+}

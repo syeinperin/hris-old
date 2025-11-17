@@ -1,0 +1,33 @@
+{
+  "province": "Batangas",
+  "city": "San Luis",
+  "zip": "4210",
+  "barangays": [
+    { "name": "Abiacao", "zip": "4210" },
+    { "name": "Bagong Tubig", "zip": "4210" },
+    { "name": "Balagtasin", "zip": "4210" },
+    { "name": "Balite", "zip": "4210" },
+    { "name": "Banoyo", "zip": "4210" },
+    { "name": "Boboy", "zip": "4210" },
+    { "name": "Bonliw", "zip": "4210" },
+    { "name": "Calumpang West", "zip": "4210" },
+    { "name": "Calumpang East", "zip": "4210" },
+    { "name": "Dulangan", "zip": "4210" },
+    { "name": "Durungao", "zip": "4210" },
+    { "name": "Locloc", "zip": "4210" },
+    { "name": "Luya", "zip": "4210" },
+    { "name": "Mahabang Parang", "zip": "4210" },
+    { "name": "Manggahan", "zip": "4210" },
+    { "name": "Muzon", "zip": "4210" },
+    { "name": "San Antonio", "zip": "4210" },
+    { "name": "San Isidro", "zip": "4210" },
+    { "name": "San Jose", "zip": "4210" },
+    { "name": "San Martin", "zip": "4210" },
+    { "name": "Santa Monica", "zip": "4210" },
+    { "name": "Taliba", "zip": "4210" },
+    { "name": "Talon", "zip": "4210" },
+    { "name": "Tejero", "zip": "4210" },
+    { "name": "Tungal", "zip": "4210" },
+    { "name": "Poblacion", "zip": "4210" }
+  ]
+}

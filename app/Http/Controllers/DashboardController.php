@@ -15,20 +15,30 @@ class DashboardController extends Controller
 {
     public function index()
     {
-        $today  = Carbon::today();
-        $cutoff = $today->copy()->addDays(7);
+       $today  = Carbon::today();
+$cutoff = $today->copy()->addDays(7);
 
-        // HR counts
-        $employeeCount    = Employee::count();
-        $pendingUserCount = User::where('status', 'pending')->count();
-        $absentCount      = Employee::whereNotIn(
-            'id',
-            Attendance::whereDate('time_in', $today)->pluck('employee_id')
-        )->count();
-        $endingCount      = Employee::whereIn('employment_type', ['probationary', 'fixed-term'])
-            ->whereBetween('employment_end_date', [$today, $cutoff])->count();
-        $loanEndingCount  = Loan::where('status', 'active')
-            ->whereBetween('next_payment_date', [$today, $cutoff])->count();
+// HR counts
+$employeeCount    = Employee::count();
+$pendingUserCount = User::where('status', 'pending')->count();
+$absentCount      = Employee::whereNotIn(
+    'id',
+    Attendance::whereDate('time_in', $today)->pluck('employee_id')
+)->count();
+$today = Carbon::today();
+$nextMonth = $today->copy()->addDays(30);
+
+$endingCount = Employee::whereIn('status', ['active', 'pending'])
+    ->where(function ($q) use ($today, $nextMonth) {
+        $q->whereBetween('employment_end_date', [$today, $nextMonth])
+          ->orWhere('employment_type', 'probationary');
+    })
+    ->count();
+
+$loanEndingCount  = Loan::where('status', 'active')
+    ->whereBetween('next_payment_date', [$today, $cutoff])
+    ->count();
+
 
         // Supervisor counts
         $pendingLeaveCount = LeaveRequest::where('status', 'pending')->count();

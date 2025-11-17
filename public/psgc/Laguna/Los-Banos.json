@@ -1,0 +1,21 @@
+{
+  "province": "Laguna",
+  "city": "Los Baños",
+  "zip": "4030",
+  "barangays": [
+    { "name": "Anos", "zip": "4030" },
+    { "name": "Bagong Silang", "zip": "4030" },
+    { "name": "Bambang", "zip": "4030" },
+    { "name": "Batong Malake", "zip": "4030" },
+    { "name": "Baybayin (Pob.)", "zip": "4030" },
+    { "name": "Bayog", "zip": "4030" },
+    { "name": "Lalakay", "zip": "4030" },
+    { "name": "Maahas", "zip": "4030" },
+    { "name": "Mayondon", "zip": "4030" },
+    { "name": "Putho Tuntungin", "zip": "4030" },
+    { "name": "San Antonio", "zip": "4030" },
+    { "name": "Tadlak", "zip": "4030" },
+    { "name": "Timugan (Pob.)", "zip": "4030" },
+    { "name": "Malinta", "zip": "4030" }
+  ]
+}

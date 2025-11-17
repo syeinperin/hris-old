@@ -1,0 +1,32 @@
+{
+  "province": "Quezon",
+  "city": "Candelaria",
+  "zip": "4323",
+  "barangays": [
+    { "name": "Poblacion", "zip": "4323" },
+    { "name": "Buenavista East", "zip": "4323" },
+    { "name": "Buenavista West", "zip": "4323" },
+    { "name": "Bukal Norte", "zip": "4323" },
+    { "name": "Bukal Sur", "zip": "4323" },
+    { "name": "Kinatihan I", "zip": "4323" },
+    { "name": "Kinatihan II", "zip": "4323" },
+    { "name": "Malabanban Norte", "zip": "4323" },
+    { "name": "Malabanban Sur", "zip": "4323" },
+    { "name": "Mangilag Norte", "zip": "4323" },
+    { "name": "Mangilag Sur", "zip": "4323" },
+    { "name": "Masalukot I", "zip": "4323" },
+    { "name": "Masalukot II", "zip": "4323" },
+    { "name": "Masalukot III", "zip": "4323" },
+    { "name": "Masalukot IV", "zip": "4323" },
+    { "name": "Masalukot V", "zip": "4323" },
+    { "name": "Masin Norte", "zip": "4323" },
+    { "name": "Masin Sur", "zip": "4323" },
+    { "name": "Mayabobo", "zip": "4323" },
+    { "name": "Pahinga Norte", "zip": "4323" },
+    { "name": "Pahinga Sur", "zip": "4323" },
+    { "name": "San Andres", "zip": "4323" },
+    { "name": "San Isidro", "zip": "4323" },
+    { "name": "Santa Catalina Norte", "zip": "4323" },
+    { "name": "Santa Catalina Sur", "zip": "4323" }
+  ]
+}

@@ -1,0 +1,18 @@
+{
+  "province": "Rizal",
+  "city": "Jala-jala",
+  "zip": "1990",
+  "barangays": [
+    { "name": "Bagumbong", "zip": "1990" },
+    { "name": "Bayugo", "zip": "1990" },
+    { "name": "Second District (Pob.)", "zip": "1990" },
+    { "name": "Third District (Pob.)", "zip": "1990" },
+    { "name": "Lubo", "zip": "1990" },
+    { "name": "Pagkalinawan", "zip": "1990" },
+    { "name": "Palaypalay", "zip": "1990" },
+    { "name": "Punta", "zip": "1990" },
+    { "name": "Sipsipin", "zip": "1990" },
+    { "name": "Special District (Pob.)", "zip": "1990" },
+    { "name": "Paalaman", "zip": "1990" }
+  ]
+}

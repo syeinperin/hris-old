@@ -1,0 +1,26 @@
+{
+  "province": "Quezon",
+  "city": "General Nakar",
+  "zip": "4338",
+  "barangays": [
+    { "name": "Anoling", "zip": "4338" },
+    { "name": "Banglos", "zip": "4338" },
+    { "name": "Batangan", "zip": "4338" },
+    { "name": "Catablingan", "zip": "4338" },
+    { "name": "Canaway", "zip": "4338" },
+    { "name": "Lumutan", "zip": "4338" },
+    { "name": "Mahabang Lalim", "zip": "4338" },
+    { "name": "Maigang", "zip": "4338" },
+    { "name": "Maligaya", "zip": "4338" },
+    { "name": "Magsikap", "zip": "4338" },
+    { "name": "Minahan Norte", "zip": "4338" },
+    { "name": "Minahan Sur", "zip": "4338" },
+    { "name": "Pagsangahan", "zip": "4338" },
+    { "name": "Pamplona", "zip": "4338" },
+    { "name": "Pisa", "zip": "4338" },
+    { "name": "Poblacion", "zip": "4338" },
+    { "name": "Sablang", "zip": "4338" },
+    { "name": "San Marcelino", "zip": "4338" },
+    { "name": "Umiray", "zip": "4338" }
+  ]
+}

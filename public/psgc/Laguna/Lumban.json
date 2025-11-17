@@ -1,0 +1,23 @@
+{
+  "province": "Laguna",
+  "city": "Lumban",
+  "zip": "4014",
+  "barangays": [
+    { "name": "Bagong Silang", "zip": "4014" },
+    { "name": "Balimbingan (Pob.)", "zip": "4014" },
+    { "name": "Balubad", "zip": "4014" },
+    { "name": "Caliraya", "zip": "4014" },
+    { "name": "Concepcion", "zip": "4014" },
+    { "name": "Lewin", "zip": "4014" },
+    { "name": "Maracta (Pob.)", "zip": "4014" },
+    { "name": "Maytalang I", "zip": "4014" },
+    { "name": "Maytalang II", "zip": "4014" },
+    { "name": "Primera Parang (Pob.)", "zip": "4014" },
+    { "name": "Primera Pulo (Pob.)", "zip": "4014" },
+    { "name": "Salac (Pob.)", "zip": "4014" },
+    { "name": "Segunda Parang (Pob.)", "zip": "4014" },
+    { "name": "Segunda Pulo (Pob.)", "zip": "4014" },
+    { "name": "Santo Niño (Pob.)", "zip": "4014" },
+    { "name": "Wawa", "zip": "4014" }
+  ]
+}

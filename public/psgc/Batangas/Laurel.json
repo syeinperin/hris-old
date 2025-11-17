@@ -1,0 +1,28 @@
+{
+  "province": "Batangas",
+  "city": "Laurel",
+  "zip": "4221",
+  "barangays": [
+    { "name": "As-Is", "zip": "4221" },
+    { "name": "Balakilong", "zip": "4221" },
+    { "name": "Berinayan", "zip": "4221" },
+    { "name": "Bugaan East", "zip": "4221" },
+    { "name": "Bugaan West", "zip": "4221" },
+    { "name": "Buso-buso", "zip": "4221" },
+    { "name": "Dayap Itaas", "zip": "4221" },
+    { "name": "Gulod", "zip": "4221" },
+    { "name": "J. Leviste", "zip": "4221" },
+    { "name": "Molinete", "zip": "4221" },
+    { "name": "Niyugan", "zip": "4221" },
+    { "name": "Paliparan", "zip": "4221" },
+    { "name": "Barangay 1 (Pob.)", "zip": "4221" },
+    { "name": "Barangay 2 (Pob.)", "zip": "4221" },
+    { "name": "Barangay 3 (Pob.)", "zip": "4221" },
+    { "name": "Barangay 4 (Pob.)", "zip": "4221" },
+    { "name": "Barangay 5 (Pob.)", "zip": "4221" },
+    { "name": "San Gabriel", "zip": "4221" },
+    { "name": "San Gregorio", "zip": "4221" },
+    { "name": "Santa Maria", "zip": "4221" },
+    { "name": "Ticub", "zip": "4221" }
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "province": "Batangas",
+  "city": "Cuenca",
+  "zip": "4222",
+  "barangays": [
+    { "name": "Balagbag", "zip": "4222" },
+    { "name": "Bungahan", "zip": "4222" },
+    { "name": "Calumayin", "zip": "4222" },
+    { "name": "Dalipit East", "zip": "4222" },
+    { "name": "Dalipit West", "zip": "4222" },
+    { "name": "Dita", "zip": "4222" },
+    { "name": "Don Juan", "zip": "4222" },
+    { "name": "Emmanuel", "zip": "4222" },
+    { "name": "Ibabao", "zip": "4222" },
+    { "name": "Labac", "zip": "4222" },
+    { "name": "Pinagkaisahan", "zip": "4222" },
+    { "name": "San Felipe", "zip": "4222" },
+    { "name": "San Isidro", "zip": "4222" },
+    { "name": "Barangay 1 (Pob.)", "zip": "4222" },
+    { "name": "Barangay 2 (Pob.)", "zip": "4222" },
+    { "name": "Barangay 3 (Pob.)", "zip": "4222" },
+    { "name": "Barangay 4 (Pob.)", "zip": "4222" },
+    { "name": "Barangay 5 (Pob.)", "zip": "4222" },
+    { "name": "Barangay 6 (Pob.)", "zip": "4222" },
+    { "name": "Barangay 7 (Pob.)", "zip": "4222" },
+    { "name": "Barangay 8 (Pob.)", "zip": "4222" }
+  ]
+}

@@ -1,0 +1,31 @@
+{
+  "province": "Quezon",
+  "city": "Quezon",
+  "zip": "4388",
+  "barangays": [
+    { "name": "Apad", "zip": "4388" },
+    { "name": "Argosino", "zip": "4388" },
+    { "name": "Cagbalogo", "zip": "4388" },
+    { "name": "Caridad", "zip": "4388" },
+    { "name": "Cometa", "zip": "4388" },
+    { "name": "Del Pilar", "zip": "4388" },
+    { "name": "Guinhawa", "zip": "4388" },
+    { "name": "Gumubat", "zip": "4388" },
+    { "name": "Magsino", "zip": "4388" },
+    { "name": "Mascariña", "zip": "4388" },
+    { "name": "Montaña", "zip": "4388" },
+    { "name": "Barangay I (Pob.)", "zip": "4388" },
+    { "name": "Barangay II (Pob.)", "zip": "4388" },
+    { "name": "Barangay III (Pob.)", "zip": "4388" },
+    { "name": "Barangay IV (Pob.)", "zip": "4388" },
+    { "name": "Barangay V (Pob.)", "zip": "4388" },
+    { "name": "Barangay VI (Pob.)", "zip": "4388" },
+    { "name": "Sabang", "zip": "4388" },
+    { "name": "Silangan", "zip": "4388" },
+    { "name": "Tagkawa", "zip": "4388" },
+    { "name": "Villa Belen", "zip": "4388" },
+    { "name": "Villa Francia", "zip": "4388" },
+    { "name": "Villa Gomez", "zip": "4388" },
+    { "name": "Villa Mercedes", "zip": "4388" }
+  ]
+}

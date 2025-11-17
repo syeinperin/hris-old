@@ -1,0 +1,14 @@
+{
+  "province": "Quezon",
+  "city": "San Andres",
+  "zip": "4314",
+  "barangays": [
+    { "name": "Alibihaban", "zip": "4314" },
+    { "name": "Camflora", "zip": "4314" },
+    { "name": "Mangero", "zip": "4314" },
+    { "name": "Pansoy", "zip": "4314" },
+    { "name": "Tala", "zip": "4314" },
+    { "name": "Talisay", "zip": "4314" },
+    { "name": "Poblacion", "zip": "4314" }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "province": "Quezon",
+  "city": "Burdeos",
+  "zip": "4340",
+  "barangays": [
+    { "name": "Aluyon", "zip": "4340" },
+    { "name": "Amot", "zip": "4340" },
+    { "name": "Anibawan", "zip": "4340" },
+    { "name": "Bonifacio", "zip": "4340" },
+    { "name": "Cabugao", "zip": "4340" },
+    { "name": "Cabungalunan", "zip": "4340" },
+    { "name": "Calutcot", "zip": "4340" },
+    { "name": "Caniwan", "zip": "4340" },
+    { "name": "Carlagan", "zip": "4340" },
+    { "name": "Mabini", "zip": "4340" },
+    { "name": "Palasan", "zip": "4340" },
+    { "name": "Poblacion", "zip": "4340" },
+    { "name": "Rizal", "zip": "4340" },
+    { "name": "San Rafael", "zip": "4340" }
+  ]
+}

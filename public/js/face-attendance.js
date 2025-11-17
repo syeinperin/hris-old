@@ -1,83 +1,134 @@
 ;(async () => {
-  console.log('👉 face-attendance.js starting up');
+  console.log('👉 face-attendance.js starting up (auto time in/out enabled)');
 
   const MODEL_URL = 'https://cdn.jsdelivr.net/npm/face-api.js@0.22.2/dist/weights';
 
-  // Load models
-  await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL);
-  await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL);
-  await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL);
+  // Load models once
+  await Promise.all([
+    faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URL),
+    faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URL),
+    faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URL)
+  ]);
 
-  const video      = document.getElementById('video'),
-        statusEl   = document.getElementById('status'),
-        scanEl     = document.getElementById('scanIndicator'),
-        distEl     = document.getElementById('distance');
+  const video    = document.getElementById('video');
+  const statusEl = document.getElementById('status');
+  const scanEl   = document.getElementById('scanIndicator');
+  const distEl   = document.getElementById('distance');
+
+  let lastEmployee = null;
+  let lastScanTime = 0;
 
   // Start camera
   try {
     const stream = await navigator.mediaDevices.getUserMedia({ video: true });
     video.srcObject = stream;
     await video.play();
+    statusEl.textContent = '📸 Camera ready — waiting for face...';
   } catch (err) {
     console.error('🚨 camera error', err);
     statusEl.textContent = '❌ Cannot access camera';
+    statusEl.className = 'fs-4 text-danger';
     return;
   }
 
-  function resetUI() {
-    video.classList.remove('match','nomatch');
-    statusEl.className = 'fs-4 text-muted';
-    statusEl.textContent = 'Position your face in front of the camera…';
-    scanEl.style.visibility = 'hidden';
-    distEl.textContent = '–';
+  // Helper: debounce / cooldown between scans
+  const COOLDOWN_MS = 10000; // 10 seconds
+
+  async function sendAutoLog(employee_code) {
+    try {
+      const res = await fetch('/attendance/face-log', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': window.CSRF_TOKEN,
+          'Accept': 'application/json'
+        },
+        body: JSON.stringify({ employee_code })
+      });
+      const data = await res.json();
+
+      if (data.success) {
+        statusEl.textContent = `✅ ${data.message}`;
+        statusEl.className   = 'fs-4 text-success';
+        console.log(data.message);
+      } else if (data.status === 'no_schedule') {
+        statusEl.textContent = '⚠️ ' + data.message;
+        statusEl.className   = 'fs-4 text-warning';
+        alert(data.message);
+      } else {
+        statusEl.textContent = data.message;
+        statusEl.className   = 'fs-4 text-muted';
+      }
+    } catch (err) {
+      console.error('❌ Error logging attendance', err);
+      statusEl.textContent = '❌ Error logging attendance';
+      statusEl.className   = 'fs-4 text-danger';
+    }
   }
 
-  // Main loop
+  // Continuous loop
   setInterval(async () => {
     scanEl.style.visibility = 'visible';
-    statusEl.textContent     = 'Scanning…';
-    statusEl.className       = 'fs-4';
+    statusEl.textContent = 'Scanning…';
+    statusEl.className = 'fs-4 text-muted';
 
     const det = await faceapi
       .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions())
       .withFaceLandmarks()
       .withFaceDescriptor();
 
-    if (!det) return resetUI();
+    if (!det) {
+      scanEl.style.visibility = 'hidden';
+      return;
+    }
 
-    let json, ok;
+    // Call recognition endpoint
+    let resp;
     try {
       const res = await fetch(window.ATT_VALIDATE, {
         method: 'POST',
         headers: {
-          'Content-Type':'application/json',
+          'Content-Type': 'application/json',
           'X-CSRF-TOKEN': window.CSRF_TOKEN,
-          'Accept':'application/json'
+          'Accept': 'application/json'
         },
         body: JSON.stringify({ descriptor: det.descriptor })
       });
-      ok   = res.ok;
-      json = await res.json();
+      resp = await res.json();
+
+      if (resp.matched && resp.employee) {
+  window.showMatchedProfile(resp); // ✅ triggers the UI update
+}
+
+      if (!res.ok) throw new Error('No match');
     } catch {
-      return resetUI();
-    }
-
-    const distance = json.distance ?? NaN;
-    distEl.textContent = isNaN(distance)
-      ? '–'
-      : distance.toFixed(4);
-
-    if (!ok) {
-      video.classList.add('nomatch');
-      statusEl.textContent = `❌ No match`;
+      statusEl.textContent = '❌ No match';
       statusEl.className   = 'fs-4 text-danger';
-    } else {
-      video.classList.add('match');
-      statusEl.textContent =
-        `✅ ${json.employee} – ${json.status.toUpperCase()}`;
-      statusEl.className   = 'fs-4 text-success';
+      scanEl.style.visibility = 'hidden';
+      return;
     }
+
+    const distance = resp.distance ?? NaN;
+    if (distEl) distEl.textContent = isNaN(distance) ? '–' : distance.toFixed(4);
+
+    // Auto log once per recognition
+    if (resp.employee_code) {
+      const now = Date.now();
+      const cooldownPassed =
+        now - lastScanTime > COOLDOWN_MS || lastEmployee !== resp.employee_code;
+
+      if (cooldownPassed) {
+        lastScanTime = now;
+        lastEmployee = resp.employee_code;
+
+        statusEl.textContent = `✅ ${resp.employee} recognized — logging…`;
+        statusEl.className   = 'fs-4 text-info';
+        await sendAutoLog(resp.employee_code);
+      } else {
+        console.log('⏳ skipping duplicate scan');
+      }
+    }
+
     scanEl.style.visibility = 'hidden';
   }, 3000);
-
 })();

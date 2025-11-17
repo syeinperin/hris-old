@@ -1,0 +1,20 @@
+{
+  "province": "Cavite",
+  "city": "Trece Martires City",
+  "zip": "4109",
+  "barangays": [
+    { "name": "Aguado (Piscal Mundo)", "zip": "4109" },
+    { "name": "Cabezas", "zip": "4109" },
+    { "name": "Cabuco", "zip": "4109" },
+    { "name": "Conchu (Lagundian)", "zip": "4109" },
+    { "name": "De Ocampo", "zip": "4109" },
+    { "name": "Gregorio (Aliang)", "zip": "4109" },
+    { "name": "Inocencio (B. Pook)", "zip": "4109" },
+    { "name": "Lapidario (Bayog)", "zip": "4109" },
+    { "name": "Lallana", "zip": "4109" },
+    { "name": "Luciano (Bitangan)", "zip": "4109" },
+    { "name": "Osorio", "zip": "4109" },
+    { "name": "Perez (Lucbanan)", "zip": "4109" },
+    { "name": "San Agustin (Pob.)", "zip": "4109" }
+  ]
+}

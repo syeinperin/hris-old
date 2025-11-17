@@ -1,0 +1,31 @@
+{
+  "province": "Cavite",
+  "city": "Mendez",
+  "zip": "4121",
+  "barangays": [
+    { "name": "Anuling Cerca I", "zip": "4121" },
+    { "name": "Anuling Cerca II", "zip": "4121" },
+    { "name": "Anuling Lejos I", "zip": "4121" },
+    { "name": "Anuling Lejos II", "zip": "4121" },
+    { "name": "Asis I", "zip": "4121" },
+    { "name": "Asis II", "zip": "4121" },
+    { "name": "Asis III", "zip": "4121" },
+    { "name": "Banayad", "zip": "4121" },
+    { "name": "Bukal", "zip": "4121" },
+    { "name": "Galicia I", "zip": "4121" },
+    { "name": "Galicia II", "zip": "4121" },
+    { "name": "Galicia III", "zip": "4121" },
+    { "name": "Miguel Mojica", "zip": "4121" },
+    { "name": "Palocpoc I", "zip": "4121" },
+    { "name": "Palocpoc II", "zip": "4121" },
+    { "name": "Panungyan I", "zip": "4121" },
+    { "name": "Panungyan II", "zip": "4121" },
+    { "name": "Poblacion I", "zip": "4121" },
+    { "name": "Poblacion II", "zip": "4121" },
+    { "name": "Poblacion III", "zip": "4121" },
+    { "name": "Poblacion IV", "zip": "4121" },
+    { "name": "Poblacion V", "zip": "4121" },
+    { "name": "Poblacion VI", "zip": "4121" },
+    { "name": "Poblacion VII", "zip": "4121" }
+  ]
+}

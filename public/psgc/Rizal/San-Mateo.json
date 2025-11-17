@@ -1,0 +1,22 @@
+{
+  "province": "Rizal",
+  "city": "San Mateo",
+  "zip": "1850",
+  "barangays": [
+    { "name": "Ampid I", "zip": "1850" },
+    { "name": "Dulong Bayan 1", "zip": "1850" },
+    { "name": "Dulong Bayan 2", "zip": "1850" },
+    { "name": "Guinayang", "zip": "1850" },
+    { "name": "Guitnang Bayan I (Pob.)", "zip": "1850" },
+    { "name": "Guitnang Bayan II (Pob.)", "zip": "1850" },
+    { "name": "Malanday", "zip": "1850" },
+    { "name": "Maly", "zip": "1850" },
+    { "name": "Santa Ana", "zip": "1850" },
+    { "name": "Ampid II", "zip": "1850" },
+    { "name": "Banaba", "zip": "1850" },
+    { "name": "Gulod Malaya", "zip": "1850" },
+    { "name": "Pintong Bocawe", "zip": "1850" },
+    { "name": "Santo Niño", "zip": "1850" },
+    { "name": "Silangan", "zip": "1850" }
+  ]
+}

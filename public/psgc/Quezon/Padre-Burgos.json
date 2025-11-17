@@ -1,0 +1,29 @@
+{
+  "province": "Quezon",
+  "city": "Padre Burgos",
+  "zip": "4303",
+  "barangays": [
+    { "name": "Cabuyao Norte", "zip": "4303" },
+    { "name": "Cabuyao Sur", "zip": "4303" },
+    { "name": "Danlagan", "zip": "4303" },
+    { "name": "Duhat", "zip": "4303" },
+    { "name": "Hinguiwin", "zip": "4303" },
+    { "name": "Kinagunan Ibaba", "zip": "4303" },
+    { "name": "Kinagunan Ilaya", "zip": "4303" },
+    { "name": "Lipata", "zip": "4303" },
+    { "name": "Marao", "zip": "4303" },
+    { "name": "Marquez", "zip": "4303" },
+    { "name": "Burgos (Pob.)", "zip": "4303" },
+    { "name": "Campo (Pob.)", "zip": "4303" },
+    { "name": "Basiao (Pob.)", "zip": "4303" },
+    { "name": "Punta (Pob.)", "zip": "4303" },
+    { "name": "Rizal", "zip": "4303" },
+    { "name": "San Isidro", "zip": "4303" },
+    { "name": "San Vicente", "zip": "4303" },
+    { "name": "Sipa", "zip": "4303" },
+    { "name": "Tulay Buhangin", "zip": "4303" },
+    { "name": "Villapaz", "zip": "4303" },
+    { "name": "Walay", "zip": "4303" },
+    { "name": "Yawe", "zip": "4303" }
+  ]
+}

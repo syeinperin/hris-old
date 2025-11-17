@@ -1,0 +1,23 @@
+{
+  "province": "Laguna",
+  "city": "Pagsanjan",
+  "zip": "4008",
+  "barangays": [
+    { "name": "Anibong", "zip": "4008" },
+    { "name": "Biñan", "zip": "4008" },
+    { "name": "Buboy", "zip": "4008" },
+    { "name": "Cabanbanan", "zip": "4008" },
+    { "name": "Calusiche", "zip": "4008" },
+    { "name": "Dingin", "zip": "4008" },
+    { "name": "Lambac", "zip": "4008" },
+    { "name": "Layugan", "zip": "4008" },
+    { "name": "Magdapio", "zip": "4008" },
+    { "name": "Maulawin", "zip": "4008" },
+    { "name": "Pinagsanjan", "zip": "4008" },
+    { "name": "Barangay I (Pob.)", "zip": "4008" },
+    { "name": "Barangay II (Pob.)", "zip": "4008" },
+    { "name": "Sabang", "zip": "4008" },
+    { "name": "Sampaloc", "zip": "4008" },
+    { "name": "San Isidro", "zip": "4008" }
+  ]
+}

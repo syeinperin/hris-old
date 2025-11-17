@@ -1,0 +1,17 @@
+{
+  "province": "Rizal",
+  "city": "Baras",
+  "zip": "1970",
+  "barangays": [
+    { "name": "Evangelista", "zip": "1970" },
+    { "name": "Rizal (Pob.)", "zip": "1970" },
+    { "name": "San Jose", "zip": "1970" },
+    { "name": "San Salvador", "zip": "1970" },
+    { "name": "Santiago", "zip": "1970" },
+    { "name": "Concepcion", "zip": "1970" },
+    { "name": "San Juan", "zip": "1970" },
+    { "name": "San Miguel", "zip": "1970" },
+    { "name": "Mabini", "zip": "1970" },
+    { "name": "Pinugay", "zip": "1970" }
+  ]
+}

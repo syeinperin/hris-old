@@ -1,353 +1,261 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="utf-8">
-  <title>Face Attendance Kiosk</title>
-  <meta name="viewport" content="width=device-width,initial-scale=1">
-  <meta name="csrf-token" content="{{ csrf_token() }}">
+@extends('layouts.app')
 
-  <!-- Face API -->
-  <script defer src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js"></script>
+@section('page_title', 'Face Attendance')
 
-  <!-- Font -->
-  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+@push('styles')
+<style>
+:root{
+  --brand:#26264e; --brand-2:#3a3a84;
+  --ink:#1f2330; --muted:#6b7380;
+  --ok:#1e865d; --bad:#c0392b;
+}
+.hero{
+  background:linear-gradient(135deg,var(--brand) 0%,var(--brand-2) 100%);
+  color:#fff;border-radius:16px;padding:22px 20px;margin-bottom:18px;
+}
+.hero h3{margin:0;font-weight:700}
+.hero .sub{opacity:.9;font-size:13px;margin:0}
+.panel{background:#fff;border:1px solid #eef0f6;border-radius:14px;padding:16px}
+.stage{
+  background:#0b1527;border-radius:14px;position:relative;overflow:hidden;
+  border:1px dashed #dbe1ef;min-height:320px
+}
+.stage video,.stage canvas{width:100%;height:100%;object-fit:cover}
+#overlay{position:absolute;inset:0;pointer-events:none}
+.chip{display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600}
+.chip.info{background:rgba(58,58,132,.10);color:var(--brand-2)}
+.chip.ok{background:rgba(30,134,93,.12);color:var(--ok)}
+.chip.bad{background:rgba(192,57,43,.10);color:var(--bad)}
+.btn{background:#fff;border:2px solid var(--brand);color:var(--brand);font-weight:700;border-radius:12px;padding:10px 14px;cursor:pointer;transition:all .2s ease}
+.btn.active{background:var(--brand-2);color:#fff;border-color:var(--brand-2)}
+.btn:disabled{opacity:.5;cursor:not-allowed}
+.log{margin-top:14px;background:#fafbff;border:1px solid #eef0f6;border-radius:12px;padding:12px;min-height:120px;font-size:13px;overflow-y:auto}
 
-  <style>
-    :root{
-      --bg:#f5f7fb;
-      --card:#ffffff;
-      --ink:#1f2330;
-      --muted:#6b7380;
-      --brand:#26264e;
-      --brand-2:#3a3a84;
-      --ok:#1e865d;
-      --bad:#c0392b;
-      --ring: rgba(56, 97, 251, .35);
-      --shadow: 0 8px 30px rgba(27, 39, 94, .10);
-      --radius: 16px;
-    }
-    *{box-sizing:border-box}
-    html,body{height:100%}
-    body{
-      margin:0;background:var(--bg);color:var(--ink);
-      font-family:'Poppins', system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial;
-    }
+/* --- Big profile confirmation --- */
+.profile-box{
+  display:none;flex-direction:column;align-items:center;justify-content:center;
+  margin-top:14px;text-align:center;
+}
+.profile-photo{
+  width:220px;height:220px;border-radius:50%;
+  overflow:hidden;border:6px solid #fff;
+  box-shadow:0 6px 20px rgba(0,0,0,.15);
+}
+.profile-photo img{width:100%;height:100%;object-fit:cover}
+.profile-name{font-size:1.4rem;font-weight:700;margin-top:12px;margin-bottom:4px}
+.profile-code{color:var(--muted);font-size:.9rem;margin-bottom:10px}
+.confirm-box{
+  background:var(--brand-2);color:#fff;font-weight:700;
+  padding:10px 22px;border-radius:30px;font-size:1.05rem;
+}
+</style>
+@endpush
 
-    .wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:28px}
-    .shell{width:100%;max-width:1100px;background:var(--card);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
-    .bar{
-      padding:22px 26px;
-      background:linear-gradient(135deg, var(--brand) 0%, var(--brand-2) 100%);
-      color:#fff;text-align:center;
-    }
-    .bar .title{font-size:28px;font-weight:700;letter-spacing:.3px;margin:0}
-    .bar .sub{opacity:.85;margin:6px 0 0 0;font-size:13px}
-    .bar .clock{font-size:48px;font-weight:700;margin:6px 0 0 0}
+@section('content')
+<div class="container py-3">
+  <div class="hero">
+    <h3>Face Attendance</h3>
+    <p class="sub">Hold your face steady. Select “Time In” or “Time Out” before scanning.</p>
+  </div>
 
-    .content{padding:22px}
-    .grid{
-      display:grid;gap:22px;
-      grid-template-columns: 1.1fr .9fr;
-    }
-    @media (max-width: 960px){
-      .grid{grid-template-columns:1fr}
-    }
-
-    .panel{background:#fff;border:1px solid #eef0f6;border-radius:14px;padding:16px}
-    .panel h4{margin:0 0 8px 0;font-size:16px}
-    .muted{color:var(--muted)}
-
-    .stage{
-      background:#f0f3f9;border-radius:14px;display:flex;align-items:center;justify-content:center;
-      position:relative;overflow:hidden;border:1px dashed #dbe1ef;
-      min-height:300px;
-    }
-    .stage video, .stage canvas{width:100%;height:100%;object-fit:cover}
-    .stage .overlay{
-      position:absolute;inset:0;pointer-events:none;
-      background:
-        radial-gradient(ellipse 60% 45% at 50% 45%, rgba(255,255,255,.0) 60%, rgba(0,0,0,.25) 62%) center/cover no-repeat;
-      mix-blend-mode:soft-light;
-    }
-
-    .buttons{display:flex;gap:12px;margin-top:12px}
-    .btn{
-      flex:1 1 auto;display:inline-flex;align-items:center;justify-content:center;
-      gap:10px;padding:13px 16px;border-radius:12px;border:2px solid var(--brand-2);
-      background:var(--brand-2);color:#fff;font-weight:700;cursor:pointer;font-size:15px;
-      box-shadow:0 6px 18px rgba(58,58,132,.18);transition:transform .05s ease, box-shadow .2s ease, opacity .2s ease;
-      user-select:none;-webkit-user-select:none;
-    }
-    .btn.secondary{background:#fff;color:var(--brand-2)}
-    .btn:active{transform:translateY(1px)}
-    .btn[disabled]{opacity:.55;cursor:not-allowed;box-shadow:none}
-
-    .thumb{
-      background:#f0f3f9;border:1px dashed #dbe1ef;border-radius:14px;height:220px;display:flex;align-items:center;justify-content:center
-    }
-    .thumb canvas{width:100%;height:100%;object-fit:cover}
-
-    .result{
-      background:#fff;border:1px solid #eef0f6;border-radius:14px;padding:16px;min-height:120px
-    }
-    .chip{
-      display:inline-flex;align-items:center;gap:8px;padding:6px 10px;border-radius:999px;font-size:12px;font-weight:600
-    }
-    .chip.ok{background:rgba(30,134,93,.1);color:var(--ok)}
-    .chip.bad{background:rgba(192,57,43,.08);color:var(--bad)}
-    .chip.info{background:rgba(58,58,132,.10);color:var(--brand-2)}
-
-    .match{
-      display:flex;align-items:center;gap:14px;margin-top:10px
-    }
-    .avatar{
-      width:56px;height:56px;border-radius:50%;background:#f0f3f9;border:1px solid #e6ebf6;overflow:hidden
-    }
-    .emp{
-      display:flex;flex-direction:column
-    }
-    .emp .name{font-weight:700}
-    .emp .meta{font-size:12px;color:var(--muted)}
-
-    .cta{margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:10px}
-    .btn.outline{
-      background:#fff;color:var(--brand);border-color:var(--brand);
-    }
-
-    .log{margin-top:16px;background:#fafbff;border:1px solid #eef0f6;border-radius:12px;padding:14px;min-height:160px}
-    .log .hint{color:var(--muted);font-size:13px}
-
-    /* spinner */
-    .spin{width:18px;height:18px;border-radius:50%;border:3px solid rgba(255,255,255,.6);border-top-color:#fff;animation:spin .8s linear infinite}
-    .spin.dark{border:3px solid rgba(58,58,132,.35);border-top-color:var(--brand-2)}
-    @keyframes spin{to{transform:rotate(360deg)}}
-  </style>
-</head>
-<body>
-<div class="wrap">
-  <div class="shell">
-    <div class="bar">
-      <p class="title">Face Attendance Kiosk</p>
-      <p class="sub" id="date"></p>
-      <p class="clock" id="clock">00:00:00</p>
+  <div class="row g-3">
+    <!-- Left: Camera -->
+    <div class="col-lg-7">
+      <div class="panel mb-3">
+        <h5>Live Camera</h5>
+        <div class="stage">
+          <video id="video" autoplay muted playsinline></video>
+          <canvas id="overlay"></canvas>
+        </div>
+        <div class="mt-2 text-muted" id="camStatus">Initializing camera…</div>
+      </div>
     </div>
 
-    @php
-      use Illuminate\Support\Facades\Route;
-      $attendanceAction = Route::has('attendance.logAttendance')
-          ? route('attendance.logAttendance')
-          : (Route::has('attendance.log')
-              ? route('attendance.log')
-              : url('/attendance/log'));
-    @endphp
+    <!-- Right: Profile + Controls -->
+    <div class="col-lg-5">
+      <div class="panel text-center">
+        <div id="stateChip" class="chip info">No scan yet</div>
 
-    <div class="content">
-      <div class="grid">
-        <!-- LEFT: Camera -->
-        <div>
-          <div class="panel">
-            <h4>Live Camera</h4>
-            <div class="stage" id="stage">
-              <video id="video" autoplay muted playsinline></video>
-              <div class="overlay"></div>
-            </div>
-            <div class="muted" id="camStatus" style="margin-top:8px">Click <strong>Start Camera</strong>, then <strong>Scan Face</strong>.</div>
-            <div class="buttons">
-              <button class="btn secondary" id="startCam"><span class="spin dark" id="camSpin" style="display:none"></span> Start Camera</button>
-              <button class="btn" id="scanBtn" disabled><span class="spin" id="scanSpin" style="display:none"></span> Scan Face</button>
-            </div>
+        <!-- Large profile confirmation -->
+        <div id="profileBox" class="profile-box">
+          <div class="profile-photo">
+            <img id="profileImg" src="{{ asset('images/avatar-placeholder.png') }}" alt="Employee">
           </div>
-
-          <div class="panel" style="margin-top:16px">
-            <h4>Snapshot</h4>
-            <div class="thumb"><canvas id="preview"></canvas></div>
-          </div>
+          <div class="profile-name" id="profileName">Employee Name</div>
+          <div class="profile-code" id="profileCode">EMP-000</div>
+          <div class="confirm-box" id="confirmBox">Timed In</div>
         </div>
 
-        <!-- RIGHT: Result + Actions -->
-        <div>
-          <div class="panel result">
-            <div id="stateChip" class="chip info">No match yet</div>
+        <div class="cta mt-3 d-grid" style="grid-template-columns:1fr 1fr;gap:10px">
+          <button class="btn" id="timeInBtn">Time In</button>
+          <button class="btn" id="timeOutBtn">Time Out</button>
+        </div>
 
-            <div class="match" id="matchRow" style="display:none">
-              <div class="avatar"><canvas id="avatarCanvas" width="56" height="56"></canvas></div>
-              <div class="emp">
-                <div class="name" id="empName"></div>
-                <div class="meta" id="empMeta"></div>
-              </div>
-            </div>
-
-            <div class="cta">
-              <form id="timeInForm" action="{{ $attendanceAction }}" method="POST">
-                @csrf
-                <input type="hidden" name="attendance_type" value="time_in">
-                <input type="hidden" name="employee_code" id="empCodeIn">
-                <button type="submit" class="btn outline" id="timeInBtn" disabled>Time In</button>
-              </form>
-
-              <form id="timeOutForm" action="{{ $attendanceAction }}" method="POST">
-                @csrf
-                <input type="hidden" name="attendance_type" value="time_out">
-                <input type="hidden" name="employee_code" id="empCodeOut">
-                <button type="submit" class="btn outline" id="timeOutBtn" disabled>Time Out</button>
-              </form>
-            </div>
-
-            <div class="log" id="logBox">
-              <div class="hint">Buttons enable only after a positive face match. Distance threshold tuned to ~0.45 for accuracy.</div>
-            </div>
-          </div>
+        <div class="log" id="logBox">
+          <div class="text-muted">Scanning will automatically time employees in/out when their face matches.</div>
         </div>
       </div>
     </div>
   </div>
 </div>
-
+@endsection
+@push('scripts')
+<script src="https://cdn.jsdelivr.net/npm/@vladmandic/face-api/dist/face-api.min.js"></script>
 <script>
-  // Clock
-  const dateEl = document.getElementById('date');
-  const clockEl = document.getElementById('clock');
-  function tick(){
-    const now = new Date();
-    dateEl.textContent = now.toLocaleDateString(undefined,{weekday:'long', year:'numeric', month:'long', day:'numeric'});
-    clockEl.textContent = now.toLocaleTimeString(undefined,{hour12:true});
-  }
-  setInterval(tick, 500); tick();
-
-  // Elements
+document.addEventListener('DOMContentLoaded', async () => {
   const MODEL_URI = "{{ asset('face-models') }}";
-  const video   = document.getElementById('video');
-  const preview = document.getElementById('preview');
-  const avatarC = document.getElementById('avatarCanvas');
-  const startCam= document.getElementById('startCam');
-  const scanBtn = document.getElementById('scanBtn');
-  const camStatus = document.getElementById('camStatus');
+  const MATCH_URL = "{{ url('/kiosk/face/match') }}";
+  const LOG_URL   = "{{ url('/attendance/face-log') }}";
+  const CSRF_TOKEN = "{{ csrf_token() }}";
+
+  const video = document.getElementById('video');
+  const overlay = document.getElementById('overlay');
+  const ctx = overlay.getContext('2d');
   const stateChip = document.getElementById('stateChip');
-  const matchRow  = document.getElementById('matchRow');
-  const empName   = document.getElementById('empName');
-  const empMeta   = document.getElementById('empMeta');
+  const logBox = document.getElementById('logBox');
+  const camStatus = document.getElementById('camStatus');
   const timeInBtn = document.getElementById('timeInBtn');
-  const timeOutBtn= document.getElementById('timeOutBtn');
-  const empCodeIn = document.getElementById('empCodeIn');
-  const empCodeOut= document.getElementById('empCodeOut');
-  const logBox    = document.getElementById('logBox');
-  const camSpin   = document.getElementById('camSpin');
-  const scanSpin  = document.getElementById('scanSpin');
+  const timeOutBtn = document.getElementById('timeOutBtn');
 
-  let modelsLoaded = false;
+  const profileBox = document.getElementById('profileBox');
+  const profileImg = document.getElementById('profileImg');
+  const profileName = document.getElementById('profileName');
+  const profileCode = document.getElementById('profileCode');
+  const confirmBox = document.getElementById('confirmBox');
 
-  function setChip(type, text){
-    stateChip.className = 'chip ' + type;
-    stateChip.textContent = text;
-  }
-  function log(line){
+  let currentMode = null, lastEmployee = null, lastScan = 0, loop = null;
+  const COOLDOWN = 6000, INTERVAL = 800, THRESH = 0.45;
+
+  const setChip = (t, txt) => {
+    stateChip.className = 'chip ' + t;
+    stateChip.textContent = txt;
+  };
+
+  const log = m => {
     const p = document.createElement('div');
-    p.style.fontSize = '13px';
-    p.textContent = `${new Date().toLocaleTimeString()} — ${line}`;
+    p.textContent = `${new Date().toLocaleTimeString()} — ${m}`;
     logBox.appendChild(p);
     logBox.scrollTop = logBox.scrollHeight;
+  };
+
+  // --- Mode Buttons ---
+  timeInBtn.onclick = () => {
+    currentMode = 'time_in';
+    timeInBtn.classList.add('active');
+    timeOutBtn.classList.remove('active');
+    setChip('info', 'Mode: Time In');
+  };
+
+  timeOutBtn.onclick = () => {
+    currentMode = 'time_out';
+    timeOutBtn.classList.add('active');
+    timeInBtn.classList.remove('active');
+    setChip('info', 'Mode: Time Out');
+  };
+
+  // --- Load Models ---
+  await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URI);
+  await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URI);
+  await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URI);
+
+  // --- Camera Setup ---
+  try {
+    const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user' }, audio: false });
+    video.srcObject = stream;
+    camStatus.textContent = 'Camera ready. Face the camera to scan.';
+    setChip('info', 'Ready to scan');
+  } catch (e) {
+    camStatus.textContent = '❌ Cannot access camera.';
+    camStatus.classList.add('text-danger');
+    return;
   }
 
-  async function loadModels(){
-    if (modelsLoaded) return;
-    await faceapi.nets.tinyFaceDetector.loadFromUri(MODEL_URI);
-    await faceapi.nets.faceLandmark68Net.loadFromUri(MODEL_URI);
-    await faceapi.nets.faceRecognitionNet.loadFromUri(MODEL_URI);
-    modelsLoaded = true;
-  }
+  // --- Main Detection Loop ---
+  loop = setInterval(async () => {
+    const det = await faceapi
+      .detectSingleFace(video, new faceapi.TinyFaceDetectorOptions({ inputSize: 320, scoreThreshold: 0.45 }))
+      .withFaceLandmarks()
+      .withFaceDescriptor();
 
-  startCam.addEventListener('click', async () => {
-    camSpin.style.display = 'inline-block';
-    startCam.setAttribute('disabled', 'disabled');
-    try{
-      await loadModels();
-      const stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode:'user' }, audio:false });
-      video.srcObject = stream;
-      camStatus.textContent = 'Camera ready. Position your face inside the guide, then press “Scan Face”.';
-      scanBtn.removeAttribute('disabled');
-      setChip('info', 'Ready to scan');
-      log('Camera started.');
-    }catch(e){
-      camStatus.textContent = 'Cannot access camera: ' + e.message;
-      log('Camera error: ' + e.message);
-      startCam.removeAttribute('disabled');
-    }finally{
-      camSpin.style.display = 'none';
+    if (!det) {
+      ctx.clearRect(0, 0, overlay.width, overlay.height);
+      return;
     }
-  });
 
-  scanBtn.addEventListener('click', async () => {
-    scanBtn.setAttribute('disabled','disabled');
-    scanSpin.style.display = 'inline-block';
-    setChip('info', 'Scanning…');
-    try{
-      await loadModels();
-      if (!video.srcObject){ camStatus.textContent = 'Start the camera first.'; return; }
+    overlay.width = video.videoWidth;
+    overlay.height = video.videoHeight;
+    ctx.clearRect(0, 0, overlay.width, overlay.height);
+    const box = det.detection.box;
+    ctx.strokeStyle = '#35b7ff';
+    ctx.lineWidth = 3;
+    ctx.strokeRect(box.x, box.y, box.width, box.height);
 
-      const opts = new faceapi.TinyFaceDetectorOptions({ inputSize: 416, scoreThreshold: 0.4 });
-      const det  = await faceapi.detectSingleFace(video, opts).withFaceLandmarks().withFaceDescriptor();
-      if (!det){
-        setChip('bad', 'No face detected');
-        matchRow.style.display='none';
-        timeInBtn.disabled = timeOutBtn.disabled = true;
-        log('No face detected.');
-        return;
-      }
-
-      // Snapshot (full)
-      const ctx = preview.getContext('2d');
-      preview.width = video.videoWidth; preview.height = video.videoHeight;
-      ctx.drawImage(video, 0, 0, preview.width, preview.height);
-
-      // Avatar (crop center)
-      const av = avatarC.getContext('2d');
-      av.clearRect(0,0,avatarC.width, avatarC.height);
-      av.save();
-      av.beginPath(); av.arc(28,28,28,0,Math.PI*2); av.closePath(); av.clip();
-      const size = Math.min(preview.width, preview.height);
-      const sx = (preview.width - size)/2, sy = (preview.height - size)/2;
-      av.drawImage(preview, sx, sy, size, size, 0, 0, 56, 56);
-      av.restore();
-
-      const descriptor = Array.from(det.descriptor);
-
-      // Call public match endpoint
-      const res = await fetch('{{ route('kiosk.face.match') }}', {
-        method:'POST',
-        headers:{
-          'Content-Type':'application/json',
-          'X-CSRF-TOKEN': document.querySelector('meta[name="csrf-token"]').content
+    try {
+      // Match face
+      const res = await fetch(MATCH_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': CSRF_TOKEN
         },
-        body: JSON.stringify({ descriptor })
+        body: JSON.stringify({ descriptor: Array.from(det.descriptor) })
       });
-      const data = await res.json();
 
-      if (!data.matched){
-        setChip('bad', 'No match');
-        matchRow.style.display='none';
-        timeInBtn.disabled = timeOutBtn.disabled = true;
-        log(`No match. Distance: ${data.distance ?? '—'}`);
+      const data = await res.json();
+      if (!data.matched || data.distance > THRESH) return;
+
+      const now = Date.now();
+      if (data.employee.employee_code === lastEmployee && now - lastScan < COOLDOWN) return;
+      lastEmployee = data.employee.employee_code;
+      lastScan = now;
+
+      // Show profile
+      profileBox.style.display = 'flex';
+      profileName.textContent = data.employee.name;
+      profileCode.textContent = `Code: ${data.employee.employee_code}`;
+      profileImg.src = data.employee.profile_picture
+        ? `${window.location.origin}/${data.employee.profile_picture}`
+        : "{{ asset('images/avatar-placeholder.png') }}";
+
+      confirmBox.textContent = currentMode === 'time_out' ? 'Timed Out' : 'Timed In';
+
+      if (!currentMode) {
+        setChip('info', 'Matched. Select mode first.');
         return;
       }
 
-      // Success
-      setChip('ok', 'Match found');
-      matchRow.style.display='flex';
-      empName.textContent = data.employee.name;
-      empMeta.textContent = `Code: ${data.employee.employee_code} • distance=${data.distance}`;
-      empCodeIn.value = data.employee.employee_code;
-      empCodeOut.value = data.employee.employee_code;
-      timeInBtn.disabled = timeOutBtn.disabled = false;
-      log(`Matched ${data.employee.name} (code ${data.employee.employee_code}) — distance ${data.distance}.`);
+      // --- Log Attendance ---
+      const res2 = await fetch(LOG_URL, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': CSRF_TOKEN
+        },
+        body: JSON.stringify({
+          employee_code: data.employee.employee_code,
+          mode: currentMode
+        })
+      });
 
-    }catch(e){
-      setChip('bad','Error');
-      log('Scan error: ' + e.message);
-    }finally{
-      scanSpin.style.display = 'none';
-      scanBtn.removeAttribute('disabled');
+      const r = await res2.json();
+
+      if (r.success) {
+        setChip('ok', confirmBox.textContent);
+        log(`✅ ${data.employee.name} ${confirmBox.textContent}`);
+        setTimeout(() => {
+          profileBox.style.display = 'none';
+          setChip('info', 'Ready to scan');
+        }, 3000);
+      } else {
+        setChip('bad', 'Error');
+        log('❌ ' + (r.message || 'Failed to log'));
+      }
+    } catch (e) {
+      log('Error ' + e.message);
     }
-  });
+  }, INTERVAL);
+
+  window.addEventListener('beforeunload', () => loop && clearInterval(loop));
+});
 </script>
-</body>
-</html>
+@endpush

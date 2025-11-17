@@ -1,0 +1,33 @@
+{
+  "province": "Batangas",
+  "city": "Lobo",
+  "zip": "4229",
+  "barangays": [
+    { "name": "Apar", "zip": "4229" },
+    { "name": "Balatbat", "zip": "4229" },
+    { "name": "Balibago", "zip": "4229" },
+    { "name": "Banalo", "zip": "4229" },
+    { "name": "Biga", "zip": "4229" },
+    { "name": "Bignay", "zip": "4229" },
+    { "name": "Calo", "zip": "4229" },
+    { "name": "Calumpit", "zip": "4229" },
+    { "name": "Fabrica", "zip": "4229" },
+    { "name": "Jaybanga", "zip": "4229" },
+    { "name": "Lagadlarin", "zip": "4229" },
+    { "name": "Mabilog Na Bundok", "zip": "4229" },
+    { "name": "Malabrigo", "zip": "4229" },
+    { "name": "Malalim Na Sanog", "zip": "4229" },
+    { "name": "Malapad Na Parang", "zip": "4229" },
+    { "name": "Masaguitsit", "zip": "4229" },
+    { "name": "Nagtalongtong", "zip": "4229" },
+    { "name": "Nagtoctoc", "zip": "4229" },
+    { "name": "Olo-olo", "zip": "4229" },
+    { "name": "Pinaghawanan", "zip": "4229" },
+    { "name": "San Miguel", "zip": "4229" },
+    { "name": "San Nicolas", "zip": "4229" },
+    { "name": "Sawang", "zip": "4229" },
+    { "name": "Soloc", "zip": "4229" },
+    { "name": "Tayuman", "zip": "4229" },
+    { "name": "Poblacion", "zip": "4229" }
+  ]
+}

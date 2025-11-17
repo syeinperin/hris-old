@@ -1,0 +1,22 @@
+{
+  "province": "Batangas",
+  "city": "Malvar",
+  "zip": "4233",
+  "barangays": [
+    { "name": "Bagong Pook", "zip": "4233" },
+    { "name": "Bilucao (San Isidro Western)", "zip": "4233" },
+    { "name": "Bulihan", "zip": "4233" },
+    { "name": "San Gregorio", "zip": "4233" },
+    { "name": "Luta Del Norte", "zip": "4233" },
+    { "name": "Luta Del Sur", "zip": "4233" },
+    { "name": "Poblacion", "zip": "4233" },
+    { "name": "San Andres", "zip": "4233" },
+    { "name": "San Fernando", "zip": "4233" },
+    { "name": "San Isidro East", "zip": "4233" },
+    { "name": "San Juan", "zip": "4233" },
+    { "name": "San Pedro II (Western)", "zip": "4233" },
+    { "name": "San Pedro I (Eastern)", "zip": "4233" },
+    { "name": "San Pioquinto", "zip": "4233" },
+    { "name": "Santiago", "zip": "4233" }
+  ]
+}
