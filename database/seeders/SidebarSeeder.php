@@ -217,5 +217,25 @@ class SidebarSeeder extends Seeder
             'order'     => 14,
             'roles'     => ['hr','supervisor','employee'],
         ]);
+
+        Sidebar::create([
+    'title' => 'Overtime Requests',
+    'route' => 'overtime.index',
+    'icon' => 'clock-history',
+    'roles' => ['hr', 'supervisor'],
+    'order' => 10,
+]);
+
+// ────────────── EMPLOYEE ──────────────
+Sidebar::create([
+    'title'     => 'My Overtime',
+    'route'     => 'overtime.index',
+    'icon'      => 'clock-history',
+    'parent_id' => null,
+    'order'     => 6, // adjust order as needed
+    'roles'     => ['employee'],
+]);
+
+
 }
 }

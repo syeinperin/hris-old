@@ -15,6 +15,7 @@ use App\Http\Controllers\{
     Notifications\RegularizeProbation,
     DashboardController,
     EmployeeDashboardController,
+    OvertimeRequestController,
     LeaveController,
     PayslipController,
     AttendanceController,
@@ -399,6 +400,19 @@ Route::prefix('schedule')->group(function () {
     Route::post('/concerns/{concern}/status', [ConcernController::class, 'updateStatus'])->name('concerns.updateStatus');
     Route::delete('/concerns/{concern}', [ConcernController::class, 'destroy'])->name('concerns.destroy');
 
+Route::prefix('overtime')->name('overtime.')->group(function () {
+    Route::get('/', [OvertimeRequestController::class, 'index'])->name('index');
+    Route::post('/', [OvertimeRequestController::class, 'store'])->name('store');
+    Route::post('/{overtime}/approve', [OvertimeRequestController::class, 'approve'])->name('approve');
+    Route::post('/{overtime}/reject', [OvertimeRequestController::class, 'reject'])->name('reject');
+});
+
+Route::middleware(['auth'])->group(function () {
+    Route::get('/overtime', [OvertimeRequestController::class, 'index'])->name('overtime.index');
+    Route::post('/overtime', [OvertimeRequestController::class, 'store'])->name('overtime.store');
+    Route::post('/overtime/{id}/approve', [OvertimeRequestController::class, 'approve'])->name('overtime.approve');
+    Route::post('/overtime/{id}/reject', [OvertimeRequestController::class, 'reject'])->name('overtime.reject');
+});
 
 
 });
