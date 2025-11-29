@@ -91,7 +91,9 @@ class FaceRecognitionController extends Controller
     public function kiosk()
     {
         return view('kiosk.face');
-    }public function match(Request $request)
+    }
+
+    public function match(Request $request)
 {
     try {
         $data = $request->validate([

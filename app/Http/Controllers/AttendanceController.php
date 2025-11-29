@@ -259,10 +259,12 @@ class AttendanceController extends Controller
 
                     /** SCHEDULE */
                     $schedSec = 0;
+                    $sIn = null;
+                    $sOut = null;
 
                     if ($sched && $sched->time_in) {
-                        $sIn = Carbon::parse($sched->time_in)->setDate($day->year, $day->month, $day->day);
-                        $sOut = Carbon::parse($sched->time_out)->setDate($day->year, $day->month, $day->day);
+                        $sIn = Carbon::parse($sched->time_in)->setDateFrom($in);
+                        $sOut = Carbon::parse($sched->time_out)->setDateFrom($in);
 
                         if ($sOut->lt($sIn)) {
                             $sOut->addDay();
@@ -280,15 +282,21 @@ class AttendanceController extends Controller
                     $status = 'On Time';
                     $lateHours = '';
 
-                    if ($sched && $sched->time_in) {
-                        $sIn = Carbon::parse($sched->time_in)->setDate($day->year, $day->month, $day->day);
-
-                        if ($in->gt($sIn)) {
-                            $status = 'Late';
-                            $minsLate = $sIn->diffInMinutes($in);
-                            $lateHours = $this->lateHoursFromMinutes($minsLate);
-                        }
+                    if ($sIn && $in->gt($sIn)) {
+                        $status = 'Late';
+                        $minsLate = $sIn->diffInMinutes($in);
+                        $lateHours = $this->lateHoursFromMinutes($minsLate);
                     }
+
+                    // if ($sched && $sched->time_in) {
+                    //     $sIn = Carbon::parse($sched->time_in)->setDate($day->year, $day->month, $day->day);
+
+                    //     if ($in->gt($sIn)) {
+                    //         $status = 'Late';
+                    //         $minsLate = $sIn->diffInMinutes($in);
+                    //         $lateHours = $this->lateHoursFromMinutes($minsLate);
+                    //     }
+                    // }
 
                     /** Violation override */
                     if (!empty($discipline['violations'][$emp->id][$date])) {
@@ -691,17 +699,22 @@ class AttendanceController extends Controller
             if ($att) {
                 $in = Carbon::parse($att->time_in);
                 $out = $att->time_out ? Carbon::parse($att->time_out) : null;
+
                 if ($out && $out->lt($in))
                     $out->addDay();
 
                 $workSec = $out ? $in->diffInSeconds($out) : 0;
                 $schedSec = 0;
+                $sIn = null;
+                $sOut = null;
 
                 if ($sched && $sched->time_in) {
-                    $sIn = Carbon::parse($sched->time_in)->setDate($day->year, $day->month, $day->day);
-                    $sOut = Carbon::parse($sched->time_out)->setDate($day->year, $day->month, $day->day);
+                    $sIn = Carbon::parse($sched->time_in)->setDateFrom($in);
+                    $sOut = Carbon::parse($sched->time_out)->setDateFrom($in);
+
                     if ($sOut->lt($sIn))
                         $sOut->addDay();
+
                     $schedSec = $sIn->diffInSeconds($sOut);
                 }
 
@@ -712,24 +725,17 @@ class AttendanceController extends Controller
                 $status = 'On Time';
                 $lateHours = '';
 
-                // Late detection
-                if ($sched && $sched->time_in && $in->gt($sIn)) {
+                if ($sIn && $in->gt($sIn)) {
                     $status = 'Late';
                     $minsLate = $sIn->diffInMinutes($in);
                     $lateHours = $this->lateHoursFromMinutes($minsLate);
                 }
 
-                // ✅ Add undertime detection (missing in your original show)
-                if ($sched && $sched->time_out && $out) {
-                    $diffMinutes = $sOut->diffInMinutes($out, false);
-                    if ($diffMinutes < -10) { // undertime threshold
+                if ($sOut && $out && $out->lt($sOut)) {
+                    $diffMinutes = $sOut->diffInMinutes($out);
+                    if ($diffMinutes >= 10) {
                         $status = 'Undertime';
                     }
-                }
-
-                // Violations
-                if (!empty($discipline['violations'][$employee->id][$dateStr])) {
-                    $status .= ' (Violation)';
                 }
 
                 $rows[] = [
@@ -785,16 +791,13 @@ class AttendanceController extends Controller
             $schedOut->addDay();
         }
 
-        // If the scan time is between midnight–06:00 and schedule is 22:00–06:00,
-        // align the schedIn to the *previous day*
         if ($timeIn->hour < 6 && $schedIn->hour >= 22) {
             $schedIn->subDay();
-            $schedOut->subDay();
+            // $schedOut->subDay();
         }
 
-        // Lateness calculation
         if ($timeIn->gt($schedOut)) {
-            return ['is_late' => false, 'mins' => 0]; // too late, ignore
+            return ['is_late' => false, 'mins' => 0];
         }
 
         if ($timeIn->gt($schedIn)) {

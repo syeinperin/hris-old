@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OvertimeRequest;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Attendance;
 use App\Models\LeaveRequest;
@@ -102,9 +103,10 @@ class EmployeeDashboardController extends Controller
             $alloc->save();
         }
 
+
         return view('employees.dashboard', compact(
             'hoursWorked', 'absentToday', 'pendingLeaves',
-            'lastPunch', 'allocations', 'year'
+            'lastPunch', 'allocations', 'year',
         ));
     }
 
