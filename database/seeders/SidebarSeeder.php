@@ -130,7 +130,7 @@ class SidebarSeeder extends Seeder
             'roles'     => ['hr'],
         ]);
 
-  
+
 
 
         /* ────────────── EMPLOYEE SELF-SERVICE ────────────── */
@@ -155,7 +155,7 @@ class SidebarSeeder extends Seeder
 
         Sidebar::create([
             'title'     => 'My Schedule',
-            'route'     => 'employees.schedule',
+            'route'     => 'employee.schedule',
             'icon'      => 'calendar-week',
             'parent_id' => null,
             'order'     => 22,
@@ -207,7 +207,7 @@ class SidebarSeeder extends Seeder
             'order'     => 27,
             'roles'     => ['employee'],
         ]);
-    
+
 
           Sidebar::create([
             'title'     => 'Formal Complaints',

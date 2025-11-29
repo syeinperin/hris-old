@@ -244,10 +244,10 @@ Route::prefix('employee')->name('employee.')->group(function () {
 
     Route::resource('overtime-request', OvertimeRequestController::class);
     // 🗓 My Schedule
-    Route::prefix('my-schedule')->group(function () {
+    // Route::prefix('my-schedule')->group(function () {
         Route::get('/', [EmployeeScheduleController::class, 'index'])->name('schedule');
-        Route::get('/history', [EmployeeScheduleController::class, 'history'])->name('schedule-history');
-    });
+        Route::get('/history', [EmployeeScheduleController::class, 'history'])->name('schedule.history');
+    // });
 
     // 💸 My Loans
     Route::get('loans', [LoanController::class, 'myLoans'])->name('loans.index');
