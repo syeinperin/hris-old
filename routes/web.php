@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Support\Facades\Route;
 use Illuminate\Http\Request;
 
@@ -142,6 +141,8 @@ Route::middleware('auth')->group(function () {
 
     // ───────── Payroll Routes ─────────
     Route::prefix('payroll')->name('payroll.')->group(function () {
+
+        Route::put('overtime-request/change-status/{overtimerequestId}', [OvertimeRequestController::class, 'changeStatus'])->name('overtimeRequest.changeStatus');
         // Payroll index & calendar
         Route::get('/', [PayrollController::class, 'index'])->name('index');
         Route::get('/calendar', [PayrollController::class, 'calendar'])->name('calendar');
@@ -241,6 +242,7 @@ Route::prefix('employee')->name('employee.')->group(function () {
 
     });
 
+    Route::resource('overtime-request', OvertimeRequestController::class);
     // 🗓 My Schedule
     Route::prefix('my-schedule')->group(function () {
         Route::get('/', [EmployeeScheduleController::class, 'index'])->name('schedule');

@@ -4,42 +4,27 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use App\Models\User;
 
 class OvertimeRequest extends Model
 {
     use HasFactory;
 
-protected $fillable = [
-    'employee_id',
-    'attendance_id',
-    'ot_date',
-    'requested_hours',
-    'approved_hours',
-    'reason',
-    'status',
-    'approved_by',
-    'rejection_reason',
-];
-
-    protected $casts = [
-        'ot_date' => 'date',
+    protected $fillable = [
+        'user_id',
+        'starts_at',
+        'ends_at',
+        'status',
     ];
 
-    public function employee()
+    protected $casts = [
+        'starts_at' => 'datetime',
+        'ends_at'   => 'datetime',
+    ];
+
+    public function user(): BelongsTo
     {
-        return $this->belongsTo(Employee::class);
+        return $this->belongsTo(User::class);
     }
-
-    public function approver()
-    {
-        return $this->belongsTo(User::class, 'approved_by');
-    }
-
-    public function attendance()
-{
-    return $this->belongsTo(Attendance::class);
-}
-
-
-
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\OvertimeRequest;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Models\Employee;
@@ -89,6 +90,8 @@ $loanEndingCount  = Loan::where('status', 'active')
             return $e;
         });
 
+        $overtimeRequests = OvertimeRequest::with('user')->get();
+
         return view('dashboard', compact(
             'employeeCount',
             'pendingUserCount',
@@ -99,7 +102,8 @@ $loanEndingCount  = Loan::where('status', 'active')
             'ongoing',
             'announcements',
             'birthdays',
-            'anniversaries'
+            'anniversaries',
+            'overtimeRequests'
         ));
     }
 }
