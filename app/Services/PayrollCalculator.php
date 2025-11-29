@@ -42,7 +42,7 @@ class PayrollCalculator
 
             $hrs = $ot = $nd = 0;
             $schedIn = $schedOut = null;
-            $schedH = 0;
+            $schedH = 8;
 
             if ($sched) {
                 $schedIn = Carbon::parse($sched->time_in)->setDateFrom($day);
@@ -56,8 +56,7 @@ class PayrollCalculator
                 $firstIn = Carbon::parse($atts->min('time_in'));
                 $lastOut = Carbon::parse($atts->max('time_out'));
 
-                if ($lastOut->lt($firstIn))
-                    $lastOut->addDay();
+                if ($lastOut->lt($firstIn)) $lastOut->addDay();
 
                 $totalMinutes = $firstIn->diffInMinutes($lastOut);
                 $totalHours = $totalMinutes / 60;
@@ -90,7 +89,6 @@ class PayrollCalculator
                         $hrs = $schedH;
                 }
 
-                // Compute holiday multipliers
                 [$working, $otPay] = $this->computeHolidayPay($rateHr, $hrs, $ot, $type, $isRestDay);
                 $holidayPay += $working + $otPay;
             }
@@ -99,11 +97,9 @@ class PayrollCalculator
             $otHours += $ot;
             $ndHours += $nd;
 
-            // Compute loan deduction if due
             $loanDeduction += $this->computeLoanDeduction($employee, $day);
         }
 
-        // Base Pay
         $regularHours = $workedHours - $otHours;
         $basePay = round($regularHours * $rateHr, 2);
         $otPay = round($otHours * $rateHr * 1.25, 2);
@@ -111,7 +107,6 @@ class PayrollCalculator
 
         $gross = round($basePay + $otPay + $ndPay + $holidayPay, 2);
 
-        // Government Deductions (last day of month)
         if ($to->isSameDay($to->copy()->endOfMonth())) {
             $sss = (float) ($findBr($sssBr, $gross)->employee_share ?? 0);
             $phil = round($gross * (($findBr($philBr, $gross)->rate_percent ?? 0) / 100) / 2, 2);
