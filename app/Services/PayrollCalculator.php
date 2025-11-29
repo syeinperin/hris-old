@@ -55,14 +55,16 @@ class PayrollCalculator
             if ($atts->count()) {
                 $firstIn = Carbon::parse($atts->min('time_in'));
                 $lastOut = Carbon::parse($atts->max('time_out'));
+
                 if ($lastOut->lt($firstIn))
                     $lastOut->addDay();
 
                 $totalMinutes = $firstIn->diffInMinutes($lastOut);
-                $totalHours = min($totalMinutes / 60, $schedH);
+                $totalHours = $totalMinutes / 60;
 
                 $regularHours = min($totalHours, $schedH);
                 $overtimeHours = max(0, $totalHours - $schedH);
+
                 $hrs = $regularHours;
                 $ot = $overtimeHours;
 

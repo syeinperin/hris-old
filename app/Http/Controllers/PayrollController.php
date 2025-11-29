@@ -4,10 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Models\Employee;
 use App\Models\Attendance;
-use App\Models\SssContribution;
-use App\Models\PhilhealthContribution;
-use App\Models\PagibigContribution;
-use App\Models\Loan;
 use App\Models\Holiday;
 use App\Models\Payslip;
 use App\Services\PayrollCalculator;
@@ -15,10 +11,7 @@ use App\Models\LeaveRequest;
 use Carbon\Carbon;
 use Carbon\CarbonPeriod;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Str;
-use PDF;
 
 class PayrollController extends Controller
 {
