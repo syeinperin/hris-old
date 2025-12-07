@@ -231,6 +231,7 @@
 @endsection
 
 @push('scripts')
+
 <script>
   const selectAll = document.getElementById('selectAll');
   if (selectAll) {

@@ -36,9 +36,9 @@
             <td>{{ $c->subject }}</td>
 
             <td>
-              <span class="badge bg-{{ 
-                    $c->status=='open' ? 'danger' : 
-                    ($c->status=='in_progress' ? 'warning' : 
+              <span class="badge bg-{{
+                    $c->status=='open' ? 'danger' :
+                    ($c->status=='in_progress' ? 'warning' :
                     ($c->status=='resolved' ? 'info' : 'success')) }}">
                 {{ ucfirst($c->status) }}
               </span>

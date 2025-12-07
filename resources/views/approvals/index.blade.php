@@ -291,7 +291,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const data = await response.json();
 
     if (data.redirect) {
-      window.location.href = data.redirect; 
+      window.location.href = data.redirect;
     } else {
       window.location.reload();
     }
