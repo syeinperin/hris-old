@@ -4,11 +4,10 @@
 
 @push('styles')
     <style>
-        /* ===================== Employee Table ===================== */
+        .card,
+        .card-body,
         .table-responsive {
-            width: 100%;
-            overflow-x: visible !important;
-            overflow-y: visible !important;
+            overflow: visible !important;
         }
 
         .table {
@@ -55,8 +54,12 @@
             font-weight: 600;
         }
 
-        .table-scroll .dropdown-menu {
-            z-index: 1056;
+        .dropdown-menu {
+            z-index: 1060 !important;
+        }
+
+        .dropdown {
+            position: relative;
         }
 
         .pagination {
@@ -66,9 +69,7 @@
     </style>
 @endpush
 
-@push('scripts')
-    <script src="{{ asset('js/ph-location.js') }}"></script>
-@endpush
+
 
 @if (session('success'))
     <div class="alert alert-success alert-dismissible fade show" role="alert">
@@ -296,33 +297,22 @@
                                     <td>{{ optional($e->schedule)->time_in }}–{{ optional($e->schedule)->time_out }}</td>
 
                                     <td class="text-center">
-                                        <div class="dropdown position-static {{ $dropUp ? 'dropup' : '' }}">
-                                            <button class="btn btn-outline-primary btn-sm" data-bs-toggle="dropdown"
-                                                data-bs-display="dynamic" data-bs-boundary="viewport" data-bs-offset="0,8">
+                                        <div class="dropdown">
+                                            <button class="btn btn-outline-primary btn-sm" type="button"
+                                                id="dropdown{{ $e->id }}" data-bs-toggle="dropdown"
+                                                aria-expanded="false">
                                                 <i class="bi bi-three-dots-vertical"></i>
                                             </button>
-                                            <ul class="dropdown-menu dropdown-menu-end shadow-sm">
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                aria-labelledby="dropdown{{ $e->id }}">
                                                 <li>
-                                                    <button class="dropdown-item" data-bs-toggle="modal"
+                                                    <button class="dropdown-item" type="button" data-bs-toggle="modal"
                                                         data-bs-target="#viewEmployeeModal"
                                                         data-employee='@json($payload)'>
                                                         <i class="bi bi-eye me-2"></i> View
                                                     </button>
                                                 </li>
 
-                                                {{-- Edit allowed for HR and Supervisor --}}
-                                                {{-- @role(['hr'])
-                                                    <li>
-                                                        <button class="dropdown-item" data-bs-toggle="modal"
-                                                            data-bs-target="#editEmployeeModal" data-id="{{ $e->id }}"
-                                                            data-action="{{ route('employees.update', $e) }}"
-                                                            data-employee='@json($payload)'>
-                                                            <i class="bi bi-pencil me-2"></i> Edit
-                                                        </button>
-                                                    </li>
-                                                @endrole --}}
-
-                                                {{-- Start Offboarding: HR only --}}
                                                 @role(['hr', 'supervisor'])
                                                     <li>
                                                         <a class="dropdown-item"
@@ -334,17 +324,17 @@
                                                     <li>
                                                         <hr class="dropdown-divider">
                                                     </li>
+
                                                     <li>
                                                         <form action="{{ route('employees.destroy', $e) }}" method="POST"
-                                                            onsubmit="return confirm('Are you sure?')">
+                                                            onsubmit="return confirm('Are you sure?')" style="margin: 0;">
                                                             @csrf @method('DELETE')
-                                                            <button class="dropdown-item text-danger">
+                                                            <button type="submit" class="dropdown-item text-danger">
                                                                 <i class="bi bi-trash me-2"></i> Delete
                                                             </button>
                                                         </form>
                                                     </li>
                                                 @endrole
-
                                             </ul>
                                         </div>
                                     </td>
@@ -368,3 +358,7 @@
     @include('employees.edit-modal')
 
 @endsection
+
+{{-- @push('scripts')
+    <script src="{{ asset('js/ph-location.js') }}"></script>
+@endpush --}}

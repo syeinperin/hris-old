@@ -46,7 +46,7 @@ document.addEventListener('DOMContentLoaded', () => {
       { name: "Victoria", zip: "4019" }
     ],
 
-  
+
     // ── CAVITE (23 LGUs) ──────────────────────────────────────────────
     "Cavite": [
       { name: "Alfonso",        zip: "4123" },
